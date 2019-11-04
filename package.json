@@ -1,0 +1,31 @@
+{
+  "name": "ubiquitous-spark",
+  "version": "1.0.0",
+  "description": "Comfortable online service that helps us to find the best books for yourself",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "eslint *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheBestTvarynka/ubiquitous-spark.git"
+  },
+  "keywords": [
+    "js",
+    "node",
+    "postgresql"
+  ],
+  "author": "@TheBestTvarynka @vermi4elli @KySo4oK @Makse3351 @IvanLuchkin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheBestTvarynka/ubiquitous-spark/issues"
+  },
+  "homepage": "https://github.com/TheBestTvarynka/ubiquitous-spark#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0"
+  }
+}

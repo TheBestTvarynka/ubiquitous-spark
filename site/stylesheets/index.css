@@ -1,0 +1,37 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+a {
+	text-decoration: none;
+}
+li {
+	text-decoration: none;
+	list-style: none;
+}
+body {
+	font-family: 'Raleway', sans-serif;
+}
+nav {
+	display: inline;
+	margin: auto;
+	width: 800px;
+	height: 50px;
+}
+.topnav {
+	background-color: #ffffff;
+	font-size: 14px;
+	margin-top: 40px;
+	text-align: center;
+}
+.topnav a {
+	color: black;
+	padding: 14px 16px;
+	font-size: 15px;
+}
+.topnav a:hover {
+	border-bottom: 2px solid black;
+}
+.topnav img {
+	height: 80px;
+}
