@@ -12,16 +12,31 @@ li {
 body {
 	font-family: 'Raleway', sans-serif;
 }
+.header_container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.header_container img {
+	transform: translateX(-20px);
+}
 nav {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: center;
 	margin: auto;
-	width: 800px;
+	width: 100%;
+	/*transform: translateX(20px);*/
 	/*height: 150px;*/
 }
 .topnav {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+
 	background-color: white;
 	font-size: 14px;
 	margin-top: 10px;
@@ -31,6 +46,7 @@ nav {
 	color: black;
 	padding: 14px 16px;
 	font-size: 15px;
+	border-bottom: 2px solid white;
 }
 .topnav a:hover {
 	border-bottom: 2px solid black;
@@ -39,20 +55,33 @@ nav {
 .topnav img {
 	height: 80px;
 }
+#company_name {
+	font-size: 15px;
+	color: red;
+	font-weight: bold;
+}
 
 footer {
 	width: 100%;
 	background-color: black;
 	text-align: center;
 	padding-bottom: 15px;
-	/*position: absolute;*/
-	/*bottom: 0;*/
-	/*height: 100px;*/
 }
 footer p {
 	color: white;
 }
+.footer_container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
 .botnav {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+
 	color: white;
 	font-size: 14px;
 	margin-top: 10px;
@@ -69,6 +98,7 @@ footer p {
 	border-bottom: 2px solid white;
 	background-color: rgb(50, 50, 50);
 }
+
 .social img {
 	width: 60px;
 	height: 60px;
@@ -80,13 +110,6 @@ footer p {
 	border-radius: 50%;
 }
 
-/*main {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	width: 100%;
-}*/
-
 .btwline {
 	padding-top: 40px;
 	width: 100%;
@@ -95,7 +118,7 @@ footer p {
 	width: 100%;
 }
 .btwline p {
-	background-color: rgba(200, 200, 200, 0.5);
+	background-color: rgba(200, 200, 200, 0.75);
 	font-size: 30px;
 	position: relative;
 	bottom: 50px;
@@ -108,7 +131,6 @@ footer p {
 }
 .books_container {
 	width: 100%;
-	/*padding-top: 40px;*/
 	padding-bottom: 40px;
 	display: flex;
 	flex-direction: row;
@@ -124,6 +146,7 @@ footer p {
 	border: 2px solid black;
 	border-radius: 5px;
 	transition: all .2s ease-in-out;
+	font-size: 15px;
 }
 .book:hover {
 	transform: scale(1.1);
@@ -139,4 +162,38 @@ footer p {
 	padding-right: 10px;
 	padding-bottom: 10px;
 	font-weight: bold;
+}
+@media screen and (max-width: 990px) {
+	.btwline p {
+		font-size: 23px;
+	}
+}
+@media screen and (max-width: 820px) {
+	.btwline p {
+		font-size: 15px;
+	}
+}
+@media screen and (max-width: 790px) {
+	.topnav {
+		display: flex;
+		flex-direction: column;
+	}
+	.header_container img {
+		transform: translateX(0px);
+	}
+	.book {
+		width: 25%;
+	}
+}
+@media screen and (max-width: 645px) {
+	.botnav {
+		display: flex;
+		flex-direction: column;
+	}
+}
+@media screen and (max-width: 590px) {
+	.book {
+		font-size: 10px;
+		width: 35%;
+	}
 }
