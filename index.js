@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const { pool } = require('./db/config');
 
 const app = express();
 const port = 8080;
@@ -16,6 +17,19 @@ app.get('/', (req, res) => {
     path: __dirname
   };
   res.sendFile(__dirname + '/site/index.html', options, printErr);
+});
+
+app.get('/books/data', (req, res) => {
+  console.log('in book/data handler');
+  pool.query('SELECT * FROM aircrafts;', (err, data) => {
+    if (err) {
+      console.log(err);
+      res.end(JSON.parse('"res": "error"').stringify());
+    } else {
+      console.log(data);
+      res.end(JSON.stringify(data.fields));
+    }
+  });
 });
 
 app.use('/site', (req, res) => {
