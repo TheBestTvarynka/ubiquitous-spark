@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const siteRouter = require('./routing/routing');
 const { pool } = require('./db/config');
 
 const app = express();
@@ -11,6 +12,8 @@ const printErr = err => {
     console.log(err);
   }
 };
+
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
   const options = {
@@ -32,10 +35,12 @@ app.get('/books/data', (req, res) => {
   });
 });
 
-app.use('/site', (req, res) => {
+/*app.use('/site', (req, res) => {
   const fileName = __dirname + '/site' + req.url;
   res.sendFile(fileName, { path: __dirname }, printErr);
-});
+});*/
+app.use('/site', siteRouter);
+// app.use('/book', siteRouter);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

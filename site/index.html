@@ -16,7 +16,7 @@
 					<a href="/site/projects.html">SMTHNG</a>
 					<a href="/site/index.html" id="company_name">UBIQUITOUS-SPARK</a>
 					<a href="/site/serveces.html">PURCHASES</a>
-					<a href="/site/login.html">ACCOUNT</a>
+					<a href="/book/account">ACCOUNT</a>
 					<a href="/site/about.html">ABOUT</a>
 				</div>
 			</nav>
@@ -80,7 +80,7 @@
 					<a href="/site/team.html">SEARCH</a>
 					<a href="/site/projects.html">SMTHNG</a>
 					<a href="/site/serveces.html">PURCHASES</a>
-					<a href="/site/login.html">ACCOUNT</a>
+					<a href="/book/account">ACCOUNT</a>
 					<a href="/site/about.html">ABOUT</a>
 				</div>
 			</nav>
@@ -97,13 +97,13 @@
 		function getBooks() {
 			console.log('IN');
 			let dataProjectRequest = new XMLHttpRequest();
-			dataProjectRequest.open('GET', `/books/data`, true);
+			dataProjectRequest.open('GET', `/book/erf`, true);
 			dataProjectRequest.send();
 			dataProjectRequest.addEventListener("load", (env) => {
 				if (dataProjectRequest.status === 404) {
 					console.log('Bad request: return status code 404');
 				} else {
-					const data = JSON.parse(dataProjectRequest.response);
+					const data = dataProjectRequest.response;
 					console.log(data);
 				}
 			});
