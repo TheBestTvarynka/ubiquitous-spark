@@ -3,6 +3,14 @@
 const express = require('express');
 const expressSession = require('express-session');
 
+const fileSender = (fileName, res) => {
+  res.sendFile(fileName, null, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+};
+
 const router = express.Router();
 router.use(expressSession({
   secret: 'mySecretKey',
@@ -19,10 +27,8 @@ router.get('/account', (req, res) => {
   // check if user already loggined
   const userName = req.session.cookie.name;
   if (!userName) {
-    // user not login yet -> redirect
     console.log('open login page');
-    // res.redirect('/site/login');
-    res.send('login please');
+    res.redirect('/site/login');
   } else {
     // user have alredy loginned
     // redirect on account page
@@ -30,11 +36,15 @@ router.get('/account', (req, res) => {
   }
 });
 
+router.get('/login', (req, res) => {
+  const fileName = process.env.ROOT_DIR + 'site' + req.url + '.html';
+  fileSender(fileName, res);
+});
+
 router.use((req, res, next) => {
-  console.log('the rest');
-  console.log(req.url);
-  res.send('the rest');
-  next();
+  const fileName = process.env.ROOT_DIR + 'site' + req.url;
+  fileSender(fileName, res);
+  // next();
 });
 
 module.exports = router;

@@ -13,8 +13,6 @@ const printErr = err => {
   }
 };
 
-app.use(express.static('public'))
-
 app.get('/', (req, res) => {
   const options = {
     path: __dirname
@@ -35,12 +33,7 @@ app.get('/books/data', (req, res) => {
   });
 });
 
-/*app.use('/site', (req, res) => {
-  const fileName = __dirname + '/site' + req.url;
-  res.sendFile(fileName, { path: __dirname }, printErr);
-});*/
 app.use('/site', siteRouter);
-// app.use('/book', siteRouter);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

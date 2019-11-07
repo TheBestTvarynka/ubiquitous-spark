@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Cooperative Q'Kation</title>
+	<link rel="stylesheet" type="text/css" href="/site/stylesheets/login.css">
+	<link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+	<script type="text/javascript">
+		function showReg() {
+			console.log('show reg');
+			const formR = document.getElementById('reg');
+			formR.style.display = 'flex';
+			const formL = document.getElementById('log');
+			formL.style.display = 'none';
+		}
+		function showLog() {
+			console.log('show log');
+			const formR = document.getElementById('reg');
+			formR.style.display = 'none';
+			const formL = document.getElementById('log');
+			formL.style.display = 'flex';
+		}
+	</script>
+</head>
+<body onload="showLog()">
+	<header>
+		<div class="header_container">
+			<img src="/site/img/logo.png">
+			<nav>
+				<div class="topnav">
+					<a href="/site/index.html">HOME</a>
+					<a href="/site/team.html">SEARCH</a>
+					<a href="/site/projects.html">SMTHNG</a>
+					<a href="/site/index.html" id="company_name">UBIQUITOUS-SPARK</a>
+					<a href="/site/serveces.html">PURCHASES</a>
+					<a href="/site/account">ACCOUNT</a>
+					<a href="/site/about.html">ABOUT</a>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<main class="main">
+		<form name="login" id="log" class="form">
+			<div class="title">Login</div>
+			<input type="text" name="name" class="input_text" placeholder="e. g. Pavlo Myroniyk">
+			<div class="title">Password</div>
+			<input type="password" name="password" class="input_text">
+			<input type="button" name="login" class="button" value="Register">
+			<input type="button" name="showLogin" class="redirect" value="Need an account? Register..." onclick="showReg()">
+		</form>
+		<form name="registration" id="reg" class="form">
+			<div class="title">Full Name</div>
+			<input type="text" name="name" class="input_text" placeholder="e. g. Pavlo Myroniyk">
+			<div class="title">Email Address</div>
+			<input type="text" name="email" class="input_text" placeholder="example@e.mail">
+			<div class="title">Phone Number</div>
+			<input type="text" name="phone" class="input_text" placeholder="+38 011 1111 111">
+			<div class="title">Password</div>
+			<input type="password" name="password" class="input_text">
+			<div class="title">Password repeat</div>
+			<input type="password" name="password_r" class="input_text">
+			<input type="button" name="register" class="button" value="Register">
+			<input type="button" name="showLogin" class="redirect" value="Have an account? Log in..." onclick="showLog()">
+		</form>
+	</main>
+	<footer>
+		<div class="footer_container">
+			<nav>
+				<div class="botnav">
+					<a href="/site/index.html">HOME</a>
+					<a href="/site/team.html">SEARCH</a>
+					<a href="/site/projects.html">SMTHNG</a>
+					<a href="/site/serveces.html">PURCHASES</a>
+					<a href="/site/account">ACCOUNT</a>
+					<a href="/site/about.html">ABOUT</a>
+				</div>
+			</nav>
+		</div>
+		<div class="social">
+			<a href="#"><img src="/site/img/social/facebook.png"></a>
+			<a href="#"><img src="/site/img/social/gmail.png"></a>
+			<a href="#"><img src="/site/img/social/github.png"></a>
+			<a href="#"><img src="/site/img/social/pinterest.png"></a>
+		</div>
+		<p>Cooperative Q'Kation 2019</p>
+	</footer>
+</body>
+</html>
