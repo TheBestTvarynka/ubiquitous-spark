@@ -125,12 +125,18 @@ footer p {
 	justify-content: center;
 	align-items: left;
 	text-align: left;
-	padding-bottom: 30px;
+	padding-bottom: 40px;
+	padding-top: 40px;
+}
+.form p {
+	color: black;
+	font-size: 25px;
 }
 .title {
 	color: black;
 	text-align: left;
 	padding: 3px;
+	padding-top: 20px;
 }
 .input_text {
 	font-size: 18px;
