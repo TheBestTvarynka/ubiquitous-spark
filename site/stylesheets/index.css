@@ -93,6 +93,7 @@ footer p {
 	color: white;
 	padding: 20px;
 	font-size: 15px;
+	border-bottom: 2px solid black;
 }
 .botnav a:hover {
 	border-bottom: 2px solid white;

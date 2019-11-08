@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const bodyParser = require("body-parser");
 const siteRouter = require('./routing/routing');
 const { pool } = require('./db/config');
 
@@ -12,6 +13,9 @@ const printErr = err => {
     console.log(err);
   }
 };
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   const options = {
@@ -34,6 +38,12 @@ app.get('/books/data', (req, res) => {
 });
 
 app.use('/site', siteRouter);
+
+app.post('/login', (req, res) => {
+  // post variables saves in req.body
+  
+  res.send('loginned');
+});
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

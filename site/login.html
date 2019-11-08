@@ -28,10 +28,10 @@
 			<img src="/site/img/logo.png">
 			<nav>
 				<div class="topnav">
-					<a href="/site/index.html">HOME</a>
+					<a href="/">HOME</a>
 					<a href="/site/team.html">SEARCH</a>
 					<a href="/site/projects.html">SMTHNG</a>
-					<a href="/site/index.html" id="company_name">UBIQUITOUS-SPARK</a>
+					<a href="/" id="company_name">UBIQUITOUS-SPARK</a>
 					<a href="/site/serveces.html">PURCHASES</a>
 					<a href="/site/account">ACCOUNT</a>
 					<a href="/site/about.html">ABOUT</a>
@@ -40,19 +40,21 @@
 		</div>
 	</header>
 	<main class="main">
-		<form name="login" id="log" class="form">
-			<p>Hmmm, I see you haven't logged in to your account yet :(</p>
+		<form name="login" id="log" class="form" method="post" action="/login">
+			<p>Hmmm, I see you haven't logged in to your account so far :(</p>
 			<p>Please log in to continue shoping</p>
 			<div class="title">Login</div>
 			<input type="text" name="name" class="input_text" placeholder="e. g. Pavlo Myroniyk">
 			<div class="title">Password</div>
 			<input type="password" name="password" class="input_text">
-			<input type="button" name="login" class="button" value="Register">
+			<input type="submit" name="login" class="button" value="Login">
 			<input type="button" name="showLogin" class="redirect" value="Need an account? Register..." onclick="showReg()">
 		</form>
-		<form name="registration" id="reg" class="form">
+		<form name="registration" id="reg" class="form" method="post" action="/register">
 			<p>Let's create an account in a few second:)</p>
 			<p>After that you will can open for yourself whole world of books</p>
+			<div class="title">Login</div>
+			<input type="text" name="name" class="input_text" placeholder="the.travynka">
 			<div class="title">Full Name</div>
 			<input type="text" name="name" class="input_text" placeholder="e. g. Pavlo Myroniyk">
 			<div class="title">Email Address</div>
@@ -61,7 +63,7 @@
 			<input type="text" name="phone" class="input_text" placeholder="+38 011 1111 111">
 			<div class="title">Password</div>
 			<input type="password" name="password" class="input_text">
-			<div class="title">Password repeat</div>
+			<div class="title">Submit password</div>
 			<input type="password" name="password_r" class="input_text">
 			<input type="button" name="register" class="button" value="Register">
 			<input type="button" name="showLogin" class="redirect" value="Have an account? Log in..." onclick="showLog()">
@@ -71,7 +73,7 @@
 		<div class="footer_container">
 			<nav>
 				<div class="botnav">
-					<a href="/site/index.html">HOME</a>
+					<a href="/">HOME</a>
 					<a href="/site/team.html">SEARCH</a>
 					<a href="/site/projects.html">SMTHNG</a>
 					<a href="/site/serveces.html">PURCHASES</a>
