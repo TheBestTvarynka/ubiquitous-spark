@@ -6,7 +6,6 @@ class DBInserter {
   constructor(database, table) {
     this.database = database;
     this.table = table;
-    this.pool = database.pool;
     this.fieldsOrder = [];
     this.values = [];
   }
@@ -66,6 +65,7 @@ class DBWriter {
     return new DBInserter(this, table);
   }
   query(sql, callback) {
+    console.log(sql);
     this.pool.query(sql, (err, res) => {
       if (callback) {
         callback(err, res);
