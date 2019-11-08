@@ -37,8 +37,14 @@ router.get('/account', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-  const fileName = process.env.ROOT_DIR + 'site' + req.url + '.html';
-  fileSender(fileName, res);
+  // if already loginned then redirect to account page
+  const userName = req.session.cookie.name;
+  if (!userName) {
+    const fileName = process.env.ROOT_DIR + 'site' + req.url + '.html';
+    fileSender(fileName, res);
+  } else {
+    res.redirect('/site/account');
+  }
 });
 
 router.use((req, res, next) => {
