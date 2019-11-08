@@ -45,6 +45,12 @@ app.post('/login', (req, res) => {
   res.send('loginned');
 });
 
+app.post('/register', (req, res) => {
+  // post variables saves in req.body
+  
+  res.send('registered');
+});
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
