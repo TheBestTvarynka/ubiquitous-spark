@@ -3,12 +3,14 @@
 const express = require('express');
 const expressSession = require('express-session');
 
+const printErr = err => {
+  if (err) {
+    console.log(err);
+  }
+};
+
 const fileSender = (fileName, res) => {
-  res.sendFile(fileName, null, (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  res.sendFile(fileName, null, printErr);
 };
 
 const router = express.Router();
@@ -17,9 +19,8 @@ router.use(expressSession({
 }));
 
 router.get('/', (req, res) => {
-  console.log('root');
-  console.log(req.url);
-  res.send('All good, root)');
+  const fileName = process.env.ROOT_DIR + 'site/index.html';
+  fileSender(fileName, res);
 });
 
 router.get('/account', (req, res) => {

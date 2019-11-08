@@ -1,12 +1,23 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require("body-parser");
+const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
 const siteRouter = require('./routing/routing');
-const { pool } = require('./db/config');
+const dbreader = require('./db/dbreader');
 
 const app = express();
 const port = 8080;
+
+dotenv.config();
+
+const dbconfig = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+};
 
 const printErr = err => {
   if (err) {
@@ -18,23 +29,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  const options = {
-    path: __dirname
-  };
-  res.sendFile(__dirname + '/site/index.html', options, printErr);
+  // load home page
+  const fileName = process.env.ROOT_DIR + 'site/index.html';
+  res.sendFile(fileName, null, printErr);
 });
 
 app.get('/books/data', (req, res) => {
   console.log('in book/data handler');
-  pool.query('SELECT * FROM aircrafts;', (err, data) => {
-    if (err) {
-      console.log(err);
-      res.end(JSON.parse('"res": "error"').stringify());
-    } else {
-      console.log(data);
-      res.end(JSON.stringify(data.fields));
-    }
-  });
+  const pg = dbreader.open(dbconfig);
+  const cursor = pg.select('aircrafts');
+  cursor.fields(['model', 'aircraft_code'])
+      .order('aircraft_code')
+      .then((rows) => {
+        console.log(rows);
+        res.end(JSON.stringify(rows));
+        pg.close();
+      });
 });
 
 app.use('/site', siteRouter);

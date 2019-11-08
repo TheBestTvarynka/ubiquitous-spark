@@ -98,7 +98,7 @@
 		function getBooks() {
 			console.log('IN');
 			let dataProjectRequest = new XMLHttpRequest();
-			dataProjectRequest.open('GET', `/book/erf`, true);
+			dataProjectRequest.open('GET', `/books/data`, true);
 			dataProjectRequest.send();
 			dataProjectRequest.addEventListener("load", (env) => {
 				if (dataProjectRequest.status === 404) {
