@@ -96,10 +96,13 @@ class Cursor {
     if (whereClause) sql += ` WHERE ${whereClause}`;
     if (orderBy) sql += ` ORDER BY ${orderBy}`;
     this.database.query(sql, args,  (err, res) => {
-      this.resolve(res);
-      console.log(this.rows);
-      console.log(this.cols);
-      console.log(this.rowCount);
+      if (err) {
+        console.log(err);
+        callback('');
+      } else {
+        this.resolve(res);
+        callback(this.rows);
+      }
     });
     return this;
   }
