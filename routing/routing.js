@@ -41,11 +41,16 @@ router.get('/login', (req, res) => {
   // if already loginned then redirect to account page
   const userName = req.session.cookie.name;
   if (!userName) {
-    const fileName = process.env.ROOT_DIR + 'site' + req.url + '.html';
+    const fileName = process.env.ROOT_DIR + 'site/login.html';
     fileSender(fileName, res);
   } else {
     res.redirect('/site/account');
   }
+});
+
+router.get('/register', (req, res) => {
+  const fileName = process.env.ROOT_DIR + 'site/register.html';
+  fileSender(fileName, res);
 });
 
 router.use((req, res, next) => {
