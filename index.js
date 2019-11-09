@@ -26,6 +26,17 @@ const printErr = err => {
   }
 };
 
+const validator = (login, email, phone, pas, pas_r) => {
+  const re_login = /^[a-zA-Z0-9]+$/;
+  const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  if (re_login.test(login) && re_email.test(email) && re_phone.test(phone) && pas === pas_r) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -68,23 +79,24 @@ app.post('/register', (req, res) => {
   const phone = req.body.phone;
   // hashing and validation will be here
   const hash = 'qjif7j4f0ke398k0f9f8';
-  // save data in db
-  console.log(dbwriter);
-  const pg = dbwriter.open(dbconfig);
-  const pasWriter = pg.insert('userdata');
-  pasWriter.fields(['login', 'hash'])
-           .value([login, hash])
-           .then(result => {
-             console.log('first insertion: ', result);
-             const dataWriter = pg.insert('usersaccounts');
-             dataWriter.fields(['login', 'fullName', 'email', 'phone'])
-                       .value([login, fullName, email, phone])
-                       .then(resul => {
-                         console.log('second insertion: ', resul);
-                         pg.close();
-                       });
-           });
-  res.end('all done');
+  if (validator(login, email, phone, password, password_r)) {
+    // save data in db
+    const pg = dbwriter.open(dbconfig);
+    const pasWriter = pg.insert('userdata');
+    pasWriter.fields(['login', 'hash'])
+             .value([login, hash])
+             .then(result => {
+               const dataWriter = pg.insert('usersaccounts');
+               dataWriter.fields(['login', 'fullName', 'email', 'phone'])
+                         .value([login, fullName, email, phone])
+                         .then(resul => {
+                           pg.close();
+                         });
+             });
+    res.end('all done');
+  } else {
+    res.end('you enter wrong date');
+  }
 });
 
 app.listen(port, () => {

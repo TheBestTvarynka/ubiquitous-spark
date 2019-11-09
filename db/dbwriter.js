@@ -40,7 +40,6 @@ class DBInserter {
     }
     const value = values.join(',');
     sql += ' VALUES ' + value;
-    console.log('insert: ', sql);
     this.database.query(sql, (err, res) => {
       if (err) {
         console.log(err);
@@ -65,7 +64,6 @@ class DBWriter {
     return new DBInserter(this, table);
   }
   query(sql, callback) {
-    console.log(sql);
     this.pool.query(sql, (err, res) => {
       if (callback) {
         callback(err, res);
