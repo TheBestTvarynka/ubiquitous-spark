@@ -2,6 +2,7 @@
 
 const express = require('express');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const siteRouter = require('./routing/routing');
 const dbreader = require('./db/dbreader');
@@ -19,6 +20,8 @@ const dbconfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
 };
+
+const saltRounds = 10;
 
 const printErr = err => {
   if (err) {
@@ -85,8 +88,6 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  // post variables saves in req.body
-  console.log('req.body: ', req.body);
   // collect data from request
   const login = req.body.username;
   const password = req.body.password;
@@ -94,8 +95,6 @@ app.post('/register', (req, res) => {
   const fullName = req.body.fullname;
   const email = req.body.email;
   const phone = req.body.phone;
-  // hashing and validation will be here
-  const hash = 'qjif7j4f0ke398k0f9f8';
   if (validator(login, email, phone, password, password_r)) {
     const pg = dbreader.open(dbconfig);
     pg.select('userdata')
@@ -104,13 +103,21 @@ app.post('/register', (req, res) => {
       .then(rows => {
         pg.close();
         if (rows.length === 0) {
-          // write new user in tables
-          userDataWriter(login, fullName, email, phone, hash, res);
+          // hashing a password
+          bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) {
+              console.log(err);
+              res.end('problem with hashing your password:(');
+            } else {
+              // write new user in tables
+              userDataWriter(login, fullName, email, phone, hash, res);
+            }
+          });
         } else {
           res.end('this user already exist');
         }
       });
-      } else {
+  } else {
     res.end('you enter wrong date');
   }
 });
