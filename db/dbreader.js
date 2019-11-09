@@ -32,7 +32,8 @@ const where = conditions => {
         condition = `${key} LIKE $${i}`;
       } else {
         // ch
-        condition = `${key} = ${value}`;
+        // condition = `${key} = ${value}`;
+        condition = `${key} = $${i}`;
       }
     }
     i++;

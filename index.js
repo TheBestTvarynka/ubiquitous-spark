@@ -36,6 +36,23 @@ const validator = (login, email, phone, pas, pas_r) => {
     return false;
   }
 };
+// write new user in corresponding ab tables
+const userDataWriter = (login, fullName, email, phone, hash, res) => {
+  // save data in db
+  const pg = dbwriter.open(dbconfig);
+  const pasWriter = pg.insert('userdata');
+  pasWriter.fields(['login', 'hash'])
+           .value([login, hash])
+           .then(result => {
+             const dataWriter = pg.insert('usersaccounts');
+             dataWriter.fields(['login', 'fullName', 'email', 'phone'])
+                       .value([login, fullName, email, phone])
+                       .then(resul => {
+                         pg.close();
+                       });
+           });
+  res.end('all done');
+};
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -80,21 +97,20 @@ app.post('/register', (req, res) => {
   // hashing and validation will be here
   const hash = 'qjif7j4f0ke398k0f9f8';
   if (validator(login, email, phone, password, password_r)) {
-    // save data in db
-    const pg = dbwriter.open(dbconfig);
-    const pasWriter = pg.insert('userdata');
-    pasWriter.fields(['login', 'hash'])
-             .value([login, hash])
-             .then(result => {
-               const dataWriter = pg.insert('usersaccounts');
-               dataWriter.fields(['login', 'fullName', 'email', 'phone'])
-                         .value([login, fullName, email, phone])
-                         .then(resul => {
-                           pg.close();
-                         });
-             });
-    res.end('all done');
-  } else {
+    const pg = dbreader.open(dbconfig);
+    pg.select('userdata')
+      .fields(['login'])
+      .where({ login })
+      .then(rows => {
+        pg.close();
+        if (rows.length === 0) {
+          // write new user in tables
+          userDataWriter(login, fullName, email, phone, hash, res);
+        } else {
+          res.end('this user already exist');
+        }
+      });
+      } else {
     res.end('you enter wrong date');
   }
 });
