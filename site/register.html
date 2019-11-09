@@ -28,18 +28,18 @@
 			<p>Let's create an account in a few second:)</p>
 			<p>After that you will can open for yourself whole world of books</p>
 			<div class="title">Login</div>
-			<input type="text" name="username" class="input_text" placeholder="the.travynka">
+			<input type="text" name="username" class="input_text" placeholder="the.travynka" oninput="checkLogin(registration)" id="username">
 			<div class="title">Full Name</div>
 			<input type="text" name="fullname" class="input_text" placeholder="e. g. Pavlo Myroniyk">
 			<div class="title">Email Address</div>
-			<input type="text" name="email" class="input_text" placeholder="example@e.mail">
+			<input type="text" name="email" class="input_text" placeholder="example@e.mail" oninput="checkEmail(registration)" id="email">
 			<div class="title">Phone Number</div>
-			<input type="text" name="phone" class="input_text" placeholder="+38 011 1111 111">
+			<input type="text" name="phone" class="input_text" placeholder="+38 011 1111 111" oninput="checkPhone(registration)" id="phone">
 			<div class="title">Password</div>
-			<input type="password" name="password" class="input_text">
+			<input type="password" name="password" class="input_text" oninput="checkPassword(registration)" id="password">
 			<div class="title">Submit password</div>
-			<input type="password" name="password_r" class="input_text">
-			<input type="submit" name="register" class="button" value="Register">
+			<input type="password" name="password_r" class="input_text" oninput="checkPasswordSubmit(registration)" id="password_r">
+			<input type="submit" name="register" class="button" value="Register" id="submit">
 			<a href="/site/login" class="redirect">Have an account? Log in...</a>
 		</form>
 	</main>
@@ -64,5 +64,73 @@
 		</div>
 		<p>Cooperative Q'Kation 2019</p>
 	</footer>
+	<script type="text/javascript">
+		let loginV = false;
+		let emailV = false;
+		let phoneV = false;
+		let passwV = false;
+		let passRV = false;
+		function checkLogin(form) {
+			const re_name = /^[a-zA-Z0-9]+$/;
+			const input = document.getElementById('username');
+			if (re_name.test(form.username.value)) {
+				loginV = true;
+				input.setAttribute('class', 'input_text');
+			} else {
+				loginV = false;
+				input.setAttribute('class', 'input_text_false');
+			}
+			submitState();
+		}
+		function checkEmail(form) {
+			const re_mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+			const input = document.getElementById('email');
+			if (re_mail.test(form.email.value)) {
+				emailV = true;
+				input.setAttribute('class', 'input_text');
+			} else {
+				emailV = false;
+				input.setAttribute('class', 'input_text_false');
+			}
+			submitState();
+		}
+		function checkPhone(form) {
+			const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+			const input = document.getElementById('phone');
+			if (re_phone.test(form.phone.value)) {
+				phoneV = true;
+				input.setAttribute('class', 'input_text');
+			} else {
+				phoneV = false;
+				input.setAttribute('class', 'input_text_false');
+			}
+			submitState();
+		}
+		function checkPassword(password) {
+			// body... 
+		}
+		function checkPasswordSubmit(form) {
+			const input = document.getElementById('password_r');
+			if (form.password.value === form.password_r.value) {
+				passRV = true;
+				input.setAttribute('class', 'input_text');
+			} else {
+				passRV = false;
+				input.setAttribute('class', 'input_text_false');
+			}
+			submitState();
+		}
+		function submitState() {
+			const submitButton = document.getElementById('submit');
+			console.log(loginV, emailV, phoneV, passRV);
+			if (loginV && emailV && phoneV && passRV) {
+				console.log('==true');
+				submitButton.removeAttribute('disabled');
+			} else {
+				console.log('==false');
+				submitButton.setAttribute('disabled', 'true');
+			}
+		}
+	</script>
 </body>
 </html>
