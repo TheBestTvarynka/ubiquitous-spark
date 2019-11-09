@@ -38,7 +38,7 @@
 			<div class="title">Password</div>
 			<input type="password" name="password" class="input_text" oninput="checkPassword(registration)" id="password">
 			<div class="title">Submit password</div>
-			<input type="password" name="password_r" class="input_text" oninput="checkPasswordSubmit(registration)" id="password_r">
+			<input type="password" name="password_r" class="input_text" oninput="checkPassword(registration)" id="password_r">
 			<input type="submit" name="register" class="button" value="Register" id="submit">
 			<a href="/site/login" class="redirect">Have an account? Log in...</a>
 		</form>
@@ -106,10 +106,7 @@
 			}
 			submitState();
 		}
-		function checkPassword(password) {
-			// body... 
-		}
-		function checkPasswordSubmit(form) {
+		function checkPassword(form) {
 			const input = document.getElementById('password_r');
 			if (form.password.value === form.password_r.value) {
 				passRV = true;
