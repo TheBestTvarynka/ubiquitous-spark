@@ -82,9 +82,28 @@ app.get('/books/data', (req, res) => {
 app.use('/site', siteRouter);
 
 app.post('/login', (req, res) => {
-  // post variables saves in req.body
-  
-  res.send('loginned');
+  const login = req.body.username;
+  const password = req.body.password;
+  const pg = dbreader.open(dbconfig);
+  // search user in database
+  pg.select('userdata')
+    .fields(['login', 'hash'])
+    .where({ login })
+    .then(rows => {
+      if (rows.length === 0) {
+        res.end('user does not exist');
+      } else {
+        // if user exist then compare password
+        const hash = rows[0].hash;
+        bcrypt.compare(password, hash, (err, result) => {
+          if (err) {
+            console.log(err);
+            res.end('can not check password');
+          } else {
+            res.end(JSON.stringify(result)); }
+        });
+      }
+    });
 });
 
 app.post('/register', (req, res) => {
@@ -114,7 +133,7 @@ app.post('/register', (req, res) => {
             }
           });
         } else {
-          res.end('this user already exist');
+          res.end('user with this login already exist');
         }
       });
   } else {
