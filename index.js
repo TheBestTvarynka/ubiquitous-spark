@@ -86,6 +86,9 @@ app.post('/login', (req, res) => {
   const password = req.body.password;
   const pg = dbreader.open(dbconfig);
   // search user in database
+  const activated = pg.select('usersaccounts');
+  activated.fields(['activated'])
+           .where({ login });
   pg.select('userdata')
     .fields(['login', 'hash'])
     .where({ login })
@@ -100,7 +103,14 @@ app.post('/login', (req, res) => {
             console.log(err);
             res.end('can not check password');
           } else {
-            res.end(JSON.stringify(result)); }
+            if (result) {
+              activated.then(rows => {
+                if (rows.activated) console.log('hello');
+                else res.redirect('/site/activate.html');
+              });
+            } else {
+              res.end(JSON.stringify(result)); }
+            }
         });
       }
     });
@@ -139,6 +149,11 @@ app.post('/register', (req, res) => {
   } else {
     res.end('you enter wrong date');
   }
+});
+
+app.post('/activate', (req, res) => {
+  const card_number = req.body.bank_number;
+  console.log('activated');
 });
 
 app.listen(port, () => {
