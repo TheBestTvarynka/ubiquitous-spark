@@ -13,9 +13,27 @@
 	<main class="main">
 		<form name="activate" action="/activateaccount" class="form">
 			<p>So, it seems like you resenetly registered and try to visit account page. But before starting you need to activate account. Please, enter credit card number for continue:</p>
-			<input type="text" name="bank_number" class="input_text">
-			<input type="submit" name="submit" class="button" value="Submit">
+			<input type="text" name="bank_number" class="input_text" oninput="checkCardNumber(activate)" id="card">
+			<input type="submit" name="submit" class="button" value="Submit" id="submit">
 		</form>
 	</main>
+	<script type="text/javascript">
+		function checkCardNumber(form) {
+			console.log('test');
+			const re_number = new RegExp('^[0-9]+$');
+			const input = document.getElementById('card');
+			const submitButton = document.getElementById('submit');
+			console.log(form.bank_number.value);
+			if (re_number.test(form.bank_number.value)) {
+				console.log('true');
+				input.setAttribute('class', 'input_text');
+				submitButton.removeAttribute('disabled');
+			} else {
+				console.log('false');
+				input.setAttribute('class', 'input_text_false');
+				submitButton.setAttribute('disabled', 'true');
+			}
+		}
+	</script>
 </body>
 </html>

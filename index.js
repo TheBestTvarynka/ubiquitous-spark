@@ -106,7 +106,7 @@ app.post('/login', (req, res) => {
             if (result) {
               activated.then(rows => {
                 if (rows.activated) console.log('hello');
-                else res.redirect('/site/activate.html');
+                else res.redirect('/site/activate');
               });
             } else {
               res.end(JSON.stringify(result)); }
