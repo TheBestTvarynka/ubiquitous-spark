@@ -105,7 +105,7 @@ app.post('/login', (req, res) => {
           } else {
             if (result) {
               activated.then(rows => {
-                if (rows.activated) console.log('hello');
+                if (rows[0].activated) res.end('hello');
                 else res.redirect('/site/activate');
               });
             } else {
@@ -153,7 +153,8 @@ app.post('/register', (req, res) => {
 
 app.post('/activate', (req, res) => {
   const card_number = req.body.bank_number;
-  console.log('activated');
+  // let user send correct card number (without char and with normal length)
+  // now we need update db table and reditect user on account page
 });
 
 app.listen(port, () => {

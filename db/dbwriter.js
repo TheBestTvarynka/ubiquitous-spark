@@ -2,6 +2,47 @@
 
 const { Pool } = require('pg');
 
+const where = conditions => {
+  let clause = '';
+  const args = [];
+  let i = 1;
+  for (const key in conditions) {
+    let value = conditions[key];
+    let condition;
+    if (typeof value === 'number') {
+      condition = `${key} = $${i}`;
+    } else if (typeof value === 'string') {
+      if (value.startsWith('>=')) {
+        condition = `${key} >= $${i}`;
+        value = value.substring(2);
+      } else if (value.startsWith('<=')) {
+        condition = `${key} <= $${i}`;
+        value = value.substring(2);
+      } else if (value.startsWith('<>')) {
+        condition = `${key} <> $${i}`;
+        value = value.substring(2);
+      } else if (value.startsWith('>')) {
+        condition = `${key} > $${i}`;
+        value = value.substring(1);
+      } else if (value.startsWith('<')) {
+        condition = `${key} < $${i}`;
+        value = value.substring(1);
+      } else if (value.includes('*') || value.includes('?')) {
+        value = value.replace(/\*/g, '%').replace(/\?/g, '_');
+        condition = `${key} LIKE $${i}`;
+      } else {
+        // ch
+        // condition = `${key} = ${value}`;
+        condition = `${key} = $${i}`;
+      }
+    }
+    i++;
+    args.push(value);
+    clause = clause ? `${clause} AND ${condition}` : condition;
+  }
+  return { clause, args };
+};
+
 class DBInserter {
   constructor(database, table) {
     this.database = database;
@@ -53,6 +94,48 @@ class DBInserter {
   }
 };
 
+class DBUpdater {
+  constructor(database, table) {
+    this.database = database;
+    this.table = table;
+    this.whereClause = undefined;
+    this.args = [];
+    // object of setters
+    this.fields = {};
+  }
+  // add WHERE conditions
+  where(conditions) {
+    const { clause, args} = where(conditions);
+    this.whereClause = clause;
+    this.args = args;
+    return this;
+  }
+  set(setters) {
+    this.fields = setters;
+    return this;
+  }
+  then(callback) {
+    console.log(callback);
+    const { table, fields, whereClause, args } = this;
+    let sql = `UPDATE ${table}`;
+    const setters = [];
+    for (const setter in fields) {
+      setters.push(`${setter} = '${fields[setter]}'`);
+    }
+    sql += ' SET ' + setters.join(', ');
+    if (whereClause) sql += ` WHERE ${whereClause}`;
+    console.log(sql);
+    this.database.query(sql, args, (err, res) => {
+      if (err) {
+        console.log(err);
+        callback('');
+      } else {
+        callback(res);
+      }
+    });
+  }
+};
+
 class DBWriter {
   constructor(config, logger) {
     this.pool = new Pool(config);
@@ -63,8 +146,15 @@ class DBWriter {
   insert(table) {
     return new DBInserter(this, table);
   }
-  query(sql, callback) {
-    this.pool.query(sql, (err, res) => {
+  update(table) {
+    return new DBUpdater(this, table);
+  }
+  query(sql, args, callback) {
+    if (typeof args === 'function') {
+      callback = args;
+      args = [];
+    }
+    this.pool.query(sql, args, (err, res) => {
       if (callback) {
         callback(err, res);
       }
