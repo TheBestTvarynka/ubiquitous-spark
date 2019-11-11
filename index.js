@@ -3,12 +3,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const hbs = require('express-handlebars');
+const path = require('path');
 const bodyParser = require('body-parser');
 const siteRouter = require('./routing/routing');
 const dbreader = require('./db/dbreader');
 const dbwriter = require('./db/dbwriter');
 const expressSession = require('express-session');
-const router = express.Router();
 
 const app = express();
 const port = 8080;
@@ -59,6 +60,11 @@ const userDataWriter = (login, fullName, email, phone, hash, res) => {
            });
   res.end('all done');
 };
+
+// view engine setup
+app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'index', layoutsDir: __dirname + '/site/'}));
+app.set('views', path.join(__dirname, 'site'));
+app.set('view engine', 'hbs');
 
 app.use(expressSession({
   secret: 'mySecretKey',
