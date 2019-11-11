@@ -7,11 +7,14 @@ const bodyParser = require('body-parser');
 const siteRouter = require('./routing/routing');
 const dbreader = require('./db/dbreader');
 const dbwriter = require('./db/dbwriter');
+const expressSession = require('express-session');
+const router = express.Router();
 
 const app = express();
 const port = 8080;
 
 dotenv.config();
+
 
 const dbconfig = {
   host: process.env.DB_HOST,
@@ -57,10 +60,14 @@ const userDataWriter = (login, fullName, email, phone, hash, res) => {
   res.end('all done');
 };
 
+app.use(expressSession({
+  secret: 'mySecretKey',
+}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
+  console.log(req.session.name);
   // load home page
   const fileName = process.env.ROOT_DIR + 'site/index.html';
   res.sendFile(fileName, null, printErr);
@@ -87,7 +94,7 @@ app.post('/login', (req, res) => {
   const pg = dbreader.open(dbconfig);
   // search user in database
   const activated = pg.select('usersaccounts');
-  activated.fields(['activated'])
+  activated.fields(['login', 'activated'])
            .where({ login });
   pg.select('userdata')
     .fields(['login', 'hash'])
@@ -105,7 +112,10 @@ app.post('/login', (req, res) => {
           } else {
             if (result) {
               activated.then(rows => {
-                if (rows[0].activated) res.end('hello');
+                if (rows[0].activated) {
+                  req.session.name = rows[0].login;
+                  res.end('hello');
+                }
                 else res.redirect('/site/activate');
               });
             } else {
@@ -153,8 +163,13 @@ app.post('/register', (req, res) => {
 
 app.post('/activate', (req, res) => {
   const card_number = req.body.bank_number;
-  // let user send correct card number (without char and with normal length)
-  // now we need update db table and reditect user on account page
+  // login we read from cookies?
+  const pg = dbwriter.open(dbconfig);
+  const updater = pg.update('usersaccounts');
+  updater.set({ activated: 't', bank_number: card_number })
+         .whete({ login })
+         .then(result => {
+         });
 });
 
 app.listen(port, () => {

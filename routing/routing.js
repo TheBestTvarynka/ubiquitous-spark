@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const expressSession = require('express-session');
 
 const printErr = err => {
   if (err) {
@@ -14,9 +13,6 @@ const fileSender = (fileName, res) => {
 };
 
 const router = express.Router();
-router.use(expressSession({
-  secret: 'mySecretKey',
-}));
 
 router.get('/', (req, res) => {
   const fileName = process.env.ROOT_DIR + 'site/index.html';
@@ -24,6 +20,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/account', (req, res) => {
+  console.log(req.session.name);
   console.log('account');
   // check if user already loggined
   const userName = req.session.cookie.name;
