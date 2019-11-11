@@ -93,11 +93,9 @@ app.post('/login', (req, res) => {
   const password = req.body.password;
   const pg = dbreader.open(dbconfig);
   // search user in database
-  const activated = pg.select('usersaccounts');
-  activated.fields(['login', 'activated'])
-           .where({ login });
+  const userData = pg.select('usersaccounts');
+  userData.where({ login });
   pg.select('userdata')
-    .fields(['login', 'hash'])
     .where({ login })
     .then(rows => {
       if (rows.length === 0) {
@@ -110,11 +108,12 @@ app.post('/login', (req, res) => {
             console.log(err);
             res.end('can not check password');
           } else {
+            // if password is correct
             if (result) {
-              activated.then(rows => {
-                if (rows[0].activated) {
-                  req.session.name = rows[0].login;
-                  res.end('hello');
+              req.session.name = rows[0].login;
+              userData.then(result => {
+                if (result[0].activated) {
+                  res.end(JSON.stringify(result[0]));
                 }
                 else res.redirect('/site/activate');
               });
@@ -166,7 +165,7 @@ app.post('/activate', (req, res) => {
   // login we read from cookies?
   const pg = dbwriter.open(dbconfig);
   const updater = pg.update('usersaccounts');
-  updater.set({ activated: 't', bank_number: card_number })
+  updater.set({ userData: 't', bank_number: card_number })
          .whete({ login })
          .then(result => {
          });

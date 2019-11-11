@@ -1,6 +1,18 @@
 'use strict';
 
 const express = require('express');
+const dbreader = require('../db/dbreader');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const dbconfig = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+};
 
 const printErr = err => {
   if (err) {
@@ -20,17 +32,20 @@ router.get('/', (req, res) => {
 });
 
 router.get('/account', (req, res) => {
-  console.log(req.session.name);
-  console.log('account');
   // check if user already loggined
-  const userName = req.session.cookie.name;
-  if (!userName) {
-    console.log('open login page');
+  const login = req.session.name;
+  if (!login) {
     res.redirect('/site/login');
   } else {
-    // user have alredy loginned
-    // redirect on account page
-    console.log('open account page');
+    const pg = dbreader.open(dbconfig);
+    const readData = pg.select('usersaccounts');
+    readData.where({ login })
+            .then(rows => {
+              const data = rows[0];
+              console.log(data);
+              res.end(JSON.stringify(data));
+              pg.close();
+            });
   }
 });
 
