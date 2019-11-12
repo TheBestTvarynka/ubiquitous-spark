@@ -1,0 +1,21 @@
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
+<main class="main">
+	<form name="registration" id="reg" class="form" method="post" action="/register">
+		<p>Let's create an account in a few second:)</p>
+		<p>After that you will can open for yourself whole world of books</p>
+		<div class="title">Login</div>
+		<input type="text" name="username" class="input_text" placeholder="the.travynka" oninput="checkLogin(registration)" id="username">
+		<div class="title">Full Name</div>
+		<input type="text" name="fullname" class="input_text" placeholder="e. g. Pavlo Myroniyk">
+		<div class="title">Email Address</div>
+		<input type="text" name="email" class="input_text" placeholder="example@e.mail" oninput="checkEmail(registration)" id="email">
+		<div class="title">Phone Number</div>
+		<input type="text" name="phone" class="input_text" placeholder="+38 011 1111 111" oninput="checkPhone(registration)" id="phone">
+		<div class="title">Password</div>
+		<input type="password" name="password" class="input_text" oninput="checkPassword(registration)" id="password">
+		<div class="title">Submit password</div>
+		<input type="password" name="password_r" class="input_text" oninput="checkPassword(registration)" id="password_r">
+		<input type="submit" name="register" class="button" value="Register" id="submit">
+		<a href="/site/login" class="redirect">Have an account? Log in...</a>
+	</form>
+</main>

@@ -61,8 +61,8 @@ const userDataWriter = (login, fullName, email, phone, hash, res) => {
   res.end('all done');
 };
 
-// view engine setup
-app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'index', layoutsDir: __dirname + '/site/'}));
+// view render engine setup
+app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'default', layoutsDir: __dirname + '/site/'}));
 app.set('views', path.join(__dirname, 'site'));
 app.set('view engine', 'hbs');
 
@@ -105,7 +105,7 @@ app.post('/login', (req, res) => {
     .where({ login })
     .then(rows => {
       if (rows.length === 0) {
-        res.end('user does not exist');
+        res.render('views/userNotExist', { layout: 'login' });
       } else {
         // if user exist then compare password
         const hash = rows[0].hash;
@@ -124,11 +124,12 @@ app.post('/login', (req, res) => {
                 else res.redirect('/site/activate');
               });
             } else {
-              res.end(JSON.stringify(result)); }
+              res.render('views/loginError', { layout: 'login' });
             }
-        });
-      }
-    });
+        }
+      });
+    }
+  });
 });
 
 app.post('/register', (req, res) => {

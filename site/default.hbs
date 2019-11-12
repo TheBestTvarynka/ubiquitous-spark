@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>ubiquitous-spark</title>
-	<link rel="stylesheet" type="text/css" href="/site/stylesheets/login.css">
+	<link rel="stylesheet" type="text/css" href="/site/stylesheets/default.css">
 	<link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -23,19 +23,7 @@
 			</nav>
 		</div>
 	</header>
-	<main class="main">
-		<form name="login" id="log" class="form" method="post" action="/login">
-			<p>Hmmm, I see you haven't logged in to your account so far :(</p>
-			<p>Please log in to continue reading</p>
-			<div class="title">Login</div>
-			<input type="text" name="username" class="input_text" placeholder="e. g. Pavlo Myroniyk">
-			<div class="title">Password</div>
-			<input type="password" name="password" class="input_text">
-			<input type="submit" name="login" class="button" value="Login">
-			<a href="/site/forgetpassword" class="redirect">Did you forget your password?</a>
-			<a href="/site/register" class="redirect" style="text-decoration: none; font-size: 17px;">Need an account? Register...</a>
-		</form>
-	</main>
+	{{{ body }}}
 	<footer>
 		<div class="footer_container">
 			<nav>

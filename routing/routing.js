@@ -58,16 +58,18 @@ router.get('/login', (req, res) => {
   // if already loginned then redirect to account page
   const userName = req.session.cookie.name;
   if (!userName) {
-    const fileName = process.env.ROOT_DIR + 'site/login.html';
-    fileSender(fileName, res);
+    // res.render('views/clear', { layout: 'login', message: 'templater works success' });
+    console.log('in login page');
+    res.render('views/login', { layout: 'default', message: 'login please' });
   } else {
     res.redirect('/site/account');
   }
 });
 
 router.get('/register', (req, res) => {
-  const fileName = process.env.ROOT_DIR + 'site/register.html';
-  fileSender(fileName, res);
+  res.render('views/register', { layout: 'default', message: 'login please' });
+  // const fileName = process.env.ROOT_DIR + 'site/register.html';
+  // fileSender(fileName, res);
 });
 
 router.use((req, res, next) => {
