@@ -7,6 +7,7 @@ const hbs = require('express-handlebars');
 const path = require('path');
 const bodyParser = require('body-parser');
 const siteRouter = require('./routing/routing');
+const login = require('./routing/login');
 const dbreader = require('./db/dbreader');
 const dbwriter = require('./db/dbwriter');
 const expressSession = require('express-session');
@@ -72,6 +73,8 @@ app.use(expressSession({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(login);
+
 app.get('/', (req, res) => {
   console.log(req.session.name);
   // load home page
@@ -79,44 +82,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/site', siteRouter);
-
-app.post('/login', (req, res) => {
-  const login = req.body.username;
-  const password = req.body.password;
-  const pg = dbreader.open(dbconfig);
-  // search user in database
-  const userData = pg.select('usersaccounts');
-  userData.where({ login });
-  pg.select('userdata')
-    .where({ login })
-    .then(rows => {
-      if (rows.length === 0) {
-        res.render('views/login', { layout: 'default', message: '<p style="color: red">User with this login does not exist</p>' });
-      } else {
-        // if user exist then compare password
-        const hash = rows[0].hash;
-        bcrypt.compare(password, hash, (err, result) => {
-          if (err) {
-            console.log(err);
-            res.end('can not check password');
-          } else {
-            // if password is correct
-            if (result) {
-              req.session.name = rows[0].login;
-              userData.then(result => {
-                if (result[0].activated) {
-                  res.end(JSON.stringify(result[0]));
-                }
-                else res.redirect('/site/activate');
-              });
-            } else {
-              res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
-            }
-        }
-      });
-    }
-  });
-});
 
 app.post('/register', (req, res) => {
   // collect data from request
