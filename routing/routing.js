@@ -59,7 +59,7 @@ router.get('/login', (req, res) => {
   const userName = req.session.cookie.name;
   if (!userName) {
     // res.render('views/clear', { layout: 'login', message: 'templater works success' });
-    res.render('views/login', { layout: 'default', message: 'login please' });
+    res.render('views/login', { layout: 'default', message: 'Hmmm, I see you haven\'t logged in to your account so far :(' });
   } else {
     res.redirect('/site/account');
   }

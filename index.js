@@ -75,8 +75,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   console.log(req.session.name);
   // load home page
-  const fileName = process.env.ROOT_DIR + 'site/index.html';
-  res.sendFile(fileName, null, printErr);
+  res.render('views/home', { layout: 'default' });
 });
 
 app.use('/site', siteRouter);
