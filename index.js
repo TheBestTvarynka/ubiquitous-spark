@@ -79,19 +79,6 @@ app.get('/', (req, res) => {
   res.sendFile(fileName, null, printErr);
 });
 
-app.get('/books/data', (req, res) => {
-  console.log('in book/data handler');
-  const pg = dbreader.open(dbconfig);
-  const cursor = pg.select('aircrafts');
-  cursor.fields(['model', 'aircraft_code'])
-      .order('aircraft_code')
-      .then((rows) => {
-        console.log(rows);
-        res.end(JSON.stringify(rows));
-        pg.close();
-      });
-});
-
 app.use('/site', siteRouter);
 
 app.post('/login', (req, res) => {
@@ -105,7 +92,7 @@ app.post('/login', (req, res) => {
     .where({ login })
     .then(rows => {
       if (rows.length === 0) {
-        res.render('views/userNotExist', { layout: 'login' });
+        res.render('views/login', { layout: 'default', message: '<p style="color: red">User with this login does not exist</p>' });
       } else {
         // if user exist then compare password
         const hash = rows[0].hash;
@@ -124,7 +111,7 @@ app.post('/login', (req, res) => {
                 else res.redirect('/site/activate');
               });
             } else {
-              res.render('views/loginError', { layout: 'login' });
+              res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
             }
         }
       });

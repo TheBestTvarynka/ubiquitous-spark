@@ -59,7 +59,6 @@ router.get('/login', (req, res) => {
   const userName = req.session.cookie.name;
   if (!userName) {
     // res.render('views/clear', { layout: 'login', message: 'templater works success' });
-    console.log('in login page');
     res.render('views/login', { layout: 'default', message: 'login please' });
   } else {
     res.redirect('/site/account');
@@ -68,13 +67,11 @@ router.get('/login', (req, res) => {
 
 router.get('/register', (req, res) => {
   res.render('views/register', { layout: 'default', message: 'login please' });
-  // const fileName = process.env.ROOT_DIR + 'site/register.html';
-  // fileSender(fileName, res);
 });
 
 router.use((req, res, next) => {
   const fileName = process.env.ROOT_DIR + 'site' + req.url;
-  fileSender(fileName, res);
+  fileSender(fileName, res, next);
   // next();
 });
 
