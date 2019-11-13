@@ -37,6 +37,17 @@
 .input_text:focus {
 	border-bottom: 3px solid black;
 }
+.input_text_false {
+	font-size: 18px;
+	background: #eb624d;
+	border: none;
+	border-bottom: 3px solid #eb624d;
+	border-radius: 5px;
+	padding: 12px 20px;
+}
+.input_text_false:focus {
+	border-bottom: 3px solid red;
+}
 .button {
 	background: black;
 	color: white;

@@ -18,3 +18,68 @@
 		<a href="/login" class="redirect">Have an account? Log in...</a>
 	</form>
 </main>
+<script type="text/javascript">
+	let loginV = false;
+	let emailV = false;
+	let phoneV = false;
+	let passwV = false;
+	let passRV = false;
+	function checkLogin(form) {
+		const re_name = /^[a-zA-Z0-9]+$/;
+		const input = document.getElementById('username');
+		if (re_name.test(form.username.value)) {
+			loginV = true;
+			input.setAttribute('class', 'input_text');
+		} else {
+			loginV = false;
+			input.setAttribute('class', 'input_text_false');
+		}
+		submitState();
+	}
+	function checkEmail(form) {
+		const re_mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+		const input = document.getElementById('email');
+		if (re_mail.test(form.email.value)) {
+			emailV = true;
+			input.setAttribute('class', 'input_text');
+		} else {
+			emailV = false;
+			input.setAttribute('class', 'input_text_false');
+		}
+		submitState();
+	}
+	function checkPhone(form) {
+		const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+		const input = document.getElementById('phone');
+		if (re_phone.test(form.phone.value)) {
+			phoneV = true;
+			input.setAttribute('class', 'input_text');
+		} else {
+			phoneV = false;
+			input.setAttribute('class', 'input_text_false');
+		}
+		submitState();
+	}
+	function checkPassword(form) {
+		const input = document.getElementById('password_r');
+		if (form.password.value === form.password_r.value) {
+			passRV = true;
+			input.setAttribute('class', 'input_text');
+		} else {
+			passRV = false;
+			input.setAttribute('class', 'input_text_false');
+		}
+		submitState();
+	}
+	function submitState() {
+		const submitButton = document.getElementById('submit');
+		console.log(loginV, emailV, phoneV, passRV);
+		if (loginV && emailV && phoneV && passRV) {
+			console.log('==true');
+			submitButton.removeAttribute('disabled');
+		} else {
+			console.log('==false');
+			submitButton.setAttribute('disabled', 'true');
+		}
+	}
+</script>
