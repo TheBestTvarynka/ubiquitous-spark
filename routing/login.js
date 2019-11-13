@@ -25,6 +25,7 @@ const router = express.Router();
 })); */
 
 router.get('/login', (req, res) => {
+  console.log('login');
   const login = req.session.name;
   if (!login) {
     res.render('views/login', { layout: 'default', message: 'Hmmm, I see you haven\'t logged in to your account so far :(' });

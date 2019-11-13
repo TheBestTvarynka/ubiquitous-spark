@@ -95,4 +95,15 @@ router.post('/register', (req, res) => {
   }
 });
 
+router.get('/activate', (req, res) => {
+  const login = req.session.name;
+  if (login) {
+    res.sendFile(process.env.ROOT_DIR + 'site/activate.html', null, err => {
+      if (err) console.log(err);
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
 module.exports = router;
