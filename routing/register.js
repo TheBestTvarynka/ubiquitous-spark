@@ -106,4 +106,16 @@ router.get('/activate', (req, res) => {
   }
 });
 
+router.post('/activate', (req, res) => {
+  const cardNumber = req.body.cardNumber;
+  const login = req.session.name;
+  const activateHandler = dbwriter.open(dbconfig);
+  activateHandler.update('usersaccounts')
+                 .set({ activated: 't', bank_number: cardNumber })
+                 .where({ login })
+                 .then(result => {
+                   res.redirect('/site/account');
+                 });
+});
+
 module.exports = router;

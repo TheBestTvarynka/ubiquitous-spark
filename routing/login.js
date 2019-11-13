@@ -52,7 +52,7 @@ const compare = (req, res, user) => {
                         // will be render account profile page
                         console.log(JSON.stringify(rows[0]));
                         res.end(JSON.stringify(rows[0]));
-                      } else res.redirect('/site/activate');
+                      } else res.redirect('/activate');
                     });
       } else {
         res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });

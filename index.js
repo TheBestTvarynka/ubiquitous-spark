@@ -35,17 +35,6 @@ app.get('/', (req, res) => {
 
 app.use('/site', siteRouter);
 
-app.post('/activate', (req, res) => {
-  const card_number = req.body.bank_number;
-  // login we read from cookies?
-  // const pg = dbwriter.open(dbconfig);
-  // const updater = pg.update('usersaccounts');
-  // updater.set({ userData: 't', bank_number: card_number })
-  //        .whete({ login })
-  //        .then(result => {
-  //        });
-});
-
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
