@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const dbreader = require('../db/dbreader');
 // const dbwriter = require('../db/dbwriter');
-const expressSession = require('express-session');
+// const expressSession = require('express-session');
 
 dotenv.config();
 
@@ -20,9 +20,9 @@ const pg = dbreader.open(dbconfig);
 
 const router = express.Router();
 
-router.use(expressSession({
+/* router.use(expressSession({
   secret: 'mySecretKey',
-}));
+})); */
 
 router.get('/login', (req, res) => {
   const login = req.session.name;

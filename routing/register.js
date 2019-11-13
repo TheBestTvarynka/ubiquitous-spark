@@ -2,7 +2,7 @@
 
 const express = require('express');
 const dotenv = require('dotenv');
-const expressSession = require('express-session');
+// const expressSession = require('express-session');
 const bcrypt = require('bcrypt');
 const dbreader = require('../db/dbreader');
 const dbwriter = require('../db/dbwriter');
@@ -21,9 +21,9 @@ const pg = dbreader.open(dbconfig);
 const saltRounds = 10;
 
 const router = express.Router();
-router.use(expressSession({
+/* router.use(expressSession({
   secret: 'mySecretKey',
-}));
+})); */
 
 router.get('/register', (req, res) => {
   res.render('views/register', { layout: 'default', message: '<p>Let\'s create an account in a few second:)</p>' });

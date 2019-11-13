@@ -54,21 +54,6 @@ router.get('/activate', (req, res) => {
   fileSender(fileName, res);
 });
 
-router.get('/login', (req, res) => {
-  // if already loginned then redirect to account page
-  const userName = req.session.cookie.name;
-  if (!userName) {
-    // res.render('views/clear', { layout: 'login', message: 'templater works success' });
-    res.render('views/login', { layout: 'default', message: 'Hmmm, I see you haven\'t logged in to your account so far :(' });
-  } else {
-    res.redirect('/site/account');
-  }
-});
-
-router.get('/register', (req, res) => {
-  res.render('views/register', { layout: 'default', message: 'login please' });
-});
-
 router.use((req, res, next) => {
   const fileName = process.env.ROOT_DIR + 'site' + req.url;
   fileSender(fileName, res, next);
