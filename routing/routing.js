@@ -35,7 +35,7 @@ router.get('/account', (req, res) => {
   // check if user already loggined
   const login = req.session.name;
   if (!login) {
-    res.redirect('/site/login');
+    res.redirect('/login');
   } else {
     const pg = dbreader.open(dbconfig);
     const readData = pg.select('usersaccounts');

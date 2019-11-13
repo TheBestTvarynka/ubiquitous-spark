@@ -26,7 +26,6 @@ router.use(expressSession({
 
 router.get('/login', (req, res) => {
   const login = req.session.name;
-  console.log(login);
   if (!login) {
     res.render('views/login', { layout: 'default', message: 'Hmmm, I see you haven\'t logged in to your account so far :(' });
   } else {

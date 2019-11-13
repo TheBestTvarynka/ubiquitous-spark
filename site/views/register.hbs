@@ -1,8 +1,7 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
 <main class="main">
 	<form name="registration" id="reg" class="form" method="post" action="/register">
-		<p>Let's create an account in a few second:)</p>
-		<p>After that you will can open for yourself whole world of books</p>
+		{{{ message }}}
 		<div class="title">Login</div>
 		<input type="text" name="username" class="input_text" placeholder="the.travynka" oninput="checkLogin(registration)" id="username">
 		<div class="title">Full Name</div>
@@ -16,6 +15,6 @@
 		<div class="title">Submit password</div>
 		<input type="password" name="password_r" class="input_text" oninput="checkPassword(registration)" id="password_r">
 		<input type="submit" name="register" class="button" value="Register" id="submit">
-		<a href="/site/login" class="redirect">Have an account? Log in...</a>
+		<a href="/login" class="redirect">Have an account? Log in...</a>
 	</form>
 </main>
