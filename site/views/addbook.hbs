@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
 <main class="main">
-	<form name="registration" id="reg" class="form" method="post" action="/register">
+	<form name="addbook" id="reg" class="form" method="post" action="/addbook" enctype="multipart/form-data">
 		{{{ message }}}
 		<div class="title">Book name</div>
 		<input type="text" name="book_name" class="input_text">
@@ -15,8 +15,9 @@
 		<div class="title">Choose a file for uploading</div>
 		<div class="upload-btn-wrapper">
 			<button class="btn">Select a file</button>
-			<input type="file" name="myfile" />
+			<input type="file" name="myfile">
 		</div>
+		<input type="file" name="myfiles">
 		<input type="submit" name="add" class="button" value="Add book" id="submit">
 		<a href="/account" class="redirect" style="text-decoration: none; text-align: center;">Cancel</a>
 	</form>
