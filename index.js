@@ -38,3 +38,7 @@ app.use('/site', siteRouter);
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
+
+app.use('/addbook', (req, res) => {
+  res.render('views/addbook', { layout: 'default', message: 'Have a book? Good idea to sell it' });
+});
