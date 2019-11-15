@@ -51,7 +51,16 @@ class DBInserter {
     this.values = [];
   }
   value(value) {
-    const newValue = '(' + value.map(elem => (`'${elem}'`)).join(', ') + ')';
+    const data = [];
+    for (const type in value) {
+      if (type === 'value') {
+        data.push(value[type].map(elem => (`'${elem}'`)).join(', '));
+      }
+      if (type === 'function') {
+        data.push(value[type].join(', '));
+      }
+    }
+    const newValue = '(' + data.join(', ') + ')';
     this.values.push(newValue);
     return this;
   }
@@ -81,6 +90,7 @@ class DBInserter {
     }
     const value = values.join(',');
     sql += ' VALUES ' + value;
+
     this.database.query(sql, (err, res) => {
       if (err) {
         console.log(err);

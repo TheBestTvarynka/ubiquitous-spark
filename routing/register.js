@@ -2,7 +2,6 @@
 
 const express = require('express');
 const dotenv = require('dotenv');
-// const expressSession = require('express-session');
 const bcrypt = require('bcrypt');
 const dbreader = require('../db/dbreader');
 const dbwriter = require('../db/dbwriter');
@@ -21,9 +20,6 @@ const pg = dbreader.open(dbconfig);
 const saltRounds = 10;
 
 const router = express.Router();
-/* router.use(expressSession({
-  secret: 'mySecretKey',
-})); */
 
 router.get('/register', (req, res) => {
   res.render('views/register', { layout: 'default', message: '<p>Let\'s create an account in a few second:)</p>' });
@@ -40,11 +36,11 @@ const writeUserData = (res, user) => {
   const wr = dbwriter.open(dbconfig);
   const writePas = wr.insert('userdata');
   writePas.fields(['login', 'hash'])
-          .value([user.login, user.hash])
+          .value({ value: [user.login, user.hash] })
           .then(result => {
             const writeData = wr.insert('usersaccounts');
             writeData.fields(['login', 'fullName', 'email', 'phone'])
-                     .value([user.login, user.fullName, user.email, user.phone])
+                     .value({ value: [user.login, user.fullName, user.email, user.phone] })
                      .then(result => {
                        res.render('views/login', { layout: 'default', message: '<p>You resenetly registered, login please to continue</p>'});
                        wr.close();
