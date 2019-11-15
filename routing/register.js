@@ -80,6 +80,7 @@ const findUser = (res, user) => {
 };
 
 router.post('/register', (req, res) => {
+  console.log(req.body);
   const user = {
     login: req.body.username,
     password: req.body.password,
