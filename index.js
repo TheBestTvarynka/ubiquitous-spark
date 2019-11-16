@@ -5,6 +5,7 @@ const hbs = require('express-handlebars');
 const path = require('path');
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
+const cookie = require('cookie-parser');
 const siteRouter = require('./routing/routing');
 const login = require('./routing/login');
 const register = require('./routing/register');
@@ -24,14 +25,13 @@ app.use(expressSession({
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookie());
 
 app.use(login);
 app.use(register);
 app.use(books);
 
 app.get('/', (req, res) => {
-  console.log(req.session.name);
-  // load home page
   res.render('views/home', { layout: 'default' });
 });
 

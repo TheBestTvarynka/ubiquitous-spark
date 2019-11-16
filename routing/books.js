@@ -20,8 +20,13 @@ const dbconfig = {
 };
 
 router.get('/addbook', (req, res) => {
-  console.log('get [book]: ', req.session.name);
-  res.render('views/addbook', { layout: 'default', message: 'Have a book? Good idea to sell it' });
+  if (!req.session.name) {
+    req.cookies['redirect'] = '/addbook';
+    res.redirect('login');
+  } else {
+    console.log('get [book]: ', req.session.name);
+    res.render('views/addbook', { layout: 'default', message: 'Have a book? Good idea to sell it' });
+  }
 });
 
 const addBook = (res, bookData) => {
