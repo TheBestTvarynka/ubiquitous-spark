@@ -12,10 +12,15 @@
 		<input type="text" name="publishing" class="input_text">
 		<div class="title">Short description</div>
 		<input type="text" name="description" class="input_text">
+		<div class="title">Choose phoro('s) for preview</div>
+		<div class="upload-btn-wrapper">
+			<button class="btn">Select photos</button>
+			<input type="file" name="photos" onclick="file()" id="photos" multiple="true">
+		</div>
 		<div class="title">Choose book('s) for uploading</div>
 		<div class="upload-btn-wrapper">
 			<button class="btn">Select books</button>
-			<input type="file" name="myfile" onclick="file()" id="files" multiple="true">
+			<input type="file" name="books" onclick="file()" id="files" multiple="true">
 		</div>
 		<input type="submit" name="add" class="button" value="Add book" id="submit">
 		<a href="/account" class="redirect" style="text-decoration: none; text-align: center;">Cancel</a>

@@ -58,7 +58,8 @@ class DBInserter {
       } else if (type === 'function') {
         data.push(value[type].join(', '));
       } else if (type === 'array') {
-        data.push('ARRAY[' + value[type].map(elem => (`'${elem}'`)).join(', ') + ']');
+        const arrays = value[type].map(array => ('ARRAY[' + array.map(elem => (`'${elem}'`)).join(', ') + ']'));
+        data.push(arrays.join(', '));
       }
     }
     const newValue = '(' + data.join(', ') + ')';
