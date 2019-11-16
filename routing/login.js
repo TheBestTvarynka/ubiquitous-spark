@@ -51,8 +51,6 @@ const compare = (req, res, user) => {
                         } else {
                           res.redirect('/site/account');
                         }
-                        // console.log(JSON.stringify(rows[0]));
-                        // res.end(JSON.stringify(rows[0]));
                       } else res.redirect('/activate');
                     });
       } else {

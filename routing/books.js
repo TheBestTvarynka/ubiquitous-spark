@@ -51,6 +51,11 @@ const addBook = (res, bookData) => {
 
 router.post('/addbook', (req, res) => {
   const bookData = {};
+  if (!req.session.name) {
+    req.cookies['redirect'] = '/addbook';
+    res.redirect('/login');
+    return;
+  }
   bookData['login'] = req.session.name;
   const busboy = new Busboy({ headers: req.headers });
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
