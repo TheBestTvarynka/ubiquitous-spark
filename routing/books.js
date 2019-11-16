@@ -32,12 +32,16 @@ router.get('/addbook', (req, res) => {
 const addBook = (res, bookData) => {
   const fieldsOrder = [];
   const values = { value: [], function: [] };
+  const paths = bookData['path'];
+  delete bookData.path;
   for (const propereties in bookData) {
     fieldsOrder.push(propereties);
     values['value'].push(bookData[propereties]);
   }
   fieldsOrder.push('id');
   values['function'].push(`nextval('book_id')`);
+  fieldsOrder.push('path');
+  values['array'] = paths;
   const pg = dbwriter.open(dbconfig);
   const writeData = pg.insert('books');
   writeData.fields(fieldsOrder)
@@ -50,7 +54,7 @@ const addBook = (res, bookData) => {
 };
 
 router.post('/addbook', (req, res) => {
-  const bookData = {};
+  const bookData = { path: [] };
   if (!req.session.name) {
     req.cookies['redirect'] = '/addbook';
     res.redirect('/login');
@@ -60,7 +64,7 @@ router.post('/addbook', (req, res) => {
   const busboy = new Busboy({ headers: req.headers });
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
     const pathFile = path.join(process.env.ROOT_DIR, 'uploads/' + filename);
-    bookData['path'] = pathFile;
+    bookData['path'].push(filename);
     file.pipe(fs.createWriteStream(pathFile));
   });
   busboy.on('field', (name, value) => {

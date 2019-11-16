@@ -55,12 +55,14 @@ class DBInserter {
     for (const type in value) {
       if (type === 'value') {
         data.push(value[type].map(elem => (`'${elem}'`)).join(', '));
-      }
-      if (type === 'function') {
+      } else if (type === 'function') {
         data.push(value[type].join(', '));
+      } else if (type === 'array') {
+        data.push('ARRAY[' + value[type].map(elem => (`'${elem}'`)).join(', ') + ']');
       }
     }
     const newValue = '(' + data.join(', ') + ')';
+    console.log(newValue);
     this.values.push(newValue);
     return this;
   }
