@@ -111,7 +111,11 @@ router.post('/activate', (req, res) => {
                  .set({ activated: 't', bank_number: cardNumber })
                  .where({ login })
                  .then(result => {
-                   res.redirect('/site/account');
+                   if (req.cookies.redirect) {
+                    res.redirect(req.cookies.redirect);
+                   } else {
+                    res.redirect('/account');
+                   }
                  });
 });
 

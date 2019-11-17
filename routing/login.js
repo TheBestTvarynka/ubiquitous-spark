@@ -50,7 +50,7 @@ const compare = (req, res, user) => {
                         if (redirect) {
                           res.redirect(redirect);
                         } else {
-                          res.redirect('/site/account');
+                          res.redirect('/account');
                         }
                       } else res.redirect('/activate');
                     });

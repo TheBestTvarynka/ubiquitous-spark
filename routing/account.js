@@ -34,7 +34,12 @@ router.get('/account', (req, res) => {
     .where({ login })
     .then(result => {
       console.log(result);
-      res.render('views/account', { layout: 'default' , user: result[0] });
+      if (!result[0].activated) {
+        res.cookie('redirect', '/account');
+        res.redirect('/activate');
+      } else {
+        res.render('views/account', { layout: 'default' , user: result[0] });
+      }
     });
 });
 
