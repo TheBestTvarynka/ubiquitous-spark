@@ -12,7 +12,7 @@
 		</div>
 		<div class="content">
 			<h1>Your profile settings</h1>
-			<form name="profile" method="post" action="/updateprofile" class="form" style="width: 60%">
+			<form name="profile" method="post" action="/updateprofile" class="form" style="width: 60%;padding-bottom: 0px;">
 				{{{ message }}}
 				<div class="title">Full Name</div>
 				<input type="text" name="fullname" class="input_text" value="{{ user.fullname }}">
@@ -26,15 +26,18 @@
 				<div class="title">Card Number</div>
 				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.bank_number }}">
 				<div class="tooltip">Everyone can change card number, isn't? Maybe it happened with you?</div>
+				<input type="submit" name="update" class="button" value="Update profile" id="submit">
 				<hr class="line">
+			</form>
+			<form name="password" method="post" action="/updatepassword" class="form" style="width: 60%;padding-top: 0px;">
 				<div class="title">Old password</div>
 				<input type="password" name="oldpassword" class="input_text" id="oldpassword">
 				<div class="title">New password</div>
 				<input type="password" name="newpassword" class="input_text" id="newpassword">
 				<div class="title">Submit new password</div>
 				<input type="password" name="newpassword_r" class="input_text" id="newpassword_r">
+				<input type="submit" name="changepassword" class="button" value="Change password" id="submitpassword">
 				<hr class="line">
-				<input type="submit" name="update" class="button" value="Update profile" id="submit">
 			</form>
 		</div>
 	</div>
