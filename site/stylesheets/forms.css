@@ -65,6 +65,10 @@
 .button:active {
 	background: rgb(20, 20, 20);
 }
+.button:disabled {
+	background: rgb(50, 50, 50);
+	color: black;
+}
 .redirect {
 	background: transparent;
 	border: none;
