@@ -18,21 +18,21 @@
 				<input type="text" name="fullname" class="input_text" value="{{ user.fullname }}">
 				<div class="tooltip">You have been married?) Change second name in this case :)</div>
 				<div class="title">Email Address</div>
-				<input type="text" name="email" class="input_text" oninput="checkEmail(profile)" value="{{ user.email }}" id="email">
+				<input type="text" name="email" class="input_text" oninput="submitState(profile)" value="{{ user.email }}" id="email">
 				<div class="tooltip">Set new email address if you lost or delete a previous adsress</div>
 				<div class="title">Phone Number</div>
-				<input type="text" name="phone" class="input_text" oninput="checkPhone(profile)" id="phone" value="{{ user.phone }}">
+				<input type="text" name="phone" class="input_text" oninput="submitState(profile)" id="phone" value="{{ user.phone }}">
 				<div class="tooltip">If you have new phone number, you can easy change it</div>
 				<div class="title">Card Number</div>
-				<input type="text" name="card_number" class="input_text" oninput="checkCardNumber(profile)" id="card_number" value="{{ user.bank_number }}">
+				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.bank_number }}">
 				<div class="tooltip">Everyone can change card number, isn't? Maybe it happened with you?</div>
 				<hr class="line">
 				<div class="title">Old password</div>
 				<input type="password" name="oldpassword" class="input_text" id="oldpassword">
 				<div class="title">New password</div>
-				<input type="password" name="newpassword" class="input_text" oninput="checkPassword(profile)" id="newpassword">
+				<input type="password" name="newpassword" class="input_text" id="newpassword">
 				<div class="title">Submit new password</div>
-				<input type="password" name="newpassword_r" class="input_text" oninput="checkPassword(profile)" id="newpassword_r">
+				<input type="password" name="newpassword_r" class="input_text" id="newpassword_r">
 				<hr class="line">
 				<input type="submit" name="update" class="button" value="Update profile" id="submit">
 			</form>
@@ -40,51 +40,42 @@
 	</div>
 </main>
 <script type="text/javascript">
-	let emailV = false;
-	let phoneV = false;
-	let cardV = false;
-	let passwV = false;
-	let passRV = false;
 	function checkEmail(form) {
 		const re_mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 		const input = document.getElementById('email');
 		if (re_mail.test(form.email.value)) {
-			emailV = true;
 			input.setAttribute('class', 'input_text');
+			return true;
 		} else {
-			emailV = false;
 			input.setAttribute('class', 'input_text_false');
+			return false;
 		}
-		submitState();
 	}
 	function checkPhone(form) {
 		const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
 		const input = document.getElementById('phone');
 		if (re_phone.test(form.phone.value)) {
-			phoneV = true;
 			input.setAttribute('class', 'input_text');
+			return true;
 		} else {
-			phoneV = false;
 			input.setAttribute('class', 'input_text_false');
+			return false;
 		}
-		submitState();
 	}
 	function checkCardNumber(form) {
 		const re_card = new RegExp('^[0-9]+$');
 		const input = document.getElementById('card_number');
 		if (re_card.test(form.card_number.value) && form.card_number.value.length === 16) {
-			cardV = true;
 			input.setAttribute('class', 'input_text');
+			return true;
 		} else {
-			cardV = false;
 			input.setAttribute('class', 'input_text_false');
+			return false;
 		}
-		submitState();
 	}
-	function submitState() {
+	function submitState(form) {
 		const submitButton = document.getElementById('submit');
-		console.log(emailV, phoneV);
-		if (emailV && phoneV && cardV) {
+		if (checkEmail(form) && checkPhone(form) && checkCardNumber(form)) {
 			submitButton.removeAttribute('disabled');
 		} else {
 			submitButton.setAttribute('disabled', 'true');
