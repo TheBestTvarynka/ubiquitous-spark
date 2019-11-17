@@ -15,14 +15,17 @@
 			<h1>Your profile settings</h1>
 			<form name="profile" method="post" action="/updateprofile" class="form" style="width: 60%">
 				<div class="title">Full Name</div>
-				<input type="text" name="fullname" class="input_text">
+				<input type="text" name="fullname" class="input_text" value="{{ user.fullname }}">
 				<div class="tooltip">You have been married?) Change second name in this case :)</div>
 				<div class="title">Email Address</div>
-				<input type="text" name="email" class="input_text" oninput="checkEmail(registration)" id="email">
+				<input type="text" name="email" class="input_text" oninput="checkEmail(registration)" value="{{ user.email }}" id="email">
 				<div class="tooltip">Set new email address if you lost or delete a previous adsress</div>
 				<div class="title">Phone Number</div>
-				<input type="text" name="phone" class="input_text" oninput="checkPhone(registration)" id="phone">
+				<input type="text" name="phone" class="input_text" oninput="checkPhone(registration)" id="phone" value="{{ user.phone }}">
 				<div class="tooltip">If you have new phone number, you can easy change it</div>
+				<div class="title">Card Number</div>
+				<input type="text" name="card_number" class="input_text" oninput="checkPhone(registration)" id="phone" value="{{ user.bank_number }}">
+				<div class="tooltip">Everyone can change card number, isn't? Maybe it happened with you?</div>
 				<hr class="line">
 				<div class="title">Old password</div>
 				<input type="password" name="oldpassword" class="input_text" oninput="checkPassword(registration)" id="oldpassword">

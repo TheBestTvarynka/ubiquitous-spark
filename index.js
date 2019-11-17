@@ -10,6 +10,7 @@ const siteRouter = require('./routing/routing');
 const login = require('./routing/login');
 const register = require('./routing/register');
 const books = require('./routing/books');
+const account = require('./routing/account');
 
 const app = express();
 const port = 8080;
@@ -30,13 +31,10 @@ app.use(cookie());
 app.use(login);
 app.use(register);
 app.use(books);
+app.use(account);
 
 app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
-});
-
-app.get('/account', (req, res) => {
-  res.render('views/account', { layout: 'default' });
 });
 
 app.use('/site', siteRouter);

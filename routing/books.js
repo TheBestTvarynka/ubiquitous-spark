@@ -21,7 +21,7 @@ const dbconfig = {
 
 router.get('/addbook', (req, res) => {
   if (!req.session.name) {
-    req.cookies['redirect'] = '/addbook';
+    req.cookie('redirect', '/addbook');
     res.redirect('login');
   } else {
     console.log('get [book]: ', req.session.name);
@@ -60,7 +60,7 @@ const addBook = (res, bookData) => {
 router.post('/addbook', (req, res) => {
   const bookData = { path: [], preview: [] };
   if (!req.session.name) {
-    req.cookies['redirect'] = '/addbook';
+    req.cookies('redirect', '/addbook');
     res.redirect('/login');
     return;
   }
