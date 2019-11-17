@@ -20,11 +20,12 @@ const saltRounds = 10;
 
 const router = express.Router();
 
-const readUserData = (login, callback) => {
+const readUserData = (login, table, callback) => {
   const pg = dbreader.open(dbconfig);
-  pg.select('usersaccounts')
+  pg.select(table)
     .where({ login })
     .then(callback);
+  pg.close();
 };
 
 router.get('/account', (req, res) => {
@@ -35,8 +36,7 @@ router.get('/account', (req, res) => {
     res.redirect('/login');
     return;
   }
-  readUserData(login, result => {
-      console.log(result);
+  readUserData(login, 'usersaccounts', result => {
       if (!result[0].activated) {
         res.cookie('redirect', '/account');
         res.redirect('/activate');
@@ -54,18 +54,19 @@ const validate = (user) => {
   return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.bank_number));
 };
 
-const updateUserData = (res, user) => {
+const updateUserData = (res, table, user) => {
   const login = user.login;
   delete user.login;
   console.log('user in updater: ', user);
   const pg = dbwriter.open(dbconfig);
-  pg.update('usersaccounts')
+  pg.update(table)
     .where({ login })
     .set(user)
     .then(result => {
       console.log('UPDATED');
       res.render('views/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
     });
+  pg.close();
 };
 
 router.post('/updateprofile', (req, res) => {
@@ -85,18 +86,66 @@ router.post('/updateprofile', (req, res) => {
   };
   console.log(user);
   if (validate(user)) {
-    updateUserData(res, user);
+    updateUserData(res, 'usersaccounts', user);
   } else {
     // user enter incorrect new information
-    const pg = dbreader.open(dbconfig);
-    pg.select('usersaccounts')
-      .where({ login })
-      .then(result => {
-        pg.close();
+    readUserData(login, 'usersaccounts', result => {
         console.log(result);
         res.render('views/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
       });
   }
+});
+
+const comparePasswords = (res, hash, user) => {
+  const readData = readUserData.bind(null, user.login, 'usersaccounts');
+  bcrypt.compare(user.oldpassword, hash, (err, result) => {
+    if (result) {
+      if (user.newpassword === user.newpassword_r) {
+        bcrypt.hash(user.newpassword, saltRounds, (err, hash) => {
+          user.hash = hash;
+          delete user.oldpassword;
+          delete user.newpassword;
+          delete user.newpassword_r;
+          console.log('update password: ', user);
+          updateUserData(res, 'userdata', user);
+        });
+      } else {
+        readData(userdata => {
+          console.log('error: ', userdata);
+          res.render('views/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: New passwords are not the same</p>' });
+        });
+      }
+    } else {
+      readData(userdata => {
+        console.log('error: ', userdata);
+        res.render('views/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: Entered incorrect old password</p>' });
+      });
+    }
+  });
+};
+
+router.post('/updatepassword', (req, res) => {
+  const login = req.session.name;
+  const user = {
+    login,
+    oldpassword: req.body.oldpassword,
+    newpassword: req.body.newpassword,
+    newpassword_r: req.body.newpassword_r,
+  };
+  if (!login) {
+    res.cookie('redirect', '/account');
+    res.redirect('/login');
+    return;
+  }
+  const pg = dbreader.open(dbconfig);
+  pg.select('userdata')
+    .where({ login })
+    .then(hashes => {
+      console.log(hashes);
+      console.log(user);
+      const hash = hashes[0].hash;
+      comparePasswords(res, hash, user);
+    });
 });
 
 module.exports = router;
