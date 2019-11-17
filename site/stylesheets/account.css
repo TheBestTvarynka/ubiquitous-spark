@@ -16,7 +16,7 @@ main {
 .pagecontainer {
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
+	justify-content: space-between;
 	text-align: center;
 	flex-wrap: wrap;
 	padding-bottom: 40px;
@@ -24,6 +24,7 @@ main {
 }
 .navigationcontainer {
 	padding-top: 50px;
+	padding-left: 20px;
 	width: 20%;
 	vertical-align: middle;
 }
@@ -55,13 +56,21 @@ main {
 	border-bottom: 2px solid black;
 }
 .content {
-	width: 75%;
+	/*border: 2px solid black;*/
+	width: 70%;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	text-align: center;
+	justify-content: space-between;
+	text-align: left;
 	flex-wrap: wrap;
+	padding-left: 50px;
 }
-.content p {
-	font-size: 20px;
+.tooltip {
+	color: grey;
+	font-size: 15px;
+}
+.line {
+	margin-top: 10px;
+	background: black;
+	height: 3px;
 }

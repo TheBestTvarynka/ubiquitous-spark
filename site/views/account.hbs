@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
 <main>
 	<!-- <div class="page"> -->
 	<div class="pagecontainer">
@@ -11,14 +12,26 @@
 			</div>
 		</div>
 		<div class="content">
-			<h2>Account overview</h2>
-			<h4>Account overview</h4>
-			<p>Is this the right way to create a directory if it doesn't exist. It should have full permission for the script and readable by others.</p>
-			<p>Is this the right way to create a directory if it doesn't exist. It should have full permission for the script and readable by others.</p>
-			<p>Is this the right way to create a directory if it doesn't exist. It should have full permission for the script and readable by others.</p>
-			<p>Is this the right way to create a directory if it doesn't exist. It should have full permission for the script and readable by others.</p>
-			<p>Is this the right way to create a directory if it doesn't exist. It should have full permission for the script and readable by others.</p>
-			<p>Is this the right way to create a directory if it doesn't exist. It should have full permission for the script and readable by others.</p>
+			<h1>Your profile settings</h1>
+			<form name="profile" method="post" action="/updateprofile" class="form" style="width: 60%">
+				<div class="title">Full Name</div>
+				<input type="text" name="fullname" class="input_text">
+				<div class="tooltip">You have been married?) Change second name in this case :)</div>
+				<div class="title">Email Address</div>
+				<input type="text" name="email" class="input_text" oninput="checkEmail(registration)" id="email">
+				<div class="tooltip">Set new email address if you lost or delete a previous adsress</div>
+				<div class="title">Phone Number</div>
+				<input type="text" name="phone" class="input_text" oninput="checkPhone(registration)" id="phone">
+				<div class="tooltip">If you have new phone number, you can easy change it</div>
+				<hr class="line">
+				<div class="title">Old password</div>
+				<input type="password" name="oldpassword" class="input_text" oninput="checkPassword(registration)" id="oldpassword">
+				<div class="title">New password</div>
+				<input type="password" name="newpassword" class="input_text" oninput="checkPassword(registration)" id="newpassword">
+				<div class="title">Submit new password</div>
+				<input type="password" name="newpassword_r" class="input_text" oninput="checkPassword(registration)" id="newpassword_r">
+				<input type="submit" name="register" class="button" value="Update profile" id="submit">
+			</form>
 		</div>
 	</div>
 	<!-- </div> -->
