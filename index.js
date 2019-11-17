@@ -35,6 +35,10 @@ app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
 });
 
+app.get('/account', (req, res) => {
+  res.render('views/account', { layout: 'default' });
+});
+
 app.use('/site', siteRouter);
 
 app.listen(port, () => {
