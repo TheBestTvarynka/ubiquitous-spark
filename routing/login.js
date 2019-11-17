@@ -19,8 +19,6 @@ const pg = dbreader.open(dbconfig);
 const router = express.Router();
 
 router.get('/login', (req, res) => {
-  console.log('login');
-  console.log(req.cookies);
   const login = req.session.name;
   if (!login) {
     res.render('views/login', { layout: 'default', message: 'Hmmm, I see you haven\'t logged in to your account so far :(' });
@@ -38,14 +36,12 @@ const compare = (req, res, user) => {
     } else {
       if (result) {
         // login success
-        console.log(user.login);
         req.session.name = user.login;
         const readUserData = pg.select('usersaccounts');
         readUserData.where({ login: user.login })
                     .then(rows => {
                       if (rows[0].activated) {
                         const redirect = req.cookies.redirect;
-                        console.log(redirect);
                         delete req.cookies.redirect;
                         if (redirect) {
                           res.redirect(redirect);

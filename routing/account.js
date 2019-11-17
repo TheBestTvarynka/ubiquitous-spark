@@ -32,7 +32,6 @@ router.get('/account', (req, res) => {
   const login = req.session.name;
   if (!login) {
     res.cookie('redirect', '/account');
-    console.log(req.cookies);
     res.redirect('/login');
     return;
   }
@@ -50,27 +49,23 @@ const validate = (user) => {
   const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
   const re_card = new RegExp('^[0-9]+$');
-  console.log(user.newpassword === user.newpassword_r);
   return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.bank_number));
 };
 
 const updateUserData = (res, table, user) => {
   const login = user.login;
   delete user.login;
-  console.log('user in updater: ', user);
   const pg = dbwriter.open(dbconfig);
   pg.update(table)
     .where({ login })
     .set(user)
     .then(result => {
-      console.log('UPDATED');
       res.render('views/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
     });
   pg.close();
 };
 
 router.post('/updateprofile', (req, res) => {
-  console.log('update profile post hanler');
   const login = req.session.name;
   if (!login) {
     res.cookie('redirect', '/account');
@@ -84,13 +79,11 @@ router.post('/updateprofile', (req, res) => {
     phone: req.body.phone,
     bank_number: req.body.card_number,
   };
-  console.log(user);
   if (validate(user)) {
     updateUserData(res, 'usersaccounts', user);
   } else {
     // user enter incorrect new information
     readUserData(login, 'usersaccounts', result => {
-        console.log(result);
         res.render('views/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
       });
   }
@@ -106,18 +99,15 @@ const comparePasswords = (res, hash, user) => {
           delete user.oldpassword;
           delete user.newpassword;
           delete user.newpassword_r;
-          console.log('update password: ', user);
           updateUserData(res, 'userdata', user);
         });
       } else {
         readData(userdata => {
-          console.log('error: ', userdata);
           res.render('views/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: New passwords are not the same</p>' });
         });
       }
     } else {
       readData(userdata => {
-        console.log('error: ', userdata);
         res.render('views/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: Entered incorrect old password</p>' });
       });
     }
@@ -141,8 +131,6 @@ router.post('/updatepassword', (req, res) => {
   pg.select('userdata')
     .where({ login })
     .then(hashes => {
-      console.log(hashes);
-      console.log(user);
       const hash = hashes[0].hash;
       comparePasswords(res, hash, user);
     });
