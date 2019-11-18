@@ -81,4 +81,9 @@ router.post('/login', (req, res) => {
     });
 });
 
+router.get('/logout', (req, res) => {
+  req.session.name = undefined;
+  res.redirect('/login');
+});
+
 module.exports = router;

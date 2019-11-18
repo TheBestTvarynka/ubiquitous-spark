@@ -55,10 +55,12 @@ const validate = (user) => {
 const updateUserData = (res, table, user) => {
   const login = user.login;
   delete user.login;
+  const types = {};
+  for (const field in user) types[field] = 'value';
   const pg = dbwriter.open(dbconfig);
   pg.update(table)
     .where({ login })
-    .set(user)
+    .set(user, types)
     .then(result => {
       res.render('views/account/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
     });
@@ -144,6 +146,16 @@ router.get('/account/mybooks', (req, res) => {
     return;
   }
   res.render('views/account/mybooks', { layout: 'default' });
+});
+
+router.get('/account/likedbooks', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account/likedbooks');
+    res.redirect('/login');
+    return;
+  }
+  res.render('views/account/likedbooks', { layout: 'default' });
 });
 
 module.exports = router;
