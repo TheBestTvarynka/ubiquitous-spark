@@ -146,4 +146,14 @@ router.get('/account/mybooks', (req, res) => {
   res.render('views/account/mybooks', { layout: 'default' });
 });
 
+router.get('/account/likedbooks', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account/likedbooks');
+    res.redirect('/login');
+    return;
+  }
+  res.render('views/account/likedbooks', { layout: 'default' });
+});
+
 module.exports = router;
