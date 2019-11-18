@@ -1,110 +1,66 @@
 .main {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    flex: auto;
 }
-.form {
-    display: flex;
-    font-size: 20px;
-    width: 35%;
+
+.container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.filters {
+    border-radius: 10px;
     flex-direction: column;
     flex-wrap: wrap;
-    justify-content: center;
-    text-align: left;
-    padding-bottom: 40px;
-    padding-top: 40px;
-}
-.form p {
-    color: black;
+    padding-right: 2%;
+    padding-left: 2%;
+    padding-bottom: 2%;
     font-size: 20px;
-}
-.title {
-    color: black;
-    text-align: left;
-    padding: 3px;
-    padding-top: 20px;
-}
-.input_text {
-    font-size: 18px;
-    background: rgb(210, 210, 210);
-    border: none;
-    border-bottom: 3px solid rgb(210, 210, 210);
-    border-radius: 5px;
-    padding: 12px 20px;
-}
-.input_text:focus {
-    border-bottom: 3px solid black;
-}
-.input_text_false {
-    font-size: 18px;
-    background: #eb624d;
-    border: none;
-    border-bottom: 3px solid #eb624d;
-    border-radius: 5px;
-    padding: 12px 20px;
-}
-.input_text_false:focus {
-    border-bottom: 3px solid red;
-}
-.button {
-    background: black;
-    color: white;
-    border: 1px solid black;
-    border-radius: 3px;
-    font-size: 15px;
-    margin-top: 10px;
-    width: auto;
-    height: 50px;
-    transition: 0.3s;
-}
-.button:hover {
-    background: rgb(50, 50, 50);
-}
-.button:active {
-    background: rgb(20, 20, 20);
-}
-.button:disabled {
-    background: rgb(50, 50, 50);
-    color: black;
-}
-.redirect {
-    background: transparent;
-    border: none;
-    color: black;
-    text-align: left;
-    margin-top: 15px;
-    font-size: 18px;
-    text-decoration: underline;
-    font-weight: bold;
-    cursor: pointer;
-}
-.errormessage p {
-    color: red;
-    font-size: 25px;
+    margin: 2% 5% 2% 5%;
+    background-color: rgb(200, 200, 200)
 }
 
-
-.upload-btn-wrapper {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-    padding-bottom: 25px;
-}
-.btn {
+.filters .form {
+    flex-wrap: wrap;
     width: 100%;
-    border: 2px solid black;
-    color: black;
-    background-color: rgb(210, 210, 210);
-    padding: 12px 20px;
-    border-radius: 5px;
-    font-size: 18px;
 }
-.upload-btn-wrapper input[type=file] {
-    font-size: 100px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    cursor: pointer;
+
+.filters .select {
+    font-family: 'Raleway', sans-serif;
+    font-size: 15px;
+    width: 290px;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+    background-color: white;
+
+}
+
+.filters .input_text {
+    border-radius: 5px;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    width: 270px;
+}
+
+.filters .title {
+    color: black;
+    text-align: left;
+    padding: 20px 0 0 0;
+}
+
+.filters .button {
+    width: 290px;
+    margin: 20px 0 0 0;
+    padding: 10px 10px 10px 10px;
+    background: black;
+    border-radius: 3px;
+    border: 1px solid black;
+    color: white;
+}
+
+.results {
+    margin: 2% 5% 2% 0;
+    border-radius: 10px;
+    flex: 1 1 auto;
+    background-color: red;
 }

@@ -1,20 +1,33 @@
-<link rel="stylesheet" type="text/css" href="/site/stylesheets/home.css">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/search.css">
 <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 <main>
     <div class="container">
-        <form name="login" id="log" class="form" method="post" action="/login">
-                <div class="title">Login</div>
-                <select name="select_filter" onchange="ChangeFilter()">
-                    <option disabled="" selected="" value=""> -- select an option -- </option>
-                    <option value="author">By author</option>
-                    <option value="book">By book name</option>
-                </select>
-                <div class="title">Password</div>
-                <input type="text" name="data" class="input_text">
-                <input type="submit" name="find_books" class="button" value="Find books">
-        </form>
+        <div class="filters" id="filters">
+            <form name="login" id="log" class="form" method="post" action="/login">
+                    <div class="title">Select filter type:</div>
+                    <select name="select_filter" class="select" onchange="ChangeFilter(login)">
+                        <option disabled="" selected="" value=""> -- select an option -- </option>
+                        <option value="author">By author</option>
+                        <option value="book">By book name</option>
+                    </select>
+                    <div name="value_title" class="title"><span class="title_value">First, select the filter</span></div>
+                    <input type="text" name="data" class="input_text" disabled><br>
+                    <input type="submit" name="find_books" class="button" value="Find books">
+            </form>
+        </div>
+
         <div class="results" id="results">
 
         </div>
     </div>
 </main>
+<script type="text/javascript">
+    function ChangeFilter(form) {
+        form.getElementsByClassName('input_text')[0].disabled = false;
+        const filter = form.getElementsByClassName('select');
+        const title_value = form.getElementsByClassName('title_value');
+        console.log(filter[0].value);
+        console.log(title_value[0].innerHTML);
+        title_value[0].innerHTML = 'Enter the name of the ' + filter[0].value;
+    }
+</script>
