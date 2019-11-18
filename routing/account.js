@@ -136,4 +136,14 @@ router.post('/updatepassword', (req, res) => {
     });
 });
 
+router.get('/account/mybooks', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account/mybooks');
+    res.redirect('/login');
+    return;
+  }
+  res.render('views/account/mybooks', { layout: 'default' });
+});
+
 module.exports = router;
