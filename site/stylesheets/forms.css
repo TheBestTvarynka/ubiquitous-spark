@@ -7,7 +7,7 @@
 .form {
 	display: flex;
 	font-size: 20px;
-	width: 35%;
+	/*width: 35%;*/
 	flex-direction: column;
 	flex-wrap: wrap;
 	justify-content: center;

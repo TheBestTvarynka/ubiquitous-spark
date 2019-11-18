@@ -40,7 +40,7 @@ router.get('/account', (req, res) => {
         res.cookie('redirect', '/account');
         res.redirect('/activate');
       } else {
-        res.render('views/account', { layout: 'default' , user: result[0] });
+        res.render('views/account/account', { layout: 'default' , user: result[0] });
       }
     });
 });
@@ -60,7 +60,7 @@ const updateUserData = (res, table, user) => {
     .where({ login })
     .set(user)
     .then(result => {
-      res.render('views/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
+      res.render('views/account/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
     });
   pg.close();
 };
@@ -84,7 +84,7 @@ router.post('/updateprofile', (req, res) => {
   } else {
     // user enter incorrect new information
     readUserData(login, 'usersaccounts', result => {
-        res.render('views/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
+        res.render('views/account/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
       });
   }
 });
@@ -103,12 +103,12 @@ const comparePasswords = (res, hash, user) => {
         });
       } else {
         readData(userdata => {
-          res.render('views/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: New passwords are not the same</p>' });
+          res.render('views/account/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: New passwords are not the same</p>' });
         });
       }
     } else {
       readData(userdata => {
-        res.render('views/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: Entered incorrect old password</p>' });
+        res.render('views/account/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: Entered incorrect old password</p>' });
       });
     }
   });
