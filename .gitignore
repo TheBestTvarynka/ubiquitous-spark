@@ -3,3 +3,4 @@ node_modules/
 db/test.js
 db/testinsert.js
 db/testupdate.js
+.idea/
