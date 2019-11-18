@@ -1,0 +1,106 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+a {
+	text-decoration: none;
+}
+
+main {
+	margin: 0px;
+}
+form {
+	width: 60%;
+}
+.pagecontainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	text-align: center;
+	flex-wrap: wrap;
+	padding-bottom: 40px;
+	padding-top: 40px;
+}
+.navigationcontainer {
+	padding-top: 50px;
+	width: 20%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.navigation {
+	border: 2px solid black;
+	border-radius: 5px;
+	padding: 5px;
+
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	flex-wrap: wrap;
+	vertical-align: middle;
+}
+.navigation a {
+	padding-top: 14px;
+	height: 40px;
+	font-size: 20px;
+	color: black;
+	background: white;
+	border-bottom: 2px solid white;
+	border-radius: 5px 5px 0 0;
+	vertical-align: middle;
+}
+.navigation a:hover {
+	background: rgb(200, 200, 200);
+	border-bottom: 2px solid black;
+}
+.content {
+	width: 70%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	text-align: left;
+	flex-wrap: wrap;
+	padding-left: 50px;
+}
+.tooltip {
+	color: grey;
+	font-size: 15px;
+}
+.line {
+	margin-top: 10px;
+	background: black;
+	height: 3px;
+}
+@media screen and (max-width: 860px) {
+	form {
+		width: 80%;
+	}
+}
+@media screen and (max-width: 760px) {
+	.pagecontainer {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	.navigationcontainer {
+		flex-direction: row;
+		justify-content: center;
+		padding-top: 0px;
+		width: 80%;
+	}
+	.content {
+		padding-top: 40px;
+		width: 80%;
+	}
+	form {
+		width: 100%;
+	}
+}
+@media screen and (max-width: 600px) {
+	form {
+		width: 100%;
+	}
+}

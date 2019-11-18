@@ -4,8 +4,6 @@ const express = require('express');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const dbreader = require('../db/dbreader');
-// const dbwriter = require('../db/dbwriter');
-// const expressSession = require('express-session');
 
 dotenv.config();
 
@@ -19,10 +17,6 @@ const dbconfig = {
 const pg = dbreader.open(dbconfig);
 
 const router = express.Router();
-
-/* router.use(expressSession({
-  secret: 'mySecretKey',
-})); */
 
 router.get('/login', (req, res) => {
   const login = req.session.name;
@@ -42,16 +36,19 @@ const compare = (req, res, user) => {
     } else {
       if (result) {
         // login success
-        console.log(user.login);
         req.session.name = user.login;
         const readUserData = pg.select('usersaccounts');
         readUserData.where({ login: user.login })
                     .then(rows => {
                       if (rows[0].activated) {
-                        // will be render account profile page
-                        console.log(JSON.stringify(rows[0]));
-                        res.end(JSON.stringify(rows[0]));
-                      } else res.redirect('/site/activate');
+                        const redirect = req.cookies.redirect;
+                        delete req.cookies.redirect;
+                        if (redirect) {
+                          res.redirect(redirect);
+                        } else {
+                          res.redirect('/account');
+                        }
+                      } else res.redirect('/activate');
                     });
       } else {
         res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });

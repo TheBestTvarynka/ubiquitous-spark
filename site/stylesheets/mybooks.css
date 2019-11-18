@@ -1,0 +1,115 @@
+h1 {
+	text-align: left;
+	padding-left: 30px;
+}
+.pagecontainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	text-align: center;
+	flex-wrap: wrap;
+	padding-bottom: 40px;
+	padding-top: 40px;
+}
+.navigationcontainer {
+	padding-top: 50px;
+	width: 20%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.navigation {
+	border: 2px solid black;
+	border-radius: 5px;
+	padding: 10px;
+	width: 90%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	flex-wrap: wrap;
+}
+.navigation a {
+	padding-top: 14px;
+	height: 40px;
+	font-size: 20px;
+	color: black;
+	background: white;
+	border-bottom: 2px solid white;
+	border-radius: 5px 5px 0 0;
+	vertical-align: middle;
+}
+.navigation a:hover {
+	background: rgb(200, 200, 200);
+	border-bottom: 2px solid black;
+}
+.content {
+	/*border: 2px solid black;*/
+	width: 70%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	text-align: left;
+	flex-wrap: wrap;
+}
+.book {
+	background: white;
+	width: 22%;
+	margin: 10px;
+	border: 2px solid black;
+	border-radius: 5px;
+	transition: all .2s ease-in-out;
+	font-size: 15px;
+}
+.book:hover {
+	transform: scale(1.1);
+}
+.book img {
+	width: 100%;
+}
+.book p {
+	text-align: center;
+}
+.price {
+	text-align: right;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	font-weight: bold;
+}
+@media screen and (max-width: 1150px) {
+	.book {
+		width: 30%;
+	}
+}
+@media screen and (max-width: 1030px) {
+	.book {
+		width: 40%;
+	}
+}
+@media screen and (max-width: 820px) {
+	.book {
+		width: 40%;
+	}
+}
+@media screen and (max-width: 700px) {
+	.pagecontainer {
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
+	.navigationcontainer {
+		flex-direction: row;
+		justify-content: center;
+		padding-top: 0px;
+		width: 95%;
+	}
+	.content {
+		padding-top: 40px;
+		width: 100%;
+	}
+}
+@media screen and (max-width: 300px) {
+	.book {
+		width: 80%;
+	}
+}

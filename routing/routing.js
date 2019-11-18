@@ -49,11 +49,6 @@ router.get('/account', (req, res) => {
   }
 });
 
-router.get('/activate', (req, res) => {
-  const fileName = process.env.ROOT_DIR + 'site/activate.html';
-  fileSender(fileName, res);
-});
-
 router.use((req, res, next) => {
   const fileName = process.env.ROOT_DIR + 'site' + req.url;
   fileSender(fileName, res, next);
@@ -61,5 +56,3 @@ router.use((req, res, next) => {
 });
 
 module.exports = router;
-
-

@@ -11,9 +11,9 @@
 		<a href="/"><img src="/site/img/logo1.png"></a>
 	</header>
 	<main class="main">
-		<form name="activate" action="/activateaccount" class="form">
+		<form name="activate" action="/activate" class="form" method="post">
 			<p>So, it seems like you resenetly registered and try to visit account page. But before starting you need to activate account. Please, enter credit card number for continue:</p>
-			<input type="text" name="card_number" class="input_text" oninput="checkCardNumber(activate)" id="card">
+			<input type="text" name="cardNumber" class="input_text" oninput="checkCardNumber(activate)" id="card">
 			<input type="submit" name="submit" class="button" value="Submit" id="submit">
 		</form>
 	</main>
@@ -23,7 +23,7 @@
 			const re_number = new RegExp('^[0-9]+$');
 			const input = document.getElementById('card');
 			const submitButton = document.getElementById('submit');
-			const curdNumber = form.card_number.value;
+			const curdNumber = form.cardNumber.value;
 			if (re_number.test(curdNumber) && curdNumber.length === 16) {
 				console.log('true');
 				input.setAttribute('class', 'input_text');
