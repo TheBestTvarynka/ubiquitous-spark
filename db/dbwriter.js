@@ -31,8 +31,6 @@ const where = conditions => {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
-        // ch
-        // condition = `${key} = ${value}`;
         condition = `${key} = $${i}`;
       }
     }
@@ -43,6 +41,13 @@ const where = conditions => {
   return { clause, args };
 };
 
+const formatValue = (value, type) => {
+  if (type === 'value') return `'${value}'`;
+  else if (type === 'function') return value;
+  else if (type === 'array') return 'ARRAY[' + value.map(elem => `'${elem}'`).join(', ') + ']';
+  else null;
+};
+
 class DBInserter {
   constructor(database, table) {
     this.database = database;
@@ -50,25 +55,17 @@ class DBInserter {
     this.fieldsOrder = [];
     this.values = [];
   }
-  value(value) {
-    const data = [];
-    for (const type in value) {
-      if (type === 'value') {
-        data.push(value[type].map(elem => (`'${elem}'`)).join(', '));
-      } else if (type === 'function') {
-        data.push(value[type].join(', '));
-      } else if (type === 'array') {
-        const arrays = value[type].map(array => ('ARRAY[' + array.map(elem => (`'${elem}'`)).join(', ') + ']'));
-        data.push(arrays.join(', '));
-      }
+  value(values, types) {
+    const resultValue = [];
+    for (const value in values) {
+      this.fieldsOrder.push(value);
+      const formatedValue = formatValue(values[value], types[value]);
+      resultValue.push(formatedValue);
     }
-    const newValue = '(' + data.join(', ') + ')';
+    const newValue = '(' + resultValue.join(', ') + ')';
+    console.log(this.fieldsOrder);
     console.log(newValue);
     this.values.push(newValue);
-    return this;
-  }
-  values(values) {
-    this.values = this.values.concat(values);
     return this;
   }
   getvalues() {
@@ -76,10 +73,6 @@ class DBInserter {
   }
   clearValues() {
     this.values = [];
-    return this;
-  }
-  fields(list) {
-    this.fieldsOrder = list;
     return this;
   }
   then(callback) {
@@ -123,7 +116,10 @@ class DBUpdater {
     this.args = args;
     return this;
   }
-  set(setters) {
+  set(setters, types) {
+    for (const field in setters) {
+      setters[field] = formatValue(setters[field], types[field]);
+    }
     this.fields = setters;
     return this;
   }
@@ -133,7 +129,7 @@ class DBUpdater {
     let sql = `UPDATE ${table}`;
     const setters = [];
     for (const setter in fields) {
-      setters.push(`${setter} = '${fields[setter]}'`);
+      setters.push(`${setter} = ${fields[setter]}`);
     }
     sql += ' SET ' + setters.join(', ');
     if (whereClause) sql += ` WHERE ${whereClause}`;

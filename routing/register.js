@@ -33,14 +33,32 @@ const validate = (user) => {
 };
 
 const writeUserData = (res, user) => {
+  const values = {
+    login: user.login,
+    hash: user.hash,
+  };
+  const types = {
+    login: 'value',
+    hash: 'value',
+  };
   const wr = dbwriter.open(dbconfig);
   const writePas = wr.insert('userdata');
-  writePas.fields(['login', 'hash'])
-          .value({ value: [user.login, user.hash] })
+  writePas.value(values, types)
           .then(result => {
+            const values = {
+              login: user.login,
+              fullName: user.fullname,
+              email: user.email,
+              phone: user.phone,
+            };
+            const types = {
+              login: 'value',
+              fullName: 'value',
+              email: 'value',
+              phone: 'value',
+            };
             const writeData = wr.insert('usersaccounts');
-            writeData.fields(['login', 'fullName', 'email', 'phone'])
-                     .value({ value: [user.login, user.fullName, user.email, user.phone] })
+            writeData.value(values, types)
                      .then(result => {
                        res.render('views/login', { layout: 'default', message: '<p>You resenetly registered, login please to continue</p>'});
                        wr.close();
@@ -104,11 +122,18 @@ router.get('/activate', (req, res) => {
 });
 
 router.post('/activate', (req, res) => {
-  const cardNumber = req.body.cardNumber;
   const login = req.session.name;
+  const setters = {
+    activated: true,
+    bank_number: req.body.cardNumber,
+  };
+  const types = {
+    activated: 'value',
+    bank_number: 'value',
+  };
   const activateHandler = dbwriter.open(dbconfig);
   activateHandler.update('usersaccounts')
-                 .set({ activated: 't', bank_number: cardNumber })
+                 .set(setters, types)
                  .where({ login })
                  .then(result => {
                    if (req.cookies.redirect) {
