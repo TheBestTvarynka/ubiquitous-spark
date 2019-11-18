@@ -4,3 +4,4 @@ db/testinsert.js
 db/testupdate.js
 .env
 uploads/
+.idea/
