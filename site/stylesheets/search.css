@@ -1,0 +1,70 @@
+.main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex: auto;
+}
+.form {
+    display: flex;
+    font-size: 20px;
+    width: 35%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: left;
+    text-align: left;
+    padding-bottom: 40px;
+    padding-top: 40px;
+}
+.form p {
+    color: black;
+    font-size: 20px;
+}
+.title {
+    color: black;
+    text-align: left;
+    padding: 20px 3px 3px 3px;
+}
+.input_text {
+    font-size: 18px;
+    background: rgb(210, 210, 210);
+    border: none;
+    border-bottom: 3px solid rgb(210, 210, 210);
+    border-radius: 5px;
+    padding: 12px 20px;
+}
+.input_text:focus {
+    border-bottom: 3px solid black;
+}
+.button {
+    background: black;
+    color: white;
+    border: 1px solid black;
+    border-radius: 3px;
+    font-size: 15px;
+    margin-top: 10px;
+    width: auto;
+    height: 50px;
+    transition: 0.3s;
+}
+.button:hover {
+    background: rgb(50, 50, 50);
+}
+.button:active {
+    background: rgb(20, 20, 20);
+}
+.redirect {
+    background: transparent;
+    border: none;
+    color: black;
+    text-align: left;
+    margin-top: 15px;
+    font-size: 18px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+.errormessage p {
+    color: red;
+    font-size: 25px;
+}
