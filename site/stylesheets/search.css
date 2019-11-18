@@ -11,7 +11,6 @@
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: left;
     text-align: left;
     padding-bottom: 40px;
     padding-top: 40px;
@@ -23,7 +22,8 @@
 .title {
     color: black;
     text-align: left;
-    padding: 20px 3px 3px 3px;
+    padding: 3px;
+    padding-top: 20px;
 }
 .input_text {
     font-size: 18px;
@@ -35,6 +35,17 @@
 }
 .input_text:focus {
     border-bottom: 3px solid black;
+}
+.input_text_false {
+    font-size: 18px;
+    background: #eb624d;
+    border: none;
+    border-bottom: 3px solid #eb624d;
+    border-radius: 5px;
+    padding: 12px 20px;
+}
+.input_text_false:focus {
+    border-bottom: 3px solid red;
 }
 .button {
     background: black;
@@ -53,6 +64,10 @@
 .button:active {
     background: rgb(20, 20, 20);
 }
+.button:disabled {
+    background: rgb(50, 50, 50);
+    color: black;
+}
 .redirect {
     background: transparent;
     border: none;
@@ -67,4 +82,29 @@
 .errormessage p {
     color: red;
     font-size: 25px;
+}
+
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    padding-bottom: 25px;
+}
+.btn {
+    width: 100%;
+    border: 2px solid black;
+    color: black;
+    background-color: rgb(210, 210, 210);
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
 }

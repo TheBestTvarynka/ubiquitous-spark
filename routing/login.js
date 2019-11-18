@@ -32,7 +32,7 @@ const compare = (req, res, user) => {
   const password = user.password;
   bcrypt.compare(password, hash, (err, result) => {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
       if (result) {
         // login success

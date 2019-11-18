@@ -1,4 +1,20 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/home.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 <main>
-    Hello
+    <div class="container">
+        <form name="login" id="log" class="form" method="post" action="/login">
+                <div class="title">Login</div>
+                <select name="select_filter" onchange="ChangeFilter()">
+                    <option disabled="" selected="" value=""> -- select an option -- </option>
+                    <option value="author">By author</option>
+                    <option value="book">By book name</option>
+                </select>
+                <div class="title">Password</div>
+                <input type="text" name="data" class="input_text">
+                <input type="submit" name="find_books" class="button" value="Find books">
+        </form>
+        <div class="results" id="results">
+
+        </div>
+    </div>
 </main>
