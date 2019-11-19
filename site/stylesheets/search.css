@@ -17,7 +17,8 @@
     padding-bottom: 2%;
     font-size: 20px;
     margin: 2% 5% 2% 5%;
-    background-color: rgb(200, 200, 200)
+    background-color: rgb(200, 200, 200);
+    max-height: 220px;
 }
 
 .filters .form {
@@ -27,7 +28,7 @@
 
 .filters .select {
     font-family: 'Raleway', sans-serif;
-    font-size: 15px;
+    font-size: 17px;
     width: 290px;
     border-radius: 5px;
     padding: 10px 10px 10px 10px;
@@ -62,5 +63,17 @@
     margin: 2% 5% 2% 0;
     border-radius: 10px;
     flex: 1 1 auto;
+    display: flex;
+    height: 100%;
+    flex-flow: wrap;
+    justify-content: flex-start;
+    /*background-color: rgb(200, 200, 200);*/
+    padding: 0 2% 0 2%;
+}
+
+.test {
+    margin: 0 4% 4% 4%;
     background-color: red;
+    height: 250px;
+    width: 200px;
 }
