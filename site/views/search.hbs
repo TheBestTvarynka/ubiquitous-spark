@@ -4,20 +4,20 @@
     <div class="container">
         <div class="filters" id="filters">
             <form name="login" id="log" class="form" method="post" action="/search">
-                    <div class="title">Select filter type:</div>
-                    <select name="select_filter" class="select" onchange="ChangeFilter(login)">
-                        <option disabled="" selected="" value=""> -- select an option -- </option>
-                        <option value="author">By author</option>
-                        <option value="book">By book name</option>
-                    </select>
-                    <div name="value_title" class="title"><span class="title_value">First, select the filter</span></div>
-                    <input type="text" name="data" class="input_text" disabled><br>
-                    <input type="submit" name="find_books" class="button" value="Find books">
+                <div class="title">Select filter type:</div>
+                <input type="text" name="test" value="test">
+                <select name="select_filter" class="select" onchange="ChangeFilter(login)">
+                    <option disabled="" selected="" value=""> -- select an option -- </option>
+                    <option value="author">By author</option>
+                    <option value="book">By book name</option>
+                </select>
+                <div name="value_title" class="title"><span class="title_value">First, select the filter</span></div>
+                <input type="text" name="data" class="input_text" disabled><br>
+                <input type="submit" name="find_books" class="button" value="Find books">
             </form>
         </div>
 
         <div class="results" id="results">
-            <div class="test"></div>
             <div class="test"></div>
             <div class="test"></div>
             <div class="test"></div>

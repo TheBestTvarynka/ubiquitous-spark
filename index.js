@@ -11,6 +11,7 @@ const login = require('./routing/login');
 const register = require('./routing/register');
 const books = require('./routing/books');
 const account = require('./routing/account');
+const search = require('./routing/search');
 
 const app = express();
 const port = 8080;
@@ -32,6 +33,7 @@ app.use(login);
 app.use(register);
 app.use(books);
 app.use(account);
+app.use(search);
 
 app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
