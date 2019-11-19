@@ -16,22 +16,20 @@ const router = express.Router();
 // };
 
 
-router.post('/search', (res, req) => {
-  //
-  // //here i'm 'parsing' results of the found books, but first I've got
-  // //to understand the principles of communicating with the db
-  //
-  console.log(req.body);
-  const filters = {
-    filterType: req.body.select_filter,
-    value: req.body.value_title,
-    test: req.body.test
-  };
+router.post('/search', (req, res) => {
 
-  console.log(filters);
-  //
+  //here i'm 'parsing' results of the found books, but first I've got
+  //to understand the principles of communicating with the db
+
+  console.log(req.body);
+
+  // const filters = {
+  //   filterType: req.body.select_filter,
+  //   value: req.body.data
+  // };
+  // console.log(filters);
+
   // const pg = dbreader.open(dbconfig);
-  //
   //
   // let list = [];
   // pg.select('books')
@@ -39,7 +37,7 @@ router.post('/search', (res, req) => {
   //   .then(rows => {
   //     list = parseBooks(req, res, user, rows);
   //   });
-
+  //
   //here I'm creating nodes (books) and inserting them in the document
 
 });

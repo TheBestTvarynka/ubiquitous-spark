@@ -5,19 +5,31 @@
         <div class="filters" id="filters">
             <form name="login" id="log" class="form" method="post" action="/search">
                 <div class="title">Select filter type:</div>
-                <input type="text" name="test" value="test">
                 <select name="select_filter" class="select" onchange="ChangeFilter(login)">
                     <option disabled="" selected="" value=""> -- select an option -- </option>
                     <option value="author">By author</option>
                     <option value="book">By book name</option>
                 </select>
-                <div name="value_title" class="title"><span class="title_value">First, select the filter</span></div>
-                <input type="text" name="data" class="input_text" disabled><br>
-                <input type="submit" name="find_books" class="button" value="Find books">
+                <div class="title"><span class="title_value">First, select the filter</span></div>
+                <input type="text" name="data" class="input_text" onchange="CheckInput(login)" disabled><br>
+
+                <hr class="line">
+                <input type="button" name="find_books" class="show_advanced" value="Show advanced settings" onclick="ShowAdvanced(login)">
+                <div class="advanced" hidden>
+                    <div class="title">Publisher:</div>
+                    <input type="text" name="publisher" onchange="CheckInput(login)" class="input_text">
+
+                    <div class="title">Year of publishing:</div>
+                    <input type="text" name="year" onchange="CheckInput(login)" class="input_text" >
+                </div>
+                <hr class="line">
+
+                <input type="submit" name="find_books" class="button" disabled>
             </form>
         </div>
 
         <div class="results" id="results">
+            <div class="test"></div>
             <div class="test"></div>
             <div class="test"></div>
             <div class="test"></div>
@@ -30,8 +42,37 @@
         form.getElementsByClassName('input_text')[0].disabled = false;
         const filter = form.getElementsByClassName('select');
         const title_value = form.getElementsByClassName('title_value');
-        console.log(filter[0].value);
-        console.log(title_value[0].innerHTML);
+
+        // console.log(filter[0].value);
+        // console.log(title_value[0].innerHTML);
+
         title_value[0].innerHTML = 'Enter the name of the ' + filter[0].value;
+    }
+
+    function CheckInput(form) {
+        const value = form.getElementsByClassName('input_text')[0].value === '';
+        const publisher = form.getElementsByClassName('input_text')[1].value === '';
+        const year = form.getElementsByClassName('input_text')[2].value === '';
+
+        // console.log(form.getElementsByClassName('input_text')[0].value);
+        // console.log(form.getElementsByClassName('input_text')[1].value);
+        // console.log(form.getElementsByClassName('input_text')[2].value);
+
+        if(!value || !publisher || !year){
+            form.getElementsByClassName('button')[0].disabled = false;
+        }
+        else{
+            form.getElementsByClassName('button')[0].disabled = true;
+        }
+    }
+
+    function ShowAdvanced(form) {
+        form.getElementsByClassName('advanced')[0].hidden = !form.getElementsByClassName('advanced')[0].hidden;
+        CheckInput(form);
+        if(form.getElementsByClassName('advanced')[0].hidden) {
+            form.getElementsByClassName('button')[0].disabled = true;
+            form.getElementsByClassName('input_text')[1].value = '';
+            form.getElementsByClassName('input_text')[2].value = '';
+        }
     }
 </script>

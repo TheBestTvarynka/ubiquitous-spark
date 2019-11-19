@@ -25,6 +25,7 @@
 .filters .form {
     flex-wrap: wrap;
     width: 100%;
+    max-width: 290px;
 }
 
 .filters .select {
@@ -60,6 +61,36 @@
     color: white;
 }
 
+.filters .button:hover {
+    background: rgb(50, 50, 50);
+}
+
+.filters .button:disabled {
+    background: rgb(50, 50, 50);
+    color: black;
+}
+
+.filters .show_advanced {
+    width: 290px;
+    margin: 20px 0 0 0;
+    padding: 4px 10px 4px 10px;
+    background: #A4A4A4;
+    border-radius: 3px;
+    border: 1px solid #A4A4A4;
+    color: black;
+}
+
+.filters .show_advanced:hover {
+    background: darkgray;
+}
+
+.filters .line {
+    background-color: #A4A4A4;
+    height: 1.5px;
+    margin: 20px 0 0 0;
+    border: none;
+}
+
 .results {
     align-self: stretch;
     margin: 2% 5% 2% 0;
@@ -76,6 +107,7 @@
 .test {
     margin: 0 4% 4% 4%;
     background-color: red;
+    border-radius: 10px;
     height: 250px;
     width: 200px;
 }
