@@ -11,7 +11,7 @@
                     <option value="book">By book name</option>
                 </select>
                 <div class="title"><span class="title_value">First, select the filter</span></div>
-                <input type="text" name="data" class="input_text" onchange="CheckInput(login)" disabled><br>
+                <input type="text" name="value" class="input_text" onchange="CheckInput(login)" disabled><br>
 
                 <hr class="line">
                 <input type="button" name="find_books" class="show_advanced" value="Show advanced settings" onclick="ShowAdvanced(login)">
@@ -29,11 +29,7 @@
         </div>
 
         <div class="results" id="results">
-            <div class="test"></div>
-            <div class="test"></div>
-            <div class="test"></div>
-            <div class="test"></div>
-            <div class="test"></div>
+            {{{ message }}}
         </div>
     </div>
 </main>

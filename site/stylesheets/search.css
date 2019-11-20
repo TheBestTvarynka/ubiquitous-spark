@@ -106,8 +106,15 @@
 
 .test {
     margin: 0 4% 4% 4%;
-    background-color: red;
     border-radius: 10px;
+    background: red;
     height: 250px;
     width: 200px;
+}
+
+.price {
+    text-align: right;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
 }
