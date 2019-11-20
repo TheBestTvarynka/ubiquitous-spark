@@ -1,10 +1,20 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/search.css">
 <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
-<main>
+<main onload="print()">
     <div class="container">
         <div class="filters" id="filters">
             <form name="login" id="log" class="form" method="post" action="/search">
-                <div class="title">Select filter type:</div>
+                <div class="title">qwe</div>
+                <input type="text" name="author" class="input_text" onchange="CheckInput(login)" value="{{ where.author }}">
+                <div class="title">qwe</div>
+                <input type="text" name="name" class="input_text" onchange="CheckInput(login)">
+                <div class="title">qwe</div>
+                <input type="text" name="description" class="input_text" onchange="CheckInput(login)">
+                <div class="title">qwe</div>
+                <input type="text" name="year" class="input_text" onchange="CheckInput(login)" value="{{ where.year }}">
+                <div class="title">qwe</div>
+                <input type="text" name="publishing" class="input_text" onchange="CheckInput(login)">
+                <!-- <div class="title">Select filter type:</div>
                 <select name="select_filter" class="select" onchange="ChangeFilter(login)">
                     <option disabled="" selected="" value=""> -- select an option -- </option>
                     <option value="author">By author</option>
@@ -22,7 +32,7 @@
                     <div class="title">Year of publishing:</div>
                     <input type="text" name="year" onchange="CheckInput(login)" class="input_text" >
                 </div>
-                <hr class="line">
+                <hr class="line"> -->
 
                 <input type="submit" name="find_books" class="button" disabled>
             </form>
@@ -70,5 +80,8 @@
             form.getElementsByClassName('input_text')[1].value = '';
             form.getElementsByClassName('input_text')[2].value = '';
         }
+    }
+    function print() {
+        console.log({{ where }});
     }
 </script>

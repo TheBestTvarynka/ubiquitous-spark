@@ -30,6 +30,27 @@ function parseBooks(rows) {
 }
 
 router.post('/search', (req, res) => {
+  // req.body
+  const where = {};
+  for (const field in req.body) {
+    if (req.body[field] !== '') {
+      where[field] = req.body[field];
+    }
+  }
+  delete where.find_books;
+  console.log(where);
+  console.log(where);
+  const pg = dbreader.open(dbconfig);
+  pg.select('books')
+    .where(where)
+    .then(rows => {
+      console.log(rows);
+      const list = parseBooks(rows);
+      res.render('views/search', { layout: 'default', message: list, where: where });
+    });
+});
+
+/*
   const filters = {
     filter: req.body.select_filter,
     value: req.body.value,
@@ -57,45 +78,47 @@ router.post('/search', (req, res) => {
       pg.select('books')
         .where({ name: filters.value })
         .then(rows => {
-          list = parseBooks(rows);
+          console.log(':=', rows);
+          list += parseBooks(rows);
+          console.log('list:', list);
         });
     } else {
       pg.select('books')
         .where({ author: filters.value })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     }
   } else if (filters.valueEmpty && !filters.publisherEmpty && filters.yearEmpty) {
     pg.select('books')
       .where({ publishing: filters.publisher })
       .then(rows => {
-        list = parseBooks(rows);
+        list += parseBooks(rows);
       });
   } else if (filters.valueEmpty && filters.publisherEmpty && !filters.yearEmpty) {
     pg.select('books')
       .where({ year: parseInt(filters.year) })
       .then(rows => {
-        list = parseBooks(rows);
+        list += parseBooks(rows);
       });
   } else if (filters.valueEmpty && !filters.publisherEmpty && !filters.yearEmpty) {
     pg.select('books')
       .where({ year: parseInt(filters.year), publishing: filters.publisher })
       .then(rows => {
-        list = parseBooks(rows);
+        list += parseBooks(rows);
       });
   } else if (!filters.valueEmpty && filters.publisherEmpty && !filters.yearEmpty) {
     if (filters.filter === 'book') {
       pg.select('books')
         .where({ name: filters.value, year: parseInt(filters.year) })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     } else {
       pg.select('books')
         .where({ author: filters.value, year: parseInt(filters.year) })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     }
   } else if (!filters.valueEmpty && !filters.publisherEmpty && filters.yearEmpty) {
@@ -103,13 +126,13 @@ router.post('/search', (req, res) => {
       pg.select('books')
         .where({ name: filters.value, publishing: filters.publisher })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     } else {
       pg.select('books')
         .where({ author: filters.value, publishing: filters.publisher })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     }
   } else if (!filters.valueEmpty && !filters.publisherEmpty && !filters.yearEmpty) {
@@ -121,7 +144,7 @@ router.post('/search', (req, res) => {
           year: parseInt(filters.year)
         })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     } else {
       pg.select('books')
@@ -131,12 +154,12 @@ router.post('/search', (req, res) => {
           year: parseInt(filters.year)
         })
         .then(rows => {
-          list = parseBooks(rows);
+          list += parseBooks(rows);
         });
     }
   }
   console.log('List = ' + list);
   res.render('views/search', { layout: 'default', message: list });
 });
-
+*/
 module.exports = router;
