@@ -42,7 +42,7 @@ const compare = (req, res, user) => {
                     .then(rows => {
                       if (rows[0].activated) {
                         const redirect = req.cookies.redirect;
-                        delete req.cookies.redirect;
+                        res.cookie('redirect', undefined);
                         if (redirect) {
                           res.redirect(redirect);
                         } else {

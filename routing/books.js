@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 const dbwriter = require('../db/dbwriter');
+const { Pool } = require('pg');
 
 dotenv.config();
 
@@ -17,6 +18,16 @@ const dbconfig = {
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+};
+
+const getBookId = async () => {
+  const pool = new Pool(dbconfig);
+  const client = await pool.connect();
+  const result = await client.query({
+    rowMode: 'array',
+    text: `SELECT nextval('book_id')`,
+  });
+  return result.rows[0][0];
 };
 
 router.get('/addbook', (req, res) => {
@@ -36,8 +47,6 @@ const addBook = (res, bookData) => {
   }
   types['path'] = 'array';
   types['preview'] = 'array';
-  types['id'] = 'function';
-  bookData['id'] = `nextval('book_id')`;
   const pg = dbwriter.open(dbconfig);
   const writeData = pg.insert('books');
   writeData.value(bookData, types)
@@ -48,33 +57,36 @@ const addBook = (res, bookData) => {
            });
 };
 
-router.post('/addbook', (req, res) => {
+router.post('/addbook', async (req, res) => {
   const bookData = { path: [], preview: [] };
+  const id = await getBookId();
   if (!req.session.name) {
     res.cookie('redirect', '/addbook');
     res.redirect('/login');
     return;
   }
   bookData['login'] = req.session.name;
+  bookData['id'] = id;
+  console.log(id);
+  fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/books`, { recursive: true }, err => { if(err) console.log(err) });
+  fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/photos`, { recursive: true }, err => { if(err) console.log(err) });
   const busboy = new Busboy({ headers: req.headers });
-  // when we get a file
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    const pathFile = path.join(process.env.ROOT_DIR, 'uploads/' + filename);
     if (fieldname === 'photos') {
-      bookData['preview'].push(filename);
+      const pathToFile = `uploads/${id}/photos/` + filename;
+      bookData['preview'].push(pathToFile);
+      file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
     }
     if (fieldname === 'books') {
+      const pathToFile = `uploads/${id}/books/` + filename;
       bookData['path'].push(filename);
+      file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
     }
-    file.pipe(fs.createWriteStream(pathFile));
   });
-  // when we get just a field
   busboy.on('field', (name, value) => {
     bookData[name] = value;
   });
-  // when we finish
   busboy.on('finish', () => {
-    // write all book data in db
     delete bookData.add;
     addBook(res, bookData);
   });
