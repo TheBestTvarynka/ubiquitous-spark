@@ -62,7 +62,7 @@ const updateUserData = (res, table, user) => {
     .where({ login })
     .set(user, types)
     .then(result => {
-      res.render('views/account/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
+      res.redirect('/account');
     });
   pg.close();
 };
