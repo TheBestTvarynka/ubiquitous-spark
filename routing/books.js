@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 const dbwriter = require('../db/dbwriter');
+const dbreader = require('../db/dbreader');
 const { Pool } = require('pg');
 
 dotenv.config();
@@ -104,6 +105,31 @@ router.post('/addbook', async (req, res) => {
   return req.pipe(busboy);
 });
 
+const getBooks = (login, bookType, url, page, res) => {
+  const pg = dbreader.open(dbconfig);
+  pg.select('usersaccounts')
+    .where({ login })
+    .fields([ bookType ])
+    .then(result => {
+      pg.close();
+      const books = result[0][bookType];
+      const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
+      const pagesCount = Math.ceil(books.length / 8);
+      const pagination = [];
+      if (page !== 1) {
+        pagination.push(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
+      }
+      for (let i = 1; i <= pagesCount; i++) {
+        pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
+      }
+      if (page !== pagesCount) {
+        pagination.push(`<a href="${url}/page/${page + 1}" class="pagenumber">&gt</a>`);
+      }
+      pagination[page - 1] = `<a href="${url}/page/${page}" class="pagenumber_selected">${page}</a>`;
+      res.render('views/account/likedbooks', { layout: 'default', pagination: pagination });
+    });
+};
+
 router.get('/mybooks', (req, res) => {
   const login = req.session.name;
   if (!login) {
@@ -121,7 +147,8 @@ router.get('/likedbooks', (req, res) => {
     res.redirect('/login');
     return;
   }
-  res.render('views/account/likedbooks', { layout: 'default' });
+  getBooks(login, 'liked_books', '/account/likedbooks', 1, res);
+  // res.render('views/account/likedbooks', { layout: 'default' });
 });
 
 module.exports = router;

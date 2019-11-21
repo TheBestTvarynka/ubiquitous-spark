@@ -109,6 +109,19 @@ h1 {
 .pagenumber:hover {
 	border: 2px solid black;
 }
+.pagenumber_selected {
+	width: 50px;
+	height: 50px;
+	padding-top: 2px;
+	text-align: center;
+	background: rgb(180, 180, 180);
+	border: 2px solid rgb(40, 40, 40);
+	border-radius: 10px;
+	color: black;
+	font-size: 30px;
+	font-weight: normal;
+	margin: 5px;
+}
 
 @media screen and (max-width: 1150px) {
 	.book {
