@@ -3,6 +3,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const books = require('./books');
 const dbreader = require('../db/dbreader');
 const dbwriter = require('../db/dbwriter');
 
@@ -27,7 +28,7 @@ const readUserData = (login, table, callback) => {
     .then(callback);
   pg.close();
 };
-
+router.use('/account', books);
 router.get('/account', (req, res) => {
   const login = req.session.name;
   if (!login) {
@@ -136,26 +137,6 @@ router.post('/updatepassword', (req, res) => {
       const hash = hashes[0].hash;
       comparePasswords(res, hash, user);
     });
-});
-
-router.get('/account/mybooks', (req, res) => {
-  const login = req.session.name;
-  if (!login) {
-    res.cookie('redirect', '/account/mybooks');
-    res.redirect('/login');
-    return;
-  }
-  res.render('views/account/mybooks', { layout: 'default' });
-});
-
-router.get('/account/likedbooks', (req, res) => {
-  const login = req.session.name;
-  if (!login) {
-    res.cookie('redirect', '/account/likedbooks');
-    res.redirect('/login');
-    return;
-  }
-  res.render('views/account/likedbooks', { layout: 'default' });
 });
 
 module.exports = router;

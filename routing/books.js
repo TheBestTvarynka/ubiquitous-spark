@@ -41,12 +41,24 @@ router.get('/addbook', (req, res) => {
 });
 
 const addBook = (res, bookData) => {
+  const pgU = dbwriter.open(dbconfig);
+  const updateUser = pgU.update('usersaccounts');
+  updateUser.set({ uploaded_books: `array_cat(uploaded_books, ARRAY[${bookData.id}])` }, { uploaded_books: 'function' })
+            .where({ login: bookData.login })
+            .then(result => {
+              console.log('=========UPDATE========');
+              console.log(result);
+              console.log('=========UPDATE========');
+            });
   const types = [];
   for (const field in bookData) {
     types[field] = 'value';
   }
   types['path'] = 'array';
   types['preview'] = 'array';
+  console.log('=================');
+  console.log(bookData.path);
+  console.log('=================');
   const pg = dbwriter.open(dbconfig);
   const writeData = pg.insert('books');
   writeData.value(bookData, types)
@@ -76,10 +88,9 @@ router.post('/addbook', async (req, res) => {
       const pathToFile = `uploads/${id}/photos/` + filename;
       bookData['preview'].push(pathToFile);
       file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
-    }
-    if (fieldname === 'books') {
+    } else if (fieldname === 'books') {
       const pathToFile = `uploads/${id}/books/` + filename;
-      bookData['path'].push(filename);
+      bookData['path'].push(pathToFile);
       file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
     }
   });
@@ -91,6 +102,26 @@ router.post('/addbook', async (req, res) => {
     addBook(res, bookData);
   });
   return req.pipe(busboy);
+});
+
+router.get('/mybooks', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account/mybooks');
+    res.redirect('/login');
+    return;
+  }
+  res.render('views/account/mybooks', { layout: 'default' });
+});
+
+router.get('/likedbooks', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account/likedbooks');
+    res.redirect('/login');
+    return;
+  }
+  res.render('views/account/likedbooks', { layout: 'default' });
 });
 
 module.exports = router;
