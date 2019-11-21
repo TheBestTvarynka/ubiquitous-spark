@@ -115,17 +115,19 @@ const getBooks = (login, bookType, url, page, res) => {
       const books = result[0][bookType];
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
       const pagesCount = Math.ceil(books.length / 8);
+      console.log(pagesCount, page);
+      console.log(typeof pagesCount, typeof page);
       const pagination = [];
-      if (page !== 1) {
-        pagination.push(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
-      }
       for (let i = 1; i <= pagesCount; i++) {
         pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
       }
-      if (page !== pagesCount) {
+      pagination[page - 1] = `<a href="${url}/page/${page}" class="pagenumber_selected">${page}</a>`;
+      if (parseInt(page) !== 1) {
+        pagination.unshift(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
+      }
+      if (parseInt(page) !== pagesCount) {
         pagination.push(`<a href="${url}/page/${page + 1}" class="pagenumber">&gt</a>`);
       }
-      pagination[page - 1] = `<a href="${url}/page/${page}" class="pagenumber_selected">${page}</a>`;
       res.render('views/account/likedbooks', { layout: 'default', pagination: pagination });
     });
 };
@@ -149,6 +151,16 @@ router.get('/likedbooks', (req, res) => {
   }
   getBooks(login, 'liked_books', '/account/likedbooks', 1, res);
   // res.render('views/account/likedbooks', { layout: 'default' });
+});
+
+router.get('/likedbooks/page/:page', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account' + req.url);
+    res.redirect('/login');
+    return;
+  }
+  getBooks(login, 'liked_books', '/account/likedbooks', req.params.page, res);
 });
 
 module.exports = router;
