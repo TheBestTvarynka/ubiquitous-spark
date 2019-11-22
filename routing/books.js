@@ -156,7 +156,7 @@ const getBooks = (login, bookType, url, page, res) => {
       const pagesCount = Math.ceil(books.length / 8);
       const pagination = createPagination(pagesCount, url, page);
       // render the page
-      res.render('views/account/likedbooks', { layout: 'default', pagination: pagination, books: booksRender });
+      res.render('views' + url, { layout: 'default', pagination: pagination, books: booksRender });
     });
 };
 
@@ -167,7 +167,21 @@ router.get('/mybooks', (req, res) => {
     res.redirect('/login');
     return;
   }
-  res.render('views/account/mybooks', { layout: 'default' });
+  getBooks(login, 'uploaded_books', '/account/mybooks', 1, res);
+});
+
+router.get('/mybooks/page/:page', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account' + req.url);
+    res.redirect('/login');
+    return;
+  }
+  if (req.params.page === '0') {
+    res.redirect('/account/mybooks');
+    return;
+  }
+  getBooks(login, 'uploaded_books', '/account/mybooks', req.params.page, res);
 });
 
 router.get('/likedbooks', (req, res) => {

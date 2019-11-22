@@ -12,47 +12,15 @@
 			</div>
 		</div>
 		<div class="content">
-			<h1 style="width: 100%;">Uploaded books</h1>
-			<div class="book" onclick="addCookie()">
-				<img src="/site/img/temp_book_photo/1.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/2.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/3.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/4.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/5.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/6.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/7.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
-			<div class="book">
-				<img src="/site/img/temp_book_photo/8.jpg">
-				<p>After completing the form, please be patient until you receive a shipping confirmation via your email.</p>
-				<div class="price">100 $</div>
-			</div>
+			<h1 style="width: 100%;">Liked books</h1>
+			{{#each books}}
+			    {{{this}}}
+			{{/each}}
 		</div>
+	</div>
+	<div class="contentcount">
+		{{#each pagination}}
+		    {{{this}}}
+		{{/each}}
 	</div>
 </main>
