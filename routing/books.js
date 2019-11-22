@@ -115,8 +115,6 @@ const getBooks = (login, bookType, url, page, res) => {
       const books = result[0][bookType];
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
       const pagesCount = Math.ceil(books.length / 8);
-      console.log(pagesCount, page);
-      console.log(typeof pagesCount, typeof page);
       const pagination = [];
       for (let i = 1; i <= pagesCount; i++) {
         pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
