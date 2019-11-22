@@ -36,6 +36,10 @@ app.get('/', (req, res) => {
 });
 
 app.use('/site', siteRouter);
+app.use('/uploads', (req, res) => {
+  const fileName = process.env.ROOT_DIR + 'uploads' + req.url;
+  res.sendFile(fileName, null, err => { if (err) console.log(err); });
+});
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

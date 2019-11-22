@@ -28,6 +28,7 @@ const getBookId = async () => {
     rowMode: 'array',
     text: `SELECT nextval('book_id')`,
   });
+  pool.end();
   return result.rows[0][0];
 };
 
@@ -57,9 +58,6 @@ const addBook = (res, bookData) => {
   }
   types['path'] = 'array';
   types['preview'] = 'array';
-  console.log('=================');
-  console.log(bookData.path);
-  console.log('=================');
   const pg = dbwriter.open(dbconfig);
   const writeData = pg.insert('books');
   writeData.value(bookData, types)
@@ -80,7 +78,6 @@ router.post('/addbook', async (req, res) => {
   }
   bookData['login'] = req.session.name;
   bookData['id'] = id;
-  console.log(id);
   fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/books`, { recursive: true }, err => { if(err) console.log(err) });
   fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/photos`, { recursive: true }, err => { if(err) console.log(err) });
   const busboy = new Busboy({ headers: req.headers });
@@ -105,28 +102,61 @@ router.post('/addbook', async (req, res) => {
   return req.pipe(busboy);
 });
 
+const createBook = async id => {
+  let book = '';
+  const pool = new Pool(dbconfig);
+  const client = await pool.connect();
+  const result = await client.query({
+    rowMode: 'object',
+    text: `SELECT * FROM books WHERE id = ${id};`,
+  });
+  pool.end();
+  const bookData = result.rows[0];
+  book = `<div class="book">
+  <img src="${'/' + bookData.preview[0]}">
+  <p>${bookData.name}</p>
+  <p>${bookData.description}</p>
+  <div class="price">${bookData.year}</div>
+  <div class="price">${bookData.price} $</div>
+  </div>`;
+  return book;
+};
+
+const createPagination = (pagesCount, url, page) => {
+  const pagination = [];
+  for (let i = 1; i <= pagesCount; i++) {
+    pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
+  }
+  pagination[page - 1] = `<a href="${url}/page/${page}" class="pagenumber_selected">${page}</a>`;
+  if (parseInt(page) !== 1) {
+    pagination.unshift(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
+  }
+  if (parseInt(page) !== pagesCount) {
+    pagination.push(`<a href="${url}/page/${page + 1}" class="pagenumber">&gt</a>`);
+  }
+  return pagination;
+};
+
 const getBooks = (login, bookType, url, page, res) => {
   const pg = dbreader.open(dbconfig);
   pg.select('usersaccounts')
     .where({ login })
     .fields([ bookType ])
-    .then(result => {
+    .then(async result => {
       pg.close();
       const books = result[0][bookType];
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
+      // load books from db
+      const booksRender = [];
+      for (let bookId of currentBooks) {
+        const bookHtml = await createBook(bookId);
+        booksRender.push(bookHtml);
+      }
+      // set up pagination for page
       const pagesCount = Math.ceil(books.length / 8);
-      const pagination = [];
-      for (let i = 1; i <= pagesCount; i++) {
-        pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
-      }
-      pagination[page - 1] = `<a href="${url}/page/${page}" class="pagenumber_selected">${page}</a>`;
-      if (parseInt(page) !== 1) {
-        pagination.unshift(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
-      }
-      if (parseInt(page) !== pagesCount) {
-        pagination.push(`<a href="${url}/page/${page + 1}" class="pagenumber">&gt</a>`);
-      }
-      res.render('views/account/likedbooks', { layout: 'default', pagination: pagination });
+      const pagination = createPagination(pagesCount, url, page);
+      // render the page
+      res.render('views/account/likedbooks', { layout: 'default', pagination: pagination, books: booksRender });
     });
 };
 
@@ -148,7 +178,6 @@ router.get('/likedbooks', (req, res) => {
     return;
   }
   getBooks(login, 'liked_books', '/account/likedbooks', 1, res);
-  // res.render('views/account/likedbooks', { layout: 'default' });
 });
 
 router.get('/likedbooks/page/:page', (req, res) => {
@@ -156,6 +185,10 @@ router.get('/likedbooks/page/:page', (req, res) => {
   if (!login) {
     res.cookie('redirect', '/account' + req.url);
     res.redirect('/login');
+    return;
+  }
+  if (req.params.page === '0') {
+    res.redirect('/account/likedbooks');
     return;
   }
   getBooks(login, 'liked_books', '/account/likedbooks', req.params.page, res);
