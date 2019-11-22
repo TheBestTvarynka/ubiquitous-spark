@@ -115,7 +115,6 @@ const createBook = async id => {
   book = `<div class="book">
   <img src="${'/' + bookData.preview[0]}">
   <p>${bookData.name}</p>
-  <p>${bookData.description}</p>
   <div class="price">${bookData.year}</div>
   <div class="price">${bookData.price} $</div>
   </div>`;
@@ -123,6 +122,9 @@ const createBook = async id => {
 };
 
 const createPagination = (pagesCount, url, page) => {
+  if (pagesCount < 2) {
+    return [];
+  }
   const pagination = [];
   for (let i = 1; i <= pagesCount; i++) {
     pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
@@ -131,7 +133,7 @@ const createPagination = (pagesCount, url, page) => {
   if (parseInt(page) !== 1) {
     pagination.unshift(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
   }
-  if (parseInt(page) !== pagesCount) {
+  if (parseInt(page) < pagesCount) {
     pagination.push(`<a href="${url}/page/${page + 1}" class="pagenumber">&gt</a>`);
   }
   return pagination;
