@@ -43,7 +43,31 @@
 		</div>
 	</div>
 </main>
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 <script type="text/javascript">
+		var cc = profile.card_number;
+			np = profile.phone;
+		events  = ['input', 'change', 'blur', 'keyup'];
+		for (var i in events) {
+    	cc.addEventListener('input', formatCardCode, false);
+    	np.addEventListener('input', formatCardCode, false);
+}
+function formatCardCode(a) {
+    var cardCode = this.value.replace(/[^\d]/g, '').substring(0,16);
+    cardCode = cardCode !== '' ? cardCode.match(/.{1,4}/g).join(' ') : '';
+    this.value = cardCode;
+}
+function formatPhone(a) {
+    var numPhone = this.value.replace(/[^\d]/g, '').substring(0,10);
+    if (numPhone.size() < 7) {
+    numPhone = numPhone !== '' ? numPhone.match(/.{1,3}/g).join(' ') : ''; 
+} 
+    else {
+    numPhone = numPhone.match(/.{1,2}/g).join(' ');
+}
+    this.value = numPhone;
+}
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	function checkEmail(form) {
 		const re_mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 		const input = document.getElementById('email');
