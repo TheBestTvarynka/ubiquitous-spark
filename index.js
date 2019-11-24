@@ -9,7 +9,6 @@ const cookie = require('cookie-parser');
 const siteRouter = require('./routing/routing');
 const login = require('./routing/login');
 const register = require('./routing/register');
-const books = require('./routing/books');
 const account = require('./routing/account');
 
 const app = express();
@@ -30,7 +29,6 @@ app.use(cookie());
 
 app.use(login);
 app.use(register);
-app.use(books);
 app.use(account);
 
 app.get('/', (req, res) => {
@@ -38,6 +36,10 @@ app.get('/', (req, res) => {
 });
 
 app.use('/site', siteRouter);
+app.use('/uploads', (req, res) => {
+  const fileName = process.env.ROOT_DIR + 'uploads' + req.url;
+  res.sendFile(fileName, null, err => { if (err) console.log(err); });
+});
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

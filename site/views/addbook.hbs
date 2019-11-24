@@ -1,35 +1,45 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
-<main class="main">
-	<form name="addbook" id="reg" class="form" method="post" action="/addbook" enctype="multipart/form-data" style="width: 40%;">
-		{{{ message }}}
-		<div class="title">Book name</div>
-		<input type="text" name="name" class="input_text">
-		<div class="title">Author</div>
-		<input type="text" name="author" class="input_text">
-		<div class="title">Year</div>
-		<input type="text" name="year" class="input_text">
-		<div class="title">Publishing house</div>
-		<input type="text" name="publishing" class="input_text">
-		<div class="title">Short description</div>
-		<input type="text" name="description" class="input_text">
-		<div class="title">Choose phoro('s) for preview</div>
-		<div class="upload-btn-wrapper">
-			<button class="btn">Select photos</button>
-			<input type="file" name="photos" onclick="file()" id="photos" multiple="true">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
+<main>
+	<div class="pagecontainer">
+		<div class="navigationcontainer">
+			<div class="navigation">
+				<a href="/account">Account</a>
+				<a href="/account/mybooks">My books</a>
+				<a href="/account/addbook" style="background-color: grey;">Add book</a>
+				<a href="/account/likedbooks">Liked books</a>
+				<a href="/chat">Chat - demo</a>
+				<a href="/logout">Log out</a>
+			</div>
 		</div>
-		<div class="title">Choose book('s) for uploading</div>
-		<div class="upload-btn-wrapper">
-			<button class="btn">Select books</button>
-			<input type="file" name="books" onclick="file()" id="files" multiple="true">
+		<div class="content">
+			<form name="addbook" id="reg" class="form" method="post" action="/account/addbook" enctype="multipart/form-data" style="padding-bottom: 0px;">
+				{{{ message }}}
+				<div class="title">Book name</div>
+				<input type="text" name="name" class="input_text">
+				<div class="title">Author</div>
+				<input type="text" name="author" class="input_text">
+				<div class="title">Year</div>
+				<input type="text" name="year" class="input_text">
+				<div class="title">Publishing house</div>
+				<input type="text" name="publishing" class="input_text">
+				<div class="title">Short description</div>
+				<input type="text" name="description" class="input_text">
+				<div class="title">Choose phoro('s) for preview</div>
+				<div class="upload-btn-wrapper">
+					<button class="btn">Select photos</button>
+					<input type="file" name="photos" onclick="file()" id="photos" multiple="true">
+				</div>
+				<div class="title">Choose book('s) for uploading</div>
+				<div class="upload-btn-wrapper">
+					<button class="btn">Select books</button>
+					<input type="file" name="books" onclick="file()" id="files" multiple="true">
+				</div>
+				<div class="title">Enter price of book (in $)</div>
+				<input type="text" name="price" class="input_text">
+				<input type="submit" name="add" class="button" value="Add book" id="submit">
+				<a href="/account" class="redirect" style="text-decoration: none; text-align: center;">Cancel</a>
+			</form>
 		</div>
-		<input type="submit" name="add" class="button" value="Add book" id="submit">
-		<a href="/account" class="redirect" style="text-decoration: none; text-align: center;">Cancel</a>
-	</form>
+	</div>
 </main>
-<script type="text/javascript">
-	function file() {
-		const fileButton = document.getElementById('files');
-		console.log(fileButton);
-		console.log(fileButton.files);
-	}
-</script>
