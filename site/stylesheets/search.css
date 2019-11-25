@@ -111,6 +111,11 @@
     background: white;
     height: 350px;
     width: 200px;
+    transition: all .2s ease-in-out;
+}
+
+.test:hover {
+    transform: scale(1.1);
 }
 
 .cover {
