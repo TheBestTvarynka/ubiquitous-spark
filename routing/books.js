@@ -87,6 +87,7 @@ router.post('/addbook', async (req, res) => {
   }
   bookData['login'] = req.session.name;
   bookData['id'] = id;
+  console.log(s3config);
   const s3 = cloud.open(s3config);
   const busboy = new Busboy({ headers: req.headers });
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
