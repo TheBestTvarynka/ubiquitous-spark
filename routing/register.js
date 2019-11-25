@@ -118,7 +118,9 @@ router.post('/register', (req, res) => {
 router.get('/activate', (req, res) => {
   const login = req.session.name;
   if (login) {
-    res.sendFile(process.env.ROOT_DIR + 'site/activate.html', null, err => {
+    const filename = process.cwd() + '/site/activate.html';
+    console.log(filename);
+    res.sendFile(filename, null, err => {
       if (err) console.log(err);
     });
   } else {
