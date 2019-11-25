@@ -93,10 +93,10 @@ router.post('/addbook', async (req, res) => {
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
     let key = '';
     if (fieldname === 'photos') {
-      key = 'photos/' + filename;
+      key = `photos/${id}/` + filename;
       bookData['photos'].push(key);
     } else if (fieldname === 'books') {
-      key = 'books/' + filename;
+      key = `books/${id}/` + filename;
       bookData['path'].push(key);
     } else return;
     console.log('filename:', key);
