@@ -8,13 +8,18 @@ const dbwriter = require('../db/dbwriter');
 
 dotenv.config();
 
-const dbconfig = {
+/* const dbconfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
 };
+*/
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL
+};
+
 const pg = dbreader.open(dbconfig);
 
 const saltRounds = 10;
@@ -42,7 +47,7 @@ const writeUserData = (res, user) => {
     hash: 'value',
   };
   const wr = dbwriter.open(dbconfig);
-  const writePas = wr.insert('userdata');
+  const writePas = wr.insert('users');
   writePas.value(values, types)
           .then(result => {
             const values = {
@@ -57,7 +62,7 @@ const writeUserData = (res, user) => {
               email: 'value',
               phone: 'value',
             };
-            const writeData = wr.insert('usersaccounts');
+            const writeData = wr.insert('usersdata');
             writeData.value(values, types)
                      .then(result => {
                        res.render('views/login', { layout: 'default', message: '<p>You resenetly registered, login please to continue</p>'});
@@ -79,7 +84,7 @@ const hashPassword = (res, user) => {
 };
 
 const findUser = (res, user) => {
-  pg.select('userdata')
+  pg.select('users')
     .fields(['login'])
     .where({ login: user.login })
     .then(rows => {
@@ -132,7 +137,7 @@ router.post('/activate', (req, res) => {
     bank_number: 'value',
   };
   const activateHandler = dbwriter.open(dbconfig);
-  activateHandler.update('usersaccounts')
+  activateHandler.update('usersdata')
                  .set(setters, types)
                  .where({ login })
                  .then(result => {
