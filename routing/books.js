@@ -2,23 +2,32 @@
 
 const express = require('express');
 const Busboy = require('busboy');
-const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 const dbwriter = require('../db/dbwriter');
 const dbreader = require('../db/dbreader');
 const { Pool } = require('pg');
+const cloud = require('../cloud/s3');
 
 dotenv.config();
 
 const router = express.Router();
 
-const dbconfig = {
+/* const dbconfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+};*/
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL
+};
+
+const s3config = {
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  region: process.env.REGION,
 };
 
 const getBookId = async () => {
@@ -44,7 +53,7 @@ router.get('/addbook', (req, res) => {
 
 const addBook = (res, bookData) => {
   const pgU = dbwriter.open(dbconfig);
-  const updateUser = pgU.update('usersaccounts');
+  const updateUser = pgU.update('usersdata');
   updateUser.set({ uploaded_books: `array_cat(uploaded_books, ARRAY[${bookData.id}])` }, { uploaded_books: 'function' })
             .where({ login: bookData.login })
             .then(result => {
@@ -57,7 +66,7 @@ const addBook = (res, bookData) => {
     types[field] = 'value';
   }
   types['path'] = 'array';
-  types['preview'] = 'array';
+  types['photos'] = 'array';
   const pg = dbwriter.open(dbconfig);
   const writeData = pg.insert('books');
   writeData.value(bookData, types)
@@ -69,7 +78,7 @@ const addBook = (res, bookData) => {
 };
 
 router.post('/addbook', async (req, res) => {
-  const bookData = { path: [], preview: [] };
+  const bookData = { path: [], photos: [] };
   const id = await getBookId();
   if (!req.session.name) {
     res.cookie('redirect', '/addbook');
@@ -78,9 +87,22 @@ router.post('/addbook', async (req, res) => {
   }
   bookData['login'] = req.session.name;
   bookData['id'] = id;
-  fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/books`, { recursive: true }, err => { if(err) console.log(err) });
-  fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/photos`, { recursive: true }, err => { if(err) console.log(err) });
+  const s3 = cloud.open(s3config);
   const busboy = new Busboy({ headers: req.headers });
+  busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    let key = '';
+    if (fieldname === 'photos') {
+      key = 'photos/' + filename;
+      bookData['photos'].push(key);
+    } else if (fieldname === 'books') {
+      key = 'books/' + filename;
+      bookData['path'].push(key);
+    } else return;
+    console.log('filename:', key);
+    s3.upload(process.env.BUCKET, file, key, mimetype, err => { if(err) console.log(err); });
+  });
+  /*fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/books`, { recursive: true }, err => { if(err) console.log(err) });
+  fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/photos`, { recursive: true }, err => { if(err) console.log(err) });
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
     if (fieldname === 'photos') {
       const pathToFile = `uploads/${id}/photos/` + filename;
@@ -91,12 +113,13 @@ router.post('/addbook', async (req, res) => {
       bookData['path'].push(pathToFile);
       file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
     }
-  });
+  });*/
   busboy.on('field', (name, value) => {
     bookData[name] = value;
   });
   busboy.on('finish', () => {
     delete bookData.add;
+    console.log('BookData:', bookData);
     addBook(res, bookData);
   });
   return req.pipe(busboy);
