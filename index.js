@@ -6,13 +6,12 @@ const path = require('path');
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
-const siteRouter = require('./routing/routing');
 const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // view render engine setup
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'default', layoutsDir: __dirname + '/site/'}));
@@ -35,10 +34,24 @@ app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
 });
 
-app.use('/site', siteRouter);
+const printErr = err => {
+  if (err) {
+    console.log(err);
+  }
+};
+
+const sendFile = (fileName, res) => {
+  res.sendFile(fileName, null, printErr);
+};
+
+app.use('/site', (req, res) => {
+  const filename = __dirname + '/site' + req.url;
+  console.log(filename);
+  sendFile(filename, res);
+});
 app.use('/uploads', (req, res) => {
-  const fileName = process.env.ROOT_DIR + 'uploads' + req.url;
-  res.sendFile(fileName, null, err => { if (err) console.log(err); });
+  const filename = __dirname + '/uploads' + req.url;
+  sendFile(filename, res);
 });
 
 app.listen(port, () => {
