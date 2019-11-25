@@ -132,11 +132,11 @@ router.post('/activate', (req, res) => {
   const login = req.session.name;
   const setters = {
     activated: true,
-    bank_number: req.body.cardNumber,
+    card_number: req.body.cardNumber,
   };
   const types = {
     activated: 'value',
-    bank_number: 'value',
+    card_number: 'value',
   };
   const activateHandler = dbwriter.open(dbconfig);
   activateHandler.update('usersdata')
