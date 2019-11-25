@@ -1,0 +1,109 @@
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
+<main>
+	<div class="pagecontainer">
+		<div class="navigationcontainer">
+			<div class="navigation">
+				<a href="/account"  style="background-color: grey;">Account</a>
+				<a href="/account/mybooks">My books</a>
+				<a href="/account/likedbooks">Liked books</a>
+				<a href="/chat">Chat - demo</a>
+				<a href="/logout">Log out</a>
+			</div>
+		</div>
+		<div class="content">
+			<h1>Profile settings</h1>
+			<form name="profile" method="post" action="/updateprofile" class="form" style="padding-bottom: 0px;">
+				{{{ message }}}
+				<div class="title">Full Name</div>
+				<input type="text" name="fullname" class="input_text" value="{{ user.fullname }}">
+				<div class="tooltip">You have been married?) Change second name in this case :)</div>
+				<div class="title">Email Address</div>
+				<input type="text" name="email" class="input_text" oninput="submitState(profile)" value="{{ user.email }}" id="email">
+				<div class="tooltip">Set new email address if you lost or delete a previous adsress</div>
+				<div class="title">Phone Number</div>
+				<input type="text" name="phone" class="input_text" oninput="submitState(profile)" id="phone" value="{{ user.phone }}">
+				<div class="tooltip">If you have new phone number, you can easy change it</div>
+				<div class="title">Card Number</div>
+				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.bank_number }}">
+				<div class="tooltip">Everyone can change card number, isn't? Maybe it happened with you?</div>
+				<input type="submit" name="update" class="button" value="Update profile" id="submit">
+			</form>
+			<form name="password" method="post" action="/updatepassword" class="form" style="padding-top: 0px;">
+				<hr class="line">
+				<div class="title">Old password</div>
+				<input type="password" name="oldpassword" class="input_text" id="oldpassword">
+				<div class="title">New password</div>
+				<input type="password" name="newpassword" class="input_text" id="newpassword">
+				<div class="title">Submit new password</div>
+				<input type="password" name="newpassword_r" class="input_text" id="newpassword_r">
+				<input type="submit" name="changepassword" class="button" value="Change password" id="submitpassword">
+				<hr class="line">
+			</form>
+		</div>
+	</div>
+</main>
+<script type="text/javascript">
+		let cc = document.getElementById('card_number');
+		let	np = document.getElementById('phone');
+		let	events  = ['input', 'change', 'blur', 'keyup'];
+		for (let i in events) {
+	    cc.addEventListener('input', formatCardCode, false);
+	    np.addEventListener('input', formatPhone, false);
+	}
+	function formatCardCode(a) {
+	    let cardCode = this.value.replace(/[^\d]/g, '').substring(0,16);
+	    cardCode = cardCode !== '' ? cardCode.match(/.{1,4}/g).join(' ') : '';
+	    this.value = cardCode;
+	}
+	function formatPhone(a) {
+	    let numPhone = this.value.replace(/[^\d]/g, '').substring(0,10);
+	    if (numPhone.length <7 ) {
+	    numPhone = numPhone !== '' ? numPhone.match(/.{1,3}/g).join(' ') : '';
+	    } else {
+	    numPhone = numPhone.substring(0,6).match(/.{1,3}/g).join(' ') + ' ' + numPhone.substring(6,10).match(/.{1,2}/g).join(' ');
+	    }
+	    this.value = numPhone;
+	}
+	function checkEmail(form) {
+		const re_mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+		const input = document.getElementById('email');
+		if (re_mail.test(form.email.value)) {
+			input.setAttribute('class', 'input_text');
+			return true;
+		} else {
+			input.setAttribute('class', 'input_text_false');
+			return false;
+		}
+	}
+	function checkPhone(form) {
+		const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+		const input = document.getElementById('phone');
+		if (re_phone.test(form.phone.value)) {
+			input.setAttribute('class', 'input_text');
+			return true;
+		} else {
+			input.setAttribute('class', 'input_text_false');
+			return false;
+		}
+	}
+	function checkCardNumber(form) {
+		const re_card = new RegExp('^[0-9]+$');
+		const input = document.getElementById('card_number');
+		if (re_card.test(form.card_number.value) && form.card_number.value.length === 16) {
+			input.setAttribute('class', 'input_text');
+			return true;
+		} else {
+			input.setAttribute('class', 'input_text_false');
+			return false;
+		}
+	}
+	function submitState(form) {
+		const submitButton = document.getElementById('submit');
+		if (checkEmail(form) && checkPhone(form) && checkCardNumber(form)) {
+			submitButton.removeAttribute('disabled');
+		} else {
+			submitButton.setAttribute('disabled', 'true');
+		}
+	}
+</script>
