@@ -9,12 +9,16 @@ const dbwriter = require('../db/dbwriter');
 
 dotenv.config();
 
-const dbconfig = {
+/* const dbconfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+};
+*/
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL
 };
 
 const saltRounds = 10;
@@ -28,7 +32,9 @@ const readUserData = (login, table, callback) => {
     .then(callback);
   pg.close();
 };
+
 router.use('/account', books);
+
 router.get('/account', (req, res) => {
   const login = req.session.name;
   if (!login) {
@@ -36,7 +42,7 @@ router.get('/account', (req, res) => {
     res.redirect('/login');
     return;
   }
-  readUserData(login, 'usersaccounts', result => {
+  readUserData(login, 'usersdata', result => {
       if (!result[0].activated) {
         res.cookie('redirect', '/account');
         res.redirect('/activate');
@@ -80,13 +86,13 @@ router.post('/updateprofile', (req, res) => {
     fullname: req.body.fullname,
     email: req.body.email,
     phone: req.body.phone,
-    bank_number: req.body.card_number,
+    card_number: req.body.card_number,
   };
   if (validate(user)) {
-    updateUserData(res, 'usersaccounts', user);
+    updateUserData(res, 'usersdata', user);
   } else {
     // user enter incorrect new information
-    readUserData(login, 'usersaccounts', result => {
+    readUserData(login, 'usersdata', result => {
         res.render('views/account/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
       });
   }
@@ -102,7 +108,7 @@ const comparePasswords = (res, hash, user) => {
           delete user.oldpassword;
           delete user.newpassword;
           delete user.newpassword_r;
-          updateUserData(res, 'userdata', user);
+          updateUserData(res, 'users', user);
         });
       } else {
         readData(userdata => {
@@ -131,7 +137,7 @@ router.post('/updatepassword', (req, res) => {
     return;
   }
   const pg = dbreader.open(dbconfig);
-  pg.select('userdata')
+  pg.select('users')
     .where({ login })
     .then(hashes => {
       const hash = hashes[0].hash;
