@@ -56,7 +56,7 @@ const validate = (user) => {
   const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
   const re_card = new RegExp('^[0-9]+$');
-  return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.bank_number));
+  return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.card_number));
 };
 
 const updateUserData = (res, table, user) => {
