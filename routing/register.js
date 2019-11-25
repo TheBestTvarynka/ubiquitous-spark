@@ -104,7 +104,7 @@ router.post('/register', (req, res) => {
     login: req.body.username,
     password: req.body.password,
     password_r: req.body.password_r,
-    fullName: req.body.fullname,
+    fullname: req.body.fullname,
     email: req.body.email,
     phone: req.body.phone,
   };
