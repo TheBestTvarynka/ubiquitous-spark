@@ -13,12 +13,17 @@ dotenv.config();
 
 const router = express.Router();
 
-const dbconfig = {
+/* const dbconfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+};
+*/
+
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL
 };
 
 const getBookId = async () => {

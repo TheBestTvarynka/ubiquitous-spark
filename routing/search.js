@@ -7,6 +7,15 @@ const router = express.Router();
 // const dotenv = require('dotenv');
 const dbreader = require('../db/dbreader');
 
+/* const dbconfig = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+};
+*/
+
 const dbconfig = {
   connectionString: process.env.DATABASE_URL
 };
@@ -14,16 +23,17 @@ const dbconfig = {
 function parseBooks(rows) {
   let arr = '';
 
-  /*rows.forEach(row => {
+  rows.forEach(row => {
     arr += '<div class=\'test\'><img class=\'cover\' src=\'' + row.preview + '\'><p class=\'description\'>' +
       row.author + ' - ' + row.name +
       '</p><div class=\'price\'>100$</div></div>';
   });
-  */
+ 
+  
 
-  for(let i = 0; i < 7; ++i)
+ /* for(let i = 0; i < 7; ++i)
   arr += '<div class=\'test\'><img class=\'cover\' src=\'https://s2982.pcdn.co/wp-content/uploads/2014/08/HP_hc_new_3-e1407533776984.jpeg\'><p class=\'description\'>Your book</p><div class=\'price\'>100$</div></div>';
-  return arr;
+  return arr;*/
 }
 
 router.post('/search', (req, res) => {
