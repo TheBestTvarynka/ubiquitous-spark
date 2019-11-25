@@ -6,15 +6,13 @@ const path = require('path');
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
-const siteRouter = require('./routing/routing');
 const login = require('./routing/login');
 const register = require('./routing/register');
-const books = require('./routing/books');
 const account = require('./routing/account');
 const search = require('./routing/search');
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // view render engine setup
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'default', layoutsDir: __dirname + '/site/'}));
@@ -31,7 +29,6 @@ app.use(cookie());
 
 app.use(login);
 app.use(register);
-app.use(books);
 app.use(account);
 app.use(search);
 
@@ -39,11 +36,31 @@ app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
 });
 
+
 app.get('/search', (req, res) => {
   res.render('views/search', { layout: 'default' });
 });
 
-app.use('/site', siteRouter);
+const printErr = err => {
+  if (err) {
+    console.log(err);
+  }
+};
+
+const sendFile = (fileName, res) => {
+  res.sendFile(fileName, null, printErr);
+};
+
+app.use('/site', (req, res) => {
+  const filename = __dirname + '/site' + req.url;
+  console.log(filename);
+  sendFile(filename, res);
+});
+app.use('/uploads', (req, res) => {
+  const filename = __dirname + '/uploads' + req.url;
+  sendFile(filename, res);
+});
+
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

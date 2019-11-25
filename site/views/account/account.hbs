@@ -6,6 +6,7 @@
 			<div class="navigation">
 				<a href="/account"  style="background-color: grey;">Account</a>
 				<a href="/account/mybooks">My books</a>
+				<a href="/account/addbook">Add book</a>
 				<a href="/account/likedbooks">Liked books</a>
 				<a href="/chat">Chat - demo</a>
 				<a href="/logout">Log out</a>
@@ -25,7 +26,7 @@
 				<input type="text" name="phone" class="input_text" oninput="submitState(profile)" id="phone" value="{{ user.phone }}">
 				<div class="tooltip">If you have new phone number, you can easy change it</div>
 				<div class="title">Card Number</div>
-				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.bank_number }}">
+				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.card_number }}">
 				<div class="tooltip">Everyone can change card number, isn't? Maybe it happened with you?</div>
 				<input type="submit" name="update" class="button" value="Update profile" id="submit">
 			</form>

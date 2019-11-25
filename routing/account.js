@@ -3,17 +3,22 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const books = require('./books');
 const dbreader = require('../db/dbreader');
 const dbwriter = require('../db/dbwriter');
 
 dotenv.config();
 
-const dbconfig = {
+/* const dbconfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+};
+*/
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL
 };
 
 const saltRounds = 10;
@@ -28,6 +33,8 @@ const readUserData = (login, table, callback) => {
   pg.close();
 };
 
+router.use('/account', books);
+
 router.get('/account', (req, res) => {
   const login = req.session.name;
   if (!login) {
@@ -35,7 +42,7 @@ router.get('/account', (req, res) => {
     res.redirect('/login');
     return;
   }
-  readUserData(login, 'usersaccounts', result => {
+  readUserData(login, 'usersdata', result => {
       if (!result[0].activated) {
         res.cookie('redirect', '/account');
         res.redirect('/activate');
@@ -49,7 +56,7 @@ const validate = (user) => {
   const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
   const re_card = new RegExp('^[0-9]+$');
-  return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.bank_number));
+  return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.card_number));
 };
 
 const updateUserData = (res, table, user) => {
@@ -62,7 +69,7 @@ const updateUserData = (res, table, user) => {
     .where({ login })
     .set(user, types)
     .then(result => {
-      res.render('views/account/account', { layout: 'default', user, message: '<p>Data has been updated!</p>' });
+      res.redirect('/account');
     });
   pg.close();
 };
@@ -79,13 +86,13 @@ router.post('/updateprofile', (req, res) => {
     fullname: req.body.fullname,
     email: req.body.email,
     phone: req.body.phone,
-    bank_number: req.body.card_number,
+    card_number: req.body.card_number,
   };
   if (validate(user)) {
-    updateUserData(res, 'usersaccounts', user);
+    updateUserData(res, 'usersdata', user);
   } else {
     // user enter incorrect new information
-    readUserData(login, 'usersaccounts', result => {
+    readUserData(login, 'usersdata', result => {
         res.render('views/account/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
       });
   }
@@ -101,7 +108,7 @@ const comparePasswords = (res, hash, user) => {
           delete user.oldpassword;
           delete user.newpassword;
           delete user.newpassword_r;
-          updateUserData(res, 'userdata', user);
+          updateUserData(res, 'users', user);
         });
       } else {
         readData(userdata => {
@@ -130,32 +137,12 @@ router.post('/updatepassword', (req, res) => {
     return;
   }
   const pg = dbreader.open(dbconfig);
-  pg.select('userdata')
+  pg.select('users')
     .where({ login })
     .then(hashes => {
       const hash = hashes[0].hash;
       comparePasswords(res, hash, user);
     });
-});
-
-router.get('/account/mybooks', (req, res) => {
-  const login = req.session.name;
-  if (!login) {
-    res.cookie('redirect', '/account/mybooks');
-    res.redirect('/login');
-    return;
-  }
-  res.render('views/account/mybooks', { layout: 'default' });
-});
-
-router.get('/account/likedbooks', (req, res) => {
-  const login = req.session.name;
-  if (!login) {
-    res.cookie('redirect', '/account/likedbooks');
-    res.redirect('/login');
-    return;
-  }
-  res.render('views/account/likedbooks', { layout: 'default' });
 });
 
 module.exports = router;

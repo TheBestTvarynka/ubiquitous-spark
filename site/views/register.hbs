@@ -22,7 +22,7 @@
 	function checkLogin(form) {
 		const re_name = /^[a-zA-Z0-9]+$/;
 		const input = document.getElementById('username');
-		if (re_name.test(form.username.value)) {
+		if (re_name.test(form.username.value) && form.username.value !== 0) {
 			input.setAttribute('class', 'input_text');
 			return true;
 		} else {
@@ -33,7 +33,7 @@
 	function checkEmail(form) {
 		const re_mail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 		const input = document.getElementById('email');
-		if (re_mail.test(form.email.value)) {
+		if (re_mail.test(form.email.value) && form.email.value !== 0) {
 			input.setAttribute('class', 'input_text');
 			return true;
 		} else {
@@ -44,7 +44,7 @@
 	function checkPhone(form) {
 		const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
 		const input = document.getElementById('phone');
-		if (re_phone.test(form.phone.value)) {
+		if (re_phone.test(form.phone.value) && form.phone.value !== 0) {
 			input.setAttribute('class', 'input_text');
 			return true;
 		} else {
@@ -64,11 +64,13 @@
 	}
 	function submitState(form) {
 		const submitButton = document.getElementById('submit');
-		if (checkLogin(form) && checkEmail(form) && checkPhone(form) && checkPassword(form)) {
-			console.log('==true');
+		const lg = checkLogin(form);
+		const ph = checkPhone(form);
+		const em = checkEmail(form);
+		const ps = checkPassword(form);
+		if (lg && em && ph && ps) {
 			submitButton.removeAttribute('disabled');
 		} else {
-			console.log('==false');
 			submitButton.setAttribute('disabled', 'true');
 		}
 	}

@@ -7,12 +7,16 @@ const dbreader = require('../db/dbreader');
 
 dotenv.config();
 
-const dbconfig = {
+/* const dbconfig = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+};
+*/
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL
 };
 const pg = dbreader.open(dbconfig);
 
@@ -37,12 +41,12 @@ const compare = (req, res, user) => {
       if (result) {
         // login success
         req.session.name = user.login;
-        const readUserData = pg.select('usersaccounts');
+        const readUserData = pg.select('usersdata');
         readUserData.where({ login: user.login })
                     .then(rows => {
                       if (rows[0].activated) {
                         const redirect = req.cookies.redirect;
-                        delete req.cookies.redirect;
+                        res.cookie('redirect', '');
                         if (redirect) {
                           res.redirect(redirect);
                         } else {
@@ -74,7 +78,7 @@ router.post('/login', (req, res) => {
     password: req.body.password,
   };
   // search user in db
-  pg.select('userdata')
+  pg.select('users')
     .where({ login: user.login })
     .then(rows => {
       parseUser(req, res, user, rows);

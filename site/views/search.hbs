@@ -4,35 +4,14 @@
     <div class="container">
         <div class="filters" id="filters">
             <form name="login" id="log" class="form" method="post" action="/search">
-                <div class="title">qwe</div>
+                <div class="title">Author</div>
                 <input type="text" name="author" class="input_text" onchange="CheckInput(login)" value="{{ where.author }}">
-                <div class="title">qwe</div>
+                <div class="title">Name of the book</div>
                 <input type="text" name="name" class="input_text" onchange="CheckInput(login)">
-                <div class="title">qwe</div>
-                <input type="text" name="description" class="input_text" onchange="CheckInput(login)">
-                <div class="title">qwe</div>
+                <div class="title">Year of publishing</div>
                 <input type="text" name="year" class="input_text" onchange="CheckInput(login)" value="{{ where.year }}">
-                <div class="title">qwe</div>
+                <div class="title">The publisher</div>
                 <input type="text" name="publishing" class="input_text" onchange="CheckInput(login)">
-                <!-- <div class="title">Select filter type:</div>
-                <select name="select_filter" class="select" onchange="ChangeFilter(login)">
-                    <option disabled="" selected="" value=""> -- select an option -- </option>
-                    <option value="author">By author</option>
-                    <option value="book">By book name</option>
-                </select>
-                <div class="title"><span class="title_value">First, select the filter</span></div>
-                <input type="text" name="value" class="input_text" onchange="CheckInput(login)" disabled><br>
-
-                <hr class="line">
-                <input type="button" name="find_books" class="show_advanced" value="Show advanced settings" onclick="ShowAdvanced(login)">
-                <div class="advanced" hidden>
-                    <div class="title">Publisher:</div>
-                    <input type="text" name="publisher" onchange="CheckInput(login)" class="input_text">
-
-                    <div class="title">Year of publishing:</div>
-                    <input type="text" name="year" onchange="CheckInput(login)" class="input_text" >
-                </div>
-                <hr class="line"> -->
 
                 <input type="submit" name="find_books" class="button" disabled>
             </form>
