@@ -37,7 +37,7 @@ const getBookId = async () => {
     rowMode: 'array',
     text: `SELECT nextval('book_id')`,
   });
-  pool.end();
+  await client.end();
   return result.rows[0][0];
 };
 
@@ -121,7 +121,7 @@ const createBook = async id => {
     rowMode: 'object',
     text: `SELECT * FROM books WHERE id = ${id};`,
   });
-  pool.end();
+  await client.end();
   const bookData = result.rows[0];
   book = `<div class="book">
   <img src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
