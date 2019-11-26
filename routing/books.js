@@ -102,19 +102,6 @@ router.post('/addbook', async (req, res) => {
     console.log('filename:', key);
     s3.upload(process.env.BUCKET, file, key, mimetype, err => { if(err) console.log(err); });
   });
-  /*fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/books`, { recursive: true }, err => { if(err) console.log(err) });
-  fs.mkdirSync(process.env.ROOT_DIR + `uploads/${id}/photos`, { recursive: true }, err => { if(err) console.log(err) });
-  busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    if (fieldname === 'photos') {
-      const pathToFile = `uploads/${id}/photos/` + filename;
-      bookData['preview'].push(pathToFile);
-      file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
-    } else if (fieldname === 'books') {
-      const pathToFile = `uploads/${id}/books/` + filename;
-      bookData['path'].push(pathToFile);
-      file.pipe(fs.createWriteStream(path.join(process.env.ROOT_DIR, pathToFile)));
-    }
-  });*/
   busboy.on('field', (name, value) => {
     bookData[name] = value;
   });
@@ -137,7 +124,7 @@ const createBook = async id => {
   pool.end();
   const bookData = result.rows[0];
   book = `<div class="book">
-  <img src="${'/' + bookData.preview[0]}">
+  <img src="${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
   <p>${bookData.name}</p>
   <div class="price">${bookData.year}</div>
   <div class="price">${bookData.price} $</div>
@@ -165,7 +152,7 @@ const createPagination = (pagesCount, url, page) => {
 
 const getBooks = (login, bookType, url, page, res) => {
   const pg = dbreader.open(dbconfig);
-  pg.select('usersaccounts')
+  pg.select('usersdata')
     .where({ login })
     .fields([ bookType ])
     .then(async result => {
