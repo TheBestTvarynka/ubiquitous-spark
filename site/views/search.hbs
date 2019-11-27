@@ -1,0 +1,66 @@
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/search.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+<main onload="print()">
+    <div class="container">
+        <div class="filters" id="filters">
+            <form name="login" id="log" class="form" method="post" action="/search">
+                <div class="title">Author</div>
+                <input type="text" name="author" class="input_text" onchange="CheckInput(login)" value="{{ where.author }}">
+                <div class="title">Name of the book</div>
+                <input type="text" name="name" class="input_text" onchange="CheckInput(login)">
+                <div class="title">Year of publishing</div>
+                <input type="text" name="year" class="input_text" onchange="CheckInput(login)" value="{{ where.year }}">
+                <div class="title">The publisher</div>
+                <input type="text" name="publishing" class="input_text" onchange="CheckInput(login)">
+
+                <input type="submit" name="find_books" class="button" disabled>
+            </form>
+        </div>
+
+        <div class="results" id="results">
+            {{{ message }}}
+        </div>
+    </div>
+</main>
+<script type="text/javascript">
+    function ChangeFilter(form) {
+        form.getElementsByClassName('input_text')[0].disabled = false;
+        const filter = form.getElementsByClassName('select');
+        const title_value = form.getElementsByClassName('title_value');
+
+        // console.log(filter[0].value);
+        // console.log(title_value[0].innerHTML);
+
+        title_value[0].innerHTML = 'Enter the name of the ' + filter[0].value;
+    }
+
+    function CheckInput(form) {
+        const value = form.getElementsByClassName('input_text')[0].value === '';
+        const publisher = form.getElementsByClassName('input_text')[1].value === '';
+        const year = form.getElementsByClassName('input_text')[2].value === '';
+
+        // console.log(form.getElementsByClassName('input_text')[0].value);
+        // console.log(form.getElementsByClassName('input_text')[1].value);
+        // console.log(form.getElementsByClassName('input_text')[2].value);
+
+        if(!value || !publisher || !year){
+            form.getElementsByClassName('button')[0].disabled = false;
+        }
+        else{
+            form.getElementsByClassName('button')[0].disabled = true;
+        }
+    }
+
+    function ShowAdvanced(form) {
+        form.getElementsByClassName('advanced')[0].hidden = !form.getElementsByClassName('advanced')[0].hidden;
+        CheckInput(form);
+        if(form.getElementsByClassName('advanced')[0].hidden) {
+            form.getElementsByClassName('button')[0].disabled = true;
+            form.getElementsByClassName('input_text')[1].value = '';
+            form.getElementsByClassName('input_text')[2].value = '';
+        }
+    }
+    function print() {
+        console.log({{ where }});
+    }
+</script>

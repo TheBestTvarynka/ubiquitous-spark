@@ -9,6 +9,7 @@ const cookie = require('cookie-parser');
 const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
+const search = require('./routing/search');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -29,9 +30,15 @@ app.use(cookie());
 app.use(login);
 app.use(register);
 app.use(account);
+app.use(search);
 
 app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
+});
+
+
+app.get('/search', (req, res) => {
+  res.render('views/search', { layout: 'default' });
 });
 
 const printErr = err => {
@@ -53,6 +60,7 @@ app.use('/uploads', (req, res) => {
   const filename = __dirname + '/uploads' + req.url;
   sendFile(filename, res);
 });
+
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
