@@ -24,9 +24,9 @@ function parseBooks(rows) {
   let arr = '';
 
   rows.forEach(row => {
-    arr += '<div class=\'test\'><img class=\'cover\' src=\'' + row.preview + '\'><p class=\'description\'>' +
-      row.author + ' - ' + row.name +
-      '</p><div class=\'price\'>100$</div></div>';
+    arr += `<div class="test"><img class="cover" src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${row.photos[0]}"><p class="description">
+      ${row.author} - ${row.name}
+      </p><div class="price">100$</div></div>`;
   });
  return arr;
 }
