@@ -16,7 +16,7 @@ const port = process.env.PORT || 8080;
 
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
-                        layoutsDir: __dirname + '/site/' }));
+  layoutsDir: __dirname + '/site/' }));
 app.set('views', path.join(__dirname, 'site'));
 app.set('view engine', 'hbs');
 
