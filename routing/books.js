@@ -30,10 +30,6 @@ const s3config = {
   region: process.env.REGION,
 };
 
-const dbconfig = {
-  connectionString: process.env.DATABASE_URL
-};
-
 const getBookId = async () => {
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
