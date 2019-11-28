@@ -3,11 +3,3 @@ node_js:
 - 12
 install: npm install
 script: npm test
-deploy:
-  provider: heroku
-  app: ubiquitous-spark
-  on:
-    repo: TheBestTvarynka/ubiquitous-spark
-  strategy: git
-  api-key:
-    secure: BJTpvE0MWaL0ttqZSQayshxc5AY/CJeWZj8WLvZRbE0XyrPoA8EeCQ44ai+IfJlOcOizuv26YpwGvOwf7UWVg3Vj2RaL/lMEMHqCXWYe+KUlW+h/Vfxy2C9Y6ahnH7y/zV/Uq5bBgJWWZz1YoWPRmjVVPfoomnZ1COiuua4Do08KA1+IfUOJS6rKHcv0eZPbw563NrIxuJjo7CxtypRX5JOYEkckddWA90b+PIwmjgL4b+7HfgcnabOL83MD/qjeSF0tUY0oDhDVwIlkLtt+ptUxD+wKRycALMjtF4YBMuvwss8RAU2Y7fd6TD+fFqz/vovJdvU1RTwV2fwo+iozbfocjTvTrMCry9RZjBsHeZhv0AYENdm5whPDINNqP23iNn58FSNihJ63Ipcmj49lT1EU6acjBROBb+FF7alBZLa5kWcqHrhlHXoRV0y/ISOebHJf/jtHHLnjQuGPHXGwV+C6ExpaRzwiFdIiHb7+VUMiXeMLi8UeIsUSH60A3cUldkzJe7IVGinWgPtyQyWkVXLMMz353uaFQq8TfXpsPqpOfF08Up3O/9R3FBInM8o4rUHIjM0lnTFx716uF5H3bdYS2VWxDyGsLrlEVjZeWVsfLx1SKy0dY2kUxCN4SjDn/kjXsKQCDcU/CdcjdyiZDZk0FFJdlqvHrae1NYb6UvQ=
