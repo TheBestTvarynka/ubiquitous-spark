@@ -99,7 +99,7 @@
     display: flex;
     height: 100%;
     flex-flow: wrap;
-    justify-content: space-between;
+    justify-content: space-around;
     /*background-color: rgb(200, 200, 200);*/
     padding: 0 2% 0 2%;
 }
@@ -117,6 +117,21 @@
 .test:hover {
     transform: scale(1.1);
 }
+
+.testing {
+    margin: 0 4% 4% 0;
+    border: 3px solid black;
+    border-radius: 10px;
+    background: red;
+    height: 350px;
+    width: 200px;
+    transition: all .2s ease-in-out;
+}
+
+.testing:hover {
+    transform: scale(1.1);
+}
+
 
 .cover {
     border-radius: 8px 8px 0 0;
