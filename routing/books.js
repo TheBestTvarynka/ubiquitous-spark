@@ -20,16 +20,13 @@ const router = express.Router();
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
 };*/
-const dbconfig = {
-  connectionString: process.env.DATABASE_URL
-};
 
 const s3config = {
   accessKeyId: process.env.ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_ACCESS_KEY,
   region: process.env.REGION,
 };
-*/
+
 
 const dbconfig = {
   connectionString: process.env.DATABASE_URL
