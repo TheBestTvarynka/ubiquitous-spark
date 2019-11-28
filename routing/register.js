@@ -17,7 +17,8 @@ dotenv.config();
 };
 */
 const dbconfig = {
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_UR,
+  ssl: true
 };
 
 const pg = dbreader.open(dbconfig);

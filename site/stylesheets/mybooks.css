@@ -71,6 +71,9 @@ h1 {
 	transition: all .2s ease-in-out;
 	font-size: 15px;
 }
+.book a {
+	color: black;
+}
 .book:hover {
 	transform: scale(1.05);
 }
