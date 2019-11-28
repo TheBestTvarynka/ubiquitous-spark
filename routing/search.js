@@ -28,12 +28,7 @@ function parseBooks(rows) {
       row.author + ' - ' + row.name +
       '</p><div class=\'price\'>100$</div></div>';
   });
- 
-  
-
- /* for(let i = 0; i < 7; ++i)
-  arr += '<div class=\'test\'><img class=\'cover\' src=\'https://s2982.pcdn.co/wp-content/uploads/2014/08/HP_hc_new_3-e1407533776984.jpeg\'><p class=\'description\'>Your book</p><div class=\'price\'>100$</div></div>';
-  return arr;*/
+ return arr;
 }
 
 router.post('/search', (req, res) => {
