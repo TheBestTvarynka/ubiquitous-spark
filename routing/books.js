@@ -29,7 +29,6 @@ const s3config = {
   secretAccessKey: process.env.SECRET_ACCESS_KEY,
   region: process.env.REGION,
 };
-*/
 
 const dbconfig = {
   connectionString: process.env.DATABASE_URL
