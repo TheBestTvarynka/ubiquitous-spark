@@ -145,4 +145,22 @@ router.post('/updatepassword', (req, res) => {
     });
 });
 
+router.post('/likebook/:id', (req, res) => {
+  const login = req.session.name;
+  const id = req.params.id;
+  if (!login) {
+    res.cookie('redirect', `/book/${id}`);
+    res.redirect('/login');
+    return;
+  }
+  const pg = dbwriter.open(dbconfig);
+  pg.update('usersdata')
+    .where({ login })
+    .set({ liked_books: `array_cat(liked_books, ARRAY[${id}]` }, { liked_books: 'function' })
+    .then(result => {
+      console.log(result);
+      res.end('Added to your Liked Books');
+    });
+});
+
 module.exports = router;
