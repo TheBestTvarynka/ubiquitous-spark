@@ -17,7 +17,7 @@ dotenv.config();
 };
 */
 const dbconfig = {
-  connectionString: process.env.DATABASE_UR,
+  connectionString: process.env.DATABASE_URL,
   ssl: true
 };
 
