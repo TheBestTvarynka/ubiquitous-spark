@@ -147,6 +147,7 @@ router.post('/updatepassword', (req, res) => {
 });
 
 router.post('/likebook/:id', (req, res) => {
+  console.log('likebook:');
   const login = req.session.name;
   const id = req.params.id;
   if (!login) {
@@ -157,7 +158,7 @@ router.post('/likebook/:id', (req, res) => {
   const pg = dbwriter.open(dbconfig);
   pg.update('usersdata')
     .where({ login })
-    .set({ liked_books: `array_cat(liked_books, ARRAY[${id}]` }, { liked_books: 'function' })
+    .set({ liked_books: `array_cat(liked_books, ARRAY[${id}])` }, { liked_books: 'function' })
     .then(result => {
       console.log(result);
       res.end('Added to your Liked Books');

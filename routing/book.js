@@ -26,7 +26,8 @@ router.get('/book/:id', (req, res) => {
         '.s3.us-east-2.amazonaws.com/' + book.photos[0];
       res.render('views/book', { layout: 'default', image: imageSource,
         description: book.description, author: book.author, year: book.year,
-        publishing: book.publishing, price: book.price, name: book.name });
+        publishing: book.publishing, price: book.price, name: book.name,
+        id: book.id });
     });
 });
 

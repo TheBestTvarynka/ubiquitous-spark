@@ -10,7 +10,7 @@
               <div class="title">The publisher: <strong>{{publishing}}</strong></div>
               <div class="title">The price: <strong>${{price}}</strong></div>
 
-              <input type="button" name="like" value="Like" class="button">
+              <input type="button" name="like" value="Like" class="button" onclick="likeBook()">
               <input type="button" name="buy" value="Buy" class="button">
           </form>
       </div>
@@ -18,5 +18,21 @@
   <div class="down">
       {{description}}
   </div>
+<script type="text/javascript">
+  function likeBook() {
+    console.log('in log');
+    const id = {{ id }};
+    const likeRequest = new XMLHttpRequest();
+    likeRequest.open('POST', `/likebook/${id}`, true);
+    likeRequest.send();
+    likeRequest.addEventListener("load", (env) => {
+      if (likeRequest.status === 404) {
+        console.log('Bad request: return status code 404');
+      } else {
+        const message = likeRequest.response;
+        console.log(message);
+      }
+    });
+  }
+</script>
 </main>
-
