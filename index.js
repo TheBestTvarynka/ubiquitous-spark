@@ -10,6 +10,7 @@ const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
+const book = require('./routing/book');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -32,6 +33,7 @@ app.use(login);
 app.use(register);
 app.use(account);
 app.use(search);
+app.use(book);
 
 app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });

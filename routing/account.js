@@ -18,7 +18,8 @@ dotenv.config();
 };
 */
 const dbconfig = {
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
 };
 
 const saltRounds = 10;
@@ -142,6 +143,24 @@ router.post('/updatepassword', (req, res) => {
     .then(hashes => {
       const hash = hashes[0].hash;
       comparePasswords(res, hash, user);
+    });
+});
+
+router.post('/likebook/:id', (req, res) => {
+  const login = req.session.name;
+  const id = req.params.id;
+  if (!login) {
+    res.cookie('redirect', `/book/${id}`);
+    res.redirect('/login');
+    return;
+  }
+  const pg = dbwriter.open(dbconfig);
+  pg.update('usersdata')
+    .where({ login })
+    .set({ liked_books: `array_cat(liked_books, ARRAY[${id}]` }, { liked_books: 'function' })
+    .then(result => {
+      console.log(result);
+      res.end('Added to your Liked Books');
     });
 });
 

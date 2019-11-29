@@ -21,7 +21,8 @@ const router = express.Router();
   password: process.env.DB_PASSWORD,
 };*/
 const dbconfig = {
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
 };
 
 const s3config = {
@@ -124,11 +125,12 @@ const createBook = async id => {
   await client.end();
   const bookData = result.rows[0];
   book = `<div class="book">
+  <a href="/book/${bookData.id}">
   <img src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
   <p>${bookData.name}</p>
   <div class="price">${bookData.year}</div>
   <div class="price">${bookData.price} $</div>
-  </div>`;
+  </a></div>`;
   return book;
 };
 
