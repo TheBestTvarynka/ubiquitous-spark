@@ -19,7 +19,14 @@ router.get('/book/:id', (req, res) => {
     .then(books => {
       pg.close();
       const book = books[0];
-      res.render('views/book', { layout: 'default', book });
+      console.log('The book : <<<');
+      console.log(book);
+      console.log('>>>');
+      const imageSource = 'https://' + process.env.BUCKET +
+        '.s3.us-east-2.amazonaws.com/' + book.photos[0];
+      res.render('views/book', { layout: 'default', image: imageSource,
+        description: book.description, author: book.author, year: book.year,
+        publishing: book.publishing, price: book.price, name: book.name });
     });
 });
 

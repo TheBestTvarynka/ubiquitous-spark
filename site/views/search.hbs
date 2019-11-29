@@ -1,17 +1,17 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/search.css">
 <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
-<main onload="print()">
+<main>
     <div class="container">
         <div class="filters" id="filters">
             <form name="login" id="log" class="form" method="post" action="/search">
                 <div class="title">Author</div>
-                <input type="text" name="author" class="input_text" onchange="CheckInput(login)" value="{{ where.author }}">
+                <input type="text" name="author" class="input_text" onchange="CheckInput(login)" onkeypress="CheckInput(login)" value="{{ where.author }}">
                 <div class="title">Name of the book</div>
-                <input type="text" name="name" class="input_text" onchange="CheckInput(login)">
+                <input type="text" name="name" class="input_text" onchange="CheckInput(login)" onkeypress="CheckInput(login)" value="{{ where.name }}">
                 <div class="title">Year of publishing</div>
-                <input type="text" name="year" class="input_text" onchange="CheckInput(login)" value="{{ where.year }}">
+                <input type="text" name="year" class="input_text" onchange="CheckInput(login)" onkeypress="CheckInput(login)" value="{{ where.year }}">
                 <div class="title">The publisher</div>
-                <input type="text" name="publishing" class="input_text" onchange="CheckInput(login)">
+                <input type="text" name="publishing" class="input_text" onchange="CheckInput(login)" onkeypress="CheckInput(login)" value="{{ where.publishing }}">
 
                 <input type="submit" name="find_books" class="button" disabled>
             </form>
@@ -19,10 +19,6 @@
 
         <div class="results" id="results">
             {{{ message }}}
-	    <div class="testing"></div>
-<a href="/bookpage"><div class="testing"></div></a>
-<div class="testing"></div>	    
-<div class="testing"></div>
         </div>
     </div>
 </main>
@@ -39,15 +35,16 @@
     }
 
     function CheckInput(form) {
-        const value = form.getElementsByClassName('input_text')[0].value === '';
-        const publisher = form.getElementsByClassName('input_text')[1].value === '';
+        const author = form.getElementsByClassName('input_text')[0].value === '';
+        const name = form.getElementsByClassName('input_text')[1].value === '';
         const year = form.getElementsByClassName('input_text')[2].value === '';
+        const publisher = form.getElementsByClassName('input_text')[3].value === '';
 
         // console.log(form.getElementsByClassName('input_text')[0].value);
         // console.log(form.getElementsByClassName('input_text')[1].value);
         // console.log(form.getElementsByClassName('input_text')[2].value);
 
-        if(!value || !publisher || !year){
+        if(!author || !name || !publisher || !year){
             form.getElementsByClassName('button')[0].disabled = false;
         }
         else{
@@ -63,8 +60,5 @@
             form.getElementsByClassName('input_text')[1].value = '';
             form.getElementsByClassName('input_text')[2].value = '';
         }
-    }
-    function print() {
-        console.log({{ where }});
     }
 </script>
