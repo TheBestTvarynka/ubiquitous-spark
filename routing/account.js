@@ -151,8 +151,7 @@ router.post('/likebook/:id', (req, res) => {
   const login = req.session.name;
   const id = req.params.id;
   if (!login) {
-    res.cookie('redirect', `/book/${id}`);
-    res.redirect('/login');
+    res.status('401').send('Login please');
     return;
   }
   const pg = dbwriter.open(dbconfig);
