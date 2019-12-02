@@ -5,12 +5,26 @@
 a {
     text-decoration: none;
 }
-li {
-    text-decoration: none;
-    list-style: none;
-}
+
 body {
     font-family: 'Raleway', sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.about {
+    font-size: 26px;
+    margin: 80px 500px 200px;
+    text-align: center;
+}
+
+.contacts {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 50px;
 }
 
 .header_container {
