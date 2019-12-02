@@ -44,6 +44,10 @@ app.get('/search', (req, res) => {
   res.render('views/search', { layout: 'default' });
 });
 
+app.get('/about', (req, res) => {
+  res.render('views/about', { layout: 'default' });
+});
+
 const printErr = err => {
   if (err) {
     console.log(err);
