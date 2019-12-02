@@ -79,7 +79,7 @@
 	function checkPhone(form) {
 		const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
 		const input = document.getElementById('phone');
-		if (re_phone.test(form.phone.value)) {
+		if (re_phone.test(form.phone.value) && form.phone.value.length === 10) {
 			input.setAttribute('class', 'input_text');
 			return true;
 		} else {
