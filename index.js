@@ -16,6 +16,7 @@ const book = require('./routing/book');
 
 const app = express();
 const port = process.env.PORT || 8080;
+const clients = [];
 
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
@@ -66,13 +67,28 @@ app.use('/uploads', (req, res) => {
   sendFile(filename, res);
 });
 
-/*app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
-});*/
-
 const server = http.createServer(app);
 const webSoketServer = new WebSocketServer({ httpServer: server });
+
+webSoketServer.on('request', request => {
+  console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
+  const connection = request.accept(null, request.origin);
+  clients.push(connection);
+  console.log((new Date()) + ' Connection accepted.');
+  connection.on('message', message => {
+    if (message.type === 'utf8') {
+      console.log('message:', message.utf8Data);
+      for (var i=0; i < clients.length; i++) {
+        clients[i].sendUTF(JSON.stringify({ text: 'your signal was reseived' }));
+      }
+    }
+  });
+  connection.on('close', connection => {
+    console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
+  });
+});
 
 server.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
+
