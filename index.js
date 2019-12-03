@@ -6,6 +6,8 @@ const path = require('path');
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
+const WebSocketServer = require('websocket').server;
+const http = require('http');
 const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
@@ -64,8 +66,13 @@ app.use('/uploads', (req, res) => {
   sendFile(filename, res);
 });
 
+/*app.listen(port, () => {
+  console.log(`App listening on port ${port}`);
+});*/
 
-app.listen(port, () => {
+const server = http.createServer(app);
+const webSoketServer = new WebSocketServer({ httpServer: server });
+
+server.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
-
