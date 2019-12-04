@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WebSockets - Simple chat</title>
+</head>
+<body>
+    <form name="chat">
+    	<input type="text" name="message">
+    	<input type="text" name="answer" id="answer">
+    	<input type="button" name="send" onclick="sendmessage(chat)">
+    </form>
+    <script type="text/javascript">
+    	window.WebSocket = window.WebSocket || window.MozWebSocket;
+    	const connection = new WebSocket('ws://127.0.0.1:8080');
+    	connection.onopen = function () {
+    		console.log('open connection');
+	        // first we want users to enter their names
+	    };
+	    // most important part - incoming messages
+	    connection.onmessage = function (message) {
+	    	console.log('we have got a message');
+	        // try to parse JSON message. Because we know that the server always returns
+	        // JSON this should work without any problem but we should make sure that
+	        // the massage is not chunked or otherwise damaged.
+            const json = JSON.parse(message.data);
+	        const answer = document.getElementById('answer');
+	        answer.value = json.text;
+	    };
+	    connection.onerror = function (error) {
+	        console.log('error occured :(');
+	    };
+    	function sendmessage(form) {
+    		console.log('in sendmessage');
+    		const message = form.message.value;
+    		connection.send(message);
+    	}
+    </script>
+</body>
+</html>
