@@ -1,5 +1,24 @@
 .admins {
+	margin: 1.5%;
   background-color: red;
-  width: 100%;
-  height: 25%;
+  width: 500px;
+	font-size: 20px;
+
+	height: 500px;
+}
+
+.admin {
+	background-color: red;
+	width: 50%;
+	height: 200px;
+}
+
+.content {
+	width: 70%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	//text-align: left;
+	flex-wrap: wrap;
+	padding-left: 50px;
 }
