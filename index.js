@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
+const dbwriter = require('./db/dbwriter');
+const { Pool } = require('pg');
 const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
@@ -18,6 +20,10 @@ const app = express();
 const port = process.env.PORT || 8080;
 const clients = [];
 
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+};
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
   layoutsDir: __dirname + '/site/' }));
@@ -75,12 +81,23 @@ webSoketServer.on('request', request => {
   const connection = request.accept(null, request.origin);
   clients.push(connection);
   console.log((new Date()) + ' Connection accepted.');
-  connection.on('message', message => {
-    if (message.type === 'utf8') {
-      console.log('message:', message.utf8Data);
-      for (var i=0; i < clients.length; i++) {
-        clients[i].sendUTF(JSON.stringify({ text: 'your signal was reseived' }));
+
+  connection.on('message', data => {
+    if (data.type === 'utf8') {
+      const message = JSON.parse(data.utf8Data);
+      const types = {};
+      for (const value in message) {
+        types[value] = 'value';
       }
+      console.log(message, types);
+      // add this message to database
+      const pg = dbwriter.open(dbconfig);
+      pg.insert('chat')
+        .value(message, types)
+        .then(result => {
+          console.log(result);
+        });
+      connection.send('{ "res": "OK" }');
     }
   });
   connection.on('close', connection => {
