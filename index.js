@@ -9,6 +9,7 @@ const cookie = require('cookie-parser');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const dbwriter = require('./db/dbwriter');
+const dbreader = require('./db/dbreader');
 const { Pool } = require('pg');
 const login = require('./routing/login');
 const register = require('./routing/register');
@@ -73,6 +74,16 @@ app.use('/uploads', (req, res) => {
   sendFile(filename, res);
 });
 
+app.get('/users/:permission', (req, res) => {
+  const pg = dbreader.open(dbconfig);
+  pg.select('usersdata')
+    .fields([ 'login', 'fullname' ])
+    .where({ permission: req.params.permission })
+    .then(result => {
+      res.end(JSON.stringify(result));
+    });
+});
+
 const server = http.createServer(app);
 const webSoketServer = new WebSocketServer({ httpServer: server });
 
@@ -95,6 +106,7 @@ webSoketServer.on('request', request => {
       pg.insert('chat')
         .value(message, types)
         .then(result => {
+          pg.close();
           console.log(result);
         });
       connection.send('{ "res": "OK" }');
