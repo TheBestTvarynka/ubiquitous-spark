@@ -44,6 +44,10 @@ app.get('/search', (req, res) => {
   res.render('views/search', { layout: 'default' });
 });
 
+app.get('/chat', (req, res) => {
+  res.render('views/chat', { layout: 'default' });
+});
+
 app.get('/about', (req, res) => {
   res.render('views/about', { layout: 'default' });
 });
