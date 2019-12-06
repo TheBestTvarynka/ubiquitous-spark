@@ -19,7 +19,7 @@ const book = require('./routing/book');
 
 const app = express();
 const port = process.env.PORT || 8080;
-const clients = [];
+const clients = {};
 
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
@@ -87,33 +87,63 @@ app.get('/users/:permission', (req, res) => {
 const server = http.createServer(app);
 const webSoketServer = new WebSocketServer({ httpServer: server });
 
+// check correct name
+const sendNeightbourds = (clients, id, message, author) => {
+  const pg = dbreader.open(dbconfig);
+  pg.select('chats_id')
+    .fields([ 'peoples' ])
+    .where({ id })
+    .then(result => {
+      pg.close();
+      const peoples = result[0].peoples;
+      console.log(peoples);
+      for(let person of peoples) {
+        console.log(person);
+        if (clients[person] && person !== author) {
+          console.log(person);
+          clients[person].send(message);
+        }
+      }
+    });
+};
+
 webSoketServer.on('request', request => {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   const connection = request.accept(null, request.origin);
-  clients.push(connection);
   console.log((new Date()) + ' Connection accepted.');
 
+  let userName = undefined;
   connection.on('message', data => {
     if (data.type === 'utf8') {
-      const message = JSON.parse(data.utf8Data);
-      const types = {};
-      for (const value in message) {
-        types[value] = 'value';
+      if (userName) {
+        console.log('on message: write in db');
+        const message = JSON.parse(data.utf8Data);
+        console.log('pure data:', data.utf8Data);
+        const types = {};
+        for (const value in message) {
+          types[value] = 'value';
+        }
+        console.log(message, types);
+        // add this message to database
+        const pg = dbwriter.open(dbconfig);
+        pg.insert('chat')
+          .value(message, types)
+          .then(result => {
+            pg.close();
+            console.log(result);
+          });
+        sendNeightbourds(clients, message.chat_id, message.message, message.author);
+      } else {
+        console.log('on message: save name');
+        userName = data.utf8Data;
+        console.log('user name:', userName);
+        clients[userName] = connection;
       }
-      console.log(message, types);
-      // add this message to database
-      const pg = dbwriter.open(dbconfig);
-      pg.insert('chat')
-        .value(message, types)
-        .then(result => {
-          pg.close();
-          console.log(result);
-        });
-      connection.send('{ "res": "OK" }');
     }
   });
   connection.on('close', connection => {
     console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
+    delete clients[userName];
   });
 });
 
