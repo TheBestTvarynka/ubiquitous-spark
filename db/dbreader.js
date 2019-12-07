@@ -31,8 +31,6 @@ const where = conditions => {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
-        // ch
-        // condition = `${key} = ${value}`;
         condition = `${key} = $${i}`;
       }
     }
@@ -60,6 +58,7 @@ class Cursor {
     this.args = [];
     // ORDER BY condition
     this.orderBy = undefined;
+    this.lim = undefined;
   }
   // add WHERE contitions
   where(conditions) {
@@ -71,6 +70,10 @@ class Cursor {
   // set fields that we want to select ( '*' by default )
   fields(list) {
     this.columns = list;
+    return this;
+  }
+  limit(lim) {
+    this.lim = lim;
     return this;
   }
   // set column for ordering
@@ -90,12 +93,13 @@ class Cursor {
   then(callback) {
     // collect data for selecting
     const { mode, table, columns, args } = this;
-    const { whereClause, orderBy, columnName } = this;
+    const { whereClause, orderBy, columnName, lim } = this;
     const fields = columns.join(', ');
     // create request to db
     let sql = `SELECT ${fields} FROM ${table}`;
     if (whereClause) sql += ` WHERE ${whereClause}`;
     if (orderBy) sql += ` ORDER BY ${orderBy}`;
+    if (lim) sql += ` LIMIT ${lim}`;
     this.database.query(sql, args,  (err, res) => {
       if (err) {
         console.log(err);
