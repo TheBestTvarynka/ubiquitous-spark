@@ -20,10 +20,11 @@ const book = require('./routing/book');
 const app = express();
 const port = process.env.PORT || 8080;
 const clients = {};
+const historyPack = 4;
 
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
-  ssl: true
+  // ssl: true
 };
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
@@ -107,6 +108,46 @@ const sendNeightbourds = (clients, id, message, author) => {
     });
 };
 
+const writeInDB = data => {
+  const message = data;
+  console.log('message');
+  const types = {};
+  for (const value in message) {
+   types[value] = 'value';
+  }
+  console.log(message, types);
+  // add this message to database
+  const pg = dbwriter.open(dbconfig);
+  pg.insert('chat')
+    .value(message, types)
+    .then(result => {
+      pg.close();
+      console.log(result);
+    });
+  sendNeightbourds(clients, message.chat_id, message.message, message.author);
+};
+
+const loadHistory = (data, connection) => {
+  // load history
+  data.time = '< ' + data.time;
+  console.log(data);
+  const pg = dbreader.open(dbconfig);
+  pg.select('chat')
+    .where(data)
+    .limit(historyPack)
+    .order('time', false)
+    .then(result => {
+      pg.close();
+      console.log(result);
+    });
+  connection.send(JSON.stringify({ title: 'history', messages: ['yter', 'asan'] }));
+};
+
+const routing = {
+  message: writeInDB,
+  history: loadHistory,
+};
+
 webSoketServer.on('request', request => {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   const connection = request.accept(null, request.origin);
@@ -118,21 +159,10 @@ webSoketServer.on('request', request => {
       if (userName) {
         console.log('on message: write in db');
         const message = JSON.parse(data.utf8Data);
-        console.log('pure data:', data.utf8Data);
-        const types = {};
-        for (const value in message) {
-          types[value] = 'value';
-        }
-        console.log(message, types);
-        // add this message to database
-        const pg = dbwriter.open(dbconfig);
-        pg.insert('chat')
-          .value(message, types)
-          .then(result => {
-            pg.close();
-            console.log(result);
-          });
-        sendNeightbourds(clients, message.chat_id, message.message, message.author);
+        const title = message.title;
+        delete message.title;
+        const action = routing[title];
+        action(message, connection);
       } else {
         console.log('on message: save name');
         userName = data.utf8Data;
@@ -142,7 +172,7 @@ webSoketServer.on('request', request => {
     }
   });
   connection.on('close', connection => {
-    console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
+    console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     delete clients[userName];
   });
 });
