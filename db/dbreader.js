@@ -58,6 +58,7 @@ class Cursor {
     this.args = [];
     // ORDER BY condition
     this.orderBy = undefined;
+    this.orderDirection = undefined;
     this.lim = undefined;
   }
   // add WHERE contitions
@@ -77,8 +78,10 @@ class Cursor {
     return this;
   }
   // set column for ordering
-  order(name) {
+  order(name, direction) {
     this.orderBy = name;
+    if (direction) this.orderDirection = 'ASC';
+    else this.orderDirection = 'DESC';
     return this;
   }
   // cut data from result of selecting and collect them in variables
@@ -93,12 +96,12 @@ class Cursor {
   then(callback) {
     // collect data for selecting
     const { mode, table, columns, args } = this;
-    const { whereClause, orderBy, columnName, lim } = this;
+    const { whereClause, orderBy, orderDirection, columnName, lim } = this;
     const fields = columns.join(', ');
     // create request to db
     let sql = `SELECT ${fields} FROM ${table}`;
     if (whereClause) sql += ` WHERE ${whereClause}`;
-    if (orderBy) sql += ` ORDER BY ${orderBy}`;
+    if (orderBy && orderDirection) sql += ` ORDER BY ${orderBy} ${orderDirection}`;
     if (lim) sql += ` LIMIT ${lim}`;
     this.database.query(sql, args,  (err, res) => {
       if (err) {
