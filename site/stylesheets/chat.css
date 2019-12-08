@@ -50,10 +50,11 @@
 	border-radius: 10px;
 	margin: 1%;
 	font-family: 'Abril Fatface', cursive;
-	font-size: 60px;
+	font-size: 70px;
 	color: white;
 	position: center;
-	justify-content: center;
+	align-items: center;
+	vertical-align: middle;
 	text-align: center;
 }
 

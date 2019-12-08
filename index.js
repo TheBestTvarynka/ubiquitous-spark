@@ -64,7 +64,7 @@ app.get('/chat', (req, res) => {
         const letter = i.fullname.split('')[0];
         console.log(letter);
         // eslint-disable-next-line max-len
-        resulting += '<a class="a"  href="chat_entry/' + name + '"><div class="admin"><div class="picture">' + letter + '</div><p class="text"><strong>' + name + '</strong></p></div></a>';
+        resulting += '<a class="a"  href="chat_entry/' + name + '"><div class="admin"><div class="picture"><p class="letter">' + letter + '</p></div><p class="text"><strong>' + name + '</strong></p></div></a>';
       });
       res.render('views/chat', { layout: 'default', admins: resulting });
     });

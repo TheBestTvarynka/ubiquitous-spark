@@ -21,9 +21,4 @@ const dbconfig = {
   ssl: true
 };
 
-// router.get('/chat_entry', (req, res) => {
-//
-//     });
-// });
-
 module.exports = router;
