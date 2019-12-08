@@ -7,6 +7,7 @@ const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
 const login = require('./routing/login');
+const dbreader = require('./db/dbreader');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
@@ -20,6 +21,11 @@ app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
   layoutsDir: __dirname + '/site/' }));
 app.set('views', path.join(__dirname, 'site'));
 app.set('view engine', 'hbs');
+
+const dbconfig = {
+  connectionString: process.env.DATABASE_URL,
+  // ssl: true
+};
 
 app.use(expressSession({
   secret: 'mySecretKey',
@@ -45,7 +51,23 @@ app.get('/search', (req, res) => {
 });
 
 app.get('/chat', (req, res) => {
-  res.render('views/chat', { layout: 'default' });
+  const pg = dbreader.open(dbconfig);
+  pg.select('usersdata')
+    .where({ permission: 'admin' })
+    .then(result => {
+      let resulting = '';
+      console.log(result);
+      result.forEach(i => {
+        console.log(i);
+        const name = i.fullname;
+        console.log(name);
+        const letter = i.fullname.split('')[0];
+        console.log(letter);
+        // eslint-disable-next-line max-len
+        resulting += '<a class="a"  href="chat_entry/' + name + '"><div class="admin"><div class="picture">' + letter + '</div><p class="text"><strong>' + name + '</strong></p></div></a>';
+      });
+      res.render('views/chat', { layout: 'default', admins: resulting });
+    });
 });
 
 app.get('/about', (req, res) => {
@@ -76,4 +98,3 @@ app.use('/uploads', (req, res) => {
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
-
