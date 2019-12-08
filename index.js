@@ -24,7 +24,7 @@ app.set('view engine', 'hbs');
 
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
-  // ssl: true
+  ssl: true
 };
 
 app.use(expressSession({
