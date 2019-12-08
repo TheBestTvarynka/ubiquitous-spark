@@ -12,7 +12,8 @@
 	align-items: center;
 	background: rgb(200, 200, 200);
 	width: 97%;
-	max-width: 96%;
+	max-width: 97%;
+	min-width: 300px;
 	border-radius: 10px;
 	height: auto;
 	margin: 3% 0;
@@ -44,12 +45,14 @@
 .picture {
 	width: 100px;
 	height: 100px;
+	min-width: 100px;
 	background: black;
 	border-radius: 10px;
 	margin: 1%;
 	font-family: 'Abril Fatface', cursive;
 	font-size: 60px;
 	color: white;
+	position: center;
 	text-align: center;
 }
 
