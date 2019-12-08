@@ -20,6 +20,18 @@
 	transition: all .2s ease-in-out;
 }
 
+.a:link {
+	color: black;
+}
+
+.a:visited {
+	color: red;
+}
+
+.a:hover {
+	color: rgb(200, 200, 200);
+}
+
 .admin:hover {
 	background: grey;
 }
@@ -35,6 +47,10 @@
 	background: black;
 	border-radius: 10px;
 	margin: 1%;
+	font-family: 'Abril Fatface', cursive;
+	font-size: 60px;
+	color: white;
+	text-align: center;
 }
 
 .content {
