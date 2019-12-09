@@ -21,4 +21,20 @@ const dbconfig = {
   ssl: true
 };
 
+router.get('/chat', (req, res) => {
+  const pg = dbreader.open(dbconfig);
+  pg.select('usersdata')
+    .where({ permission: 'admin' })
+    .then(result => {
+      let resulting = '';
+      result.forEach(i => {
+        const name = i.fullname;
+        const letter = i.fullname.split('')[0];
+        // eslint-disable-next-line max-len
+        resulting += '<a class="a"  href="chat_entry/' + name + '"><div class="admin"><div class="picture"><p class="letter">' + letter + '</p></div><p class="text"><strong>' + name + '</strong></p></div></a>';
+      });
+      res.render('views/chat', { layout: 'default', admins: resulting });
+    });
+});
+
 module.exports = router;

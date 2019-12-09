@@ -11,6 +11,7 @@ const dbreader = require('./db/dbreader');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
+const chat = require('./routing/chat');
 const book = require('./routing/book');
 
 const app = express();
@@ -40,6 +41,7 @@ app.use(register);
 app.use(account);
 app.use(search);
 app.use(book);
+app.use(chat);
 
 app.get('/', (req, res) => {
   res.render('views/home', { layout: 'default' });
@@ -48,26 +50,6 @@ app.get('/', (req, res) => {
 
 app.get('/search', (req, res) => {
   res.render('views/search', { layout: 'default' });
-});
-
-app.get('/chat', (req, res) => {
-  const pg = dbreader.open(dbconfig);
-  pg.select('usersdata')
-    .where({ permission: 'admin' })
-    .then(result => {
-      let resulting = '';
-      console.log(result);
-      result.forEach(i => {
-        console.log(i);
-        const name = i.fullname;
-        console.log(name);
-        const letter = i.fullname.split('')[0];
-        console.log(letter);
-        // eslint-disable-next-line max-len
-        resulting += '<a class="a"  href="chat_entry/' + name + '"><div class="admin"><div class="picture"><p class="letter">' + letter + '</p></div><p class="text"><strong>' + name + '</strong></p></div></a>';
-      });
-      res.render('views/chat', { layout: 'default', admins: resulting });
-    });
 });
 
 app.get('/about', (req, res) => {
