@@ -15,10 +15,14 @@
 }
 
 .message-incoming {
-    background: rgb(200, 200, 200);
     width: fit-content;
     height: auto;
+    display: inline-flex;
     align-self: flex-start;
+    align-items: flex-end;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    flex-direction: row;
     max-width: 60%;
     border-radius: 10px;
     margin: 0 0 20px 20px;
@@ -26,14 +30,36 @@
 }
 
 .message-upcoming {
-    background: rgb(200, 200, 200);
     width: fit-content;
     height: auto;
+    display: inline-flex;
     align-self: flex-end;
+    align-items: flex-end;
+    flex-flow: row-reverse;
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
     max-width: 60%;
     border-radius: 10px;
     margin: 0 20px 20px 0;
     padding: 1% 2% 1% 1%;
+}
+
+.text-incoming {
+    font-size: 24px;
+    border-radius: 10px 10px 10px 0;
+    padding: 5px 8px 5px 8px;
+    background-color: rgb(200, 200, 200);
+    color: black;
+    margin-left: 20px;
+}
+
+.text-upcoming {
+    font-size: 24px;
+    border-radius: 10px 10px 0 10px;
+    padding: 5px 8px 5px 8px;
+    background-color: grey;
+    color: black;
+    margin-right: 20px;
 }
 
 .a:link {
@@ -52,25 +78,20 @@
     background: grey;
 }
 
-.text {
-    font-size: 24px;
-    margin: 0 0 0 10%;
-}
-
 .title {
     margin: 0;
     padding: 0;
 }
 
 .picture {
-    width: 100px;
-    height: 100px;
-    min-width: 100px;
+    width: 37px;
+    height: 37px;
+    min-width: 20px;
     background: black;
-    border-radius: 10px;
-    margin: 1%;
+    border-radius: 5px;
+    /*margin: 1%;*/
     font-family: 'Abril Fatface', cursive;
-    font-size: 70px;
+    font-size: 26px;
     color: white;
     position: center;
     align-items: center;
