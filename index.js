@@ -7,6 +7,7 @@ const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
 const login = require('./routing/login');
+// eslint-disable-next-line no-unused-vars
 const dbreader = require('./db/dbreader');
 const register = require('./routing/register');
 const account = require('./routing/account');
@@ -23,6 +24,7 @@ app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
 app.set('views', path.join(__dirname, 'site'));
 app.set('view engine', 'hbs');
 
+// eslint-disable-next-line no-unused-vars
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
