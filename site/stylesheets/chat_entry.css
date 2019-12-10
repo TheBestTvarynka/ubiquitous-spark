@@ -1,9 +1,9 @@
 .messages {
     margin: 1.2% 0 0 0;
     width: 80%;
-    height: 86%;
+    height: 76%;
     max-height: 345px;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     display: flex;
     font-size: 20px;
     flex-direction: column-reverse;
@@ -14,15 +14,54 @@
     border: 2px solid black;
 }
 
+.input_holder {
+    height: 10%;
+    width: 100%;
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.input {
+    height: 100%;
+    font-size: 20px;
+    border-radius: 0 0 0 5px;
+    width: 65%;
+    border: 2px solid black;
+    border-top: none;
+    padding: 0 2% 0 1%;
+    margin: 0;
+}
+
+.submit {
+    width: 12%;
+    height: 105%;
+    margin: 0;
+    font-size: 20px;
+    padding: 8px 10px 10px 10px;
+    background: black;
+    border-radius: 0 0 3px 0;
+    border: 2px solid black;
+    border-top: none;
+    text-align: center;
+    color: white;
+    transition: all .2s ease-in-out;
+}
+
+.submit:hover {
+    background: rgb(50, 50, 50);
+}
+
 .message-incoming {
     width: fit-content;
-    height: auto;
+    height: fit-content;
     display: inline-flex;
     align-self: flex-start;
     align-items: flex-end;
     flex-flow: row;
     flex-wrap: nowrap;
     flex-direction: row;
+    flex-basis: content;
     max-width: 60%;
     border-radius: 10px;
     margin: 0 0 20px 20px;
@@ -31,13 +70,14 @@
 
 .message-upcoming {
     width: fit-content;
-    height: auto;
+    height: fit-content;
     display: inline-flex;
     align-self: flex-end;
     align-items: flex-end;
     flex-flow: row-reverse;
     flex-wrap: nowrap;
     flex-direction: row-reverse;
+    flex-basis: content;
     max-width: 60%;
     border-radius: 10px;
     margin: 0 20px 20px 0;
@@ -50,7 +90,12 @@
     padding: 5px 8px 5px 8px;
     background-color: rgb(200, 200, 200);
     color: black;
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: content;
+    max-width: 70%;
     margin-left: 20px;
+    height: fit-content;
 }
 
 .text-upcoming {
@@ -58,8 +103,12 @@
     border-radius: 10px 10px 0 10px;
     padding: 5px 8px 5px 8px;
     background-color: grey;
+    display: flex;
+    max-width: 70%;
+    flex-basis: content;
     color: black;
     margin-right: 20px;
+    height: fit-content;
 }
 
 .a:link {

@@ -2,6 +2,15 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/chat_entry.css">
 <link href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap" rel="stylesheet">
+<script>
+
+    function addMessage(letter, message) {
+        const content = document.getElementsByClassName('messages')[0];
+        content.insertAdjacentHTML("afterBegin", '<div class="message-upcoming"><div class="picture">' +
+                letter + '</div><div class="text-upcoming">' + message + '</div></div>');
+        document.getElementById('input').value = '';
+    }
+</script>
 <main>
     <div class="pagecontainer">
         <div class="navigationcontainer">
@@ -26,7 +35,10 @@
                     <div class="text-upcoming">Hello!</div>
                 </div>
             </div>
-
+            <form class="input_holder">
+                <input type="text" class="input" id="input" placeholder="Start typing here...">
+                <input type="button" class="submit" value="Send" onclick="addMessage({{letterUser}}, input.value)">
+            </form>
         </div>
     </div>
 </main>
