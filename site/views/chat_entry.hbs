@@ -10,15 +10,21 @@
     let connection = new WebSocket('ws://127.0.0.1:8080');
 
     connection.onopen = function () {
+        console.log('Entered connection.onopen');
         connection.send(JSON.stringify({ title: 'history', time: new Date() }));
+        console.log(JSON.stringify({ title: 'history', time: new Date() }));
+        console.log('Left connection.onopen');
     };
 
     function addMessage(letter, message) {
+        console.log('Entered addMessage');
         const content = document.getElementsByClassName('messages')[0];
         content.insertAdjacentHTML("afterBegin", '<div class="message-upcoming"><div class="picture">' +
                 letter + '</div><div class="text-upcoming">' + message + '</div></div>');
         document.getElementById('input').value = '';
         connection.send(JSON.stringify({ title: 'message', chat_id: chat_id, author: {{username}}, message: message, time: new Date() }));
+        console.log(JSON.stringify({ title: 'message', chat_id: chat_id, author: {{username}}, message: message, time: new Date() }));
+        console.log('Left addMessage');
     }
 
 </script>
