@@ -31,7 +31,11 @@ router.get('/chat', (req, res) => {
         const name = i.fullname;
         const letter = i.fullname.split('')[0];
         // eslint-disable-next-line max-len
-        resulting += '<a class="a"  href="/chat_entry/' + name + '"><div class="admin"><div class="picture"><p class="letter">' + letter + '</p></div><p class="text"><strong>' + name + '</strong></p></div></a>';
+        resulting += '<a class="a"  href="/chat_entry/' +
+          // eslint-disable-next-line max-len
+          name + '"><div class="admin"><div class="picture"><p class="letter">' +
+          letter + '</p></div><p class="text"><strong>' +
+          name + '</strong></p></div></a>';
       });
       res.render('views/chat', { layout: 'default', admins: resulting });
     });
@@ -54,7 +58,8 @@ router.get('/chat_entry/:name', (req, res) => {
       letterUser += username.split('')[0];
       console.log('letterUser: ', letterUser);
       res.render('views/chat_entry',
-        { layout: 'default', admin: fullname, letterAdmin, letterUser });
+        { layout: 'default', admin: fullname, username,
+          letterAdmin, letterUser });
     });
   pg.close();
 });

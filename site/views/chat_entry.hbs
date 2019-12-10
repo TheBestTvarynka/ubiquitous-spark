@@ -4,12 +4,23 @@
 <link href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap" rel="stylesheet">
 <script>
 
+    let chat_id;
+
+    window.WebSocket = window.WebSocket || window.MozWebSocket;
+    let connection = new WebSocket('ws://127.0.0.1:8080');
+
+    connection.onopen = function () {
+        connection.send(JSON.stringify({ title: 'history', time: new Date() }));
+    };
+
     function addMessage(letter, message) {
         const content = document.getElementsByClassName('messages')[0];
         content.insertAdjacentHTML("afterBegin", '<div class="message-upcoming"><div class="picture">' +
                 letter + '</div><div class="text-upcoming">' + message + '</div></div>');
         document.getElementById('input').value = '';
+        connection.send(JSON.stringify({ title: 'message', chat_id: chat_id, author: {{username}}, message: message, time: new Date() }));
     }
+
 </script>
 <main>
     <div class="pagecontainer">
@@ -37,7 +48,7 @@
             </div>
             <form class="input_holder">
                 <input type="text" class="input" id="input" placeholder="Start typing here...">
-                <input type="button" class="submit" value="Send" onclick="addMessage({{letterUser}}, input.value)">
+                <input type="button" class="submit" value="Send" onclick="addMessage({{letterUser}}, input.value);return false;">
             </form>
         </div>
     </div>

@@ -2,16 +2,18 @@
     margin: 1.2% 0 0 0;
     width: 80%;
     height: 76%;
-    max-height: 345px;
+    max-height: 300px;
     border-radius: 5px 5px 0 0;
     display: flex;
+    /*display: inline-block;*/
     font-size: 20px;
     flex-direction: column-reverse;
     flex-flow: column-reverse;
     overflow-y: scroll;
-    justify-content: flex-start;
+    /*justify-content: flex-start;*/
     scroll-behavior: smooth;
     border: 2px solid black;
+    /*z-index: 0;*/
 }
 
 .input_holder {
@@ -54,34 +56,28 @@
 
 .message-incoming {
     width: fit-content;
-    height: fit-content;
     display: inline-flex;
     align-self: flex-start;
     align-items: flex-end;
-    flex-flow: row;
-    flex-wrap: nowrap;
     flex-direction: row;
-    flex-basis: content;
     max-width: 60%;
     border-radius: 10px;
     margin: 0 0 20px 20px;
+    min-height: max-content;
     padding: 1% 2% 1% 1%;
 }
 
 .message-upcoming {
     width: fit-content;
-    height: fit-content;
     display: inline-flex;
     align-self: flex-end;
     align-items: flex-end;
-    flex-flow: row-reverse;
-    flex-wrap: nowrap;
     flex-direction: row-reverse;
-    flex-basis: content;
     max-width: 60%;
     border-radius: 10px;
     margin: 0 20px 20px 0;
     padding: 1% 2% 1% 1%;
+    min-height: max-content;
 }
 
 .text-incoming {
@@ -90,12 +86,9 @@
     padding: 5px 8px 5px 8px;
     background-color: rgb(200, 200, 200);
     color: black;
-    display: flex;
-    flex-wrap: wrap;
-    flex-basis: content;
-    max-width: 70%;
+    overflow-wrap: break-word;
+    max-width: 80%;
     margin-left: 20px;
-    height: fit-content;
 }
 
 .text-upcoming {
@@ -103,12 +96,10 @@
     border-radius: 10px 10px 0 10px;
     padding: 5px 8px 5px 8px;
     background-color: grey;
-    display: flex;
-    max-width: 70%;
-    flex-basis: content;
+    max-width: 80%;
     color: black;
+    overflow-wrap: break-word;
     margin-right: 20px;
-    height: fit-content;
 }
 
 .a:link {
