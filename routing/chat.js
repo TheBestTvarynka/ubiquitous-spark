@@ -38,11 +38,25 @@ router.get('/chat', (req, res) => {
 });
 
 router.get('/chat_entry/:name', (req, res) => {
-  const fullname = req.params.name;
-  console.log('fullname accepted: ', fullname);
-  // eslint-disable-next-line no-unused-vars
   const pg = dbreader.open(dbconfig);
-  res.render('views/chat_entry', { layout: 'default', admin: fullname });
+  const login = req.session.name;
+
+  const fullname = req.params.name;
+  const letterAdmin = fullname.split('')[0];
+
+  let username = '';
+  let letterUser = '';
+  pg.select('usersdata')
+    .where({ login })
+    .then(result => {
+      username += result[0].fullname;
+      console.log('username: ', username);
+      letterUser += username.split('')[0];
+      console.log('letterUser: ', letterUser);
+      res.render('views/chat_entry',
+        { layout: 'default', admin: fullname, letterAdmin, letterUser });
+    });
+  pg.close();
 });
 
 module.exports = router;
