@@ -27,7 +27,10 @@ const where = conditions => {
       } else if (value.startsWith('<')) {
         condition = `${key} < $${i}`;
         value = value.substring(1);
-      } else if (value.includes('*') || value.includes('?')) {
+      } else if (value.startsWith('@>')) {
+        condition = `${key} @> $${i}`;
+        value = value.substring(2);
+      }else if (value.includes('*') || value.includes('?')) {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
@@ -103,6 +106,7 @@ class Cursor {
     if (whereClause) sql += ` WHERE ${whereClause}`;
     if (orderBy && orderDirection) sql += ` ORDER BY ${orderBy} ${orderDirection}`;
     if (lim) sql += ` LIMIT ${lim}`;
+    console.log(sql);
     this.database.query(sql, args,  (err, res) => {
       if (err) {
         console.log(err);
