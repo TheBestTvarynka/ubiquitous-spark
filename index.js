@@ -10,7 +10,7 @@ const WebSocketServer = require('websocket').server;
 const http = require('http');
 const dbwriter = require('./db/dbwriter');
 const dbreader = require('./db/dbreader');
-const { Pool } = require('pg');
+// const { Pool } = require('pg');
 const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
@@ -98,7 +98,7 @@ const sendNeightbourds = (clients, id, message, author) => {
       pg.close();
       const peoples = result[0].peoples;
       console.log(peoples);
-      for(let person of peoples) {
+      for (const person of peoples) {
         console.log(person);
         if (clients[person] && person !== author) {
           console.log(person);
@@ -113,7 +113,7 @@ const writeInDB = data => {
   console.log('message');
   const types = {};
   for (const value in message) {
-   types[value] = 'value';
+    types[value] = 'value';
   }
   console.log(message, types);
   // add this message to database
@@ -133,14 +133,15 @@ const loadHistory = (data, connection) => {
   console.log(data);
   const pg = dbreader.open(dbconfig);
   pg.select('chat')
+    .fields([ 'author', 'message', 'time' ])
     .where(data)
     .limit(historyPack)
     .order('time', false)
     .then(result => {
       pg.close();
       console.log(result);
+      connection.send(JSON.stringify({ messages: result }));
     });
-  connection.send(JSON.stringify({ title: 'history', messages: ['yter', 'asan'] }));
 };
 
 const routing = {
@@ -150,6 +151,7 @@ const routing = {
 
 webSoketServer.on('request', request => {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
+  console.log(request.httpRequest.headers);
   const connection = request.accept(null, request.origin);
   console.log((new Date()) + ' Connection accepted.');
 
@@ -172,7 +174,8 @@ webSoketServer.on('request', request => {
     }
   });
   connection.on('close', connection => {
-    console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+    console.log((new Date()) + ' Peer ' + connection.remoteAddress +
+      ' disconnected.');
     delete clients[userName];
   });
 });
