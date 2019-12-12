@@ -10,8 +10,7 @@
     connection.onopen = function () {
         console.log('Entered connection.onopen');
         connection.send(JSON.stringify({ title: 'history', time: new Date() }));
-
-        console.log(JSON.stringify({ title: 'history', time: new Date() }));
+        console.log('The sent data onload: ', JSON.stringify({ title: 'history', time: new Date() }));
         console.log('Left connection.onopen');
     };
 
@@ -25,6 +24,48 @@
         console.log(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: message, time: new Date() }));
         console.log('Left addMessage');
     }
+
+    function getMessage(json, title) {
+        console.log('Entered getMessage');
+        const content = document.getElementsByClassName('messages')[0];
+        if (title === 'history') {
+            json.messages.forEach(message => {
+            console.log('Showing history...');
+                if(message.author === '{{username}}') {
+                    console.log('');
+                    content.insertAdjacentHTML("beforeEnd", '<div class="message-upcoming"><div class="picture">' +
+                        {{letterUser}} + '</div><div class="text-upcoming">' + message.message + '</div></div>');
+                    console.log('User: ', message.message);
+                }
+                else if(message.author === '{{admin}}') {
+                    console.log('');
+                    content.insertAdjacentHTML("beforeEnd", '<div class="message-upcoming"><div class="picture">' +
+                        {{letterAdmin}} + '</div><div class="text-upcoming">' + message.message + '</div></div>');
+                    console.log('Admin: ', message.message);
+                }
+            });
+            console.log('Showed history');
+        } else if (title === 'message') {
+            console.log('');
+            content.insertAdjacentHTML("beforeEnd", '<div class="message-incoming"><div class="picture">' +
+                {{letterAdmin}} + '</div><div class="text-incoming">' + json.messages[0].message + '</div></div>');
+            console.log('Admin: ', json.messages[0].message);
+        }
+        console.log('Left getMessage');
+    }
+
+    connection.onmessage = function (message) {
+        console.log('Started rendering messages...');
+        const json = JSON.parse(message.data);
+
+        if (json.title === 'history' || json.title === 'message') {
+            getMessage(json, json.title);
+        } else {
+            console.log('Hmm..., I\'ve never seen JSON like this: ', json);
+        }
+
+        console.log('Rendered messages');
+    };
 
 </script>
 <main>
