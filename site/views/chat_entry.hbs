@@ -2,16 +2,17 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/chat_entry.css">
 <link href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap" rel="stylesheet">
+<script src="../../routing/chat.js"></script>
 <script>
-
-    let chat_id;
-
+    let chat_id = {{chat_id}};
+    importScripts('../../routing/chat.js');
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     let connection = new WebSocket('ws://127.0.0.1:8080');
 
     connection.onopen = function () {
         console.log('Entered connection.onopen');
         connection.send(JSON.stringify({ title: 'history', time: new Date() }));
+
         console.log(JSON.stringify({ title: 'history', time: new Date() }));
         console.log('Left connection.onopen');
     };

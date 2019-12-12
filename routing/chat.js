@@ -6,6 +6,7 @@ const router = express.Router();
 // const path = require('path');
 // const dotenv = require('dotenv');
 const dbreader = require('../db/dbreader');
+const dbwriter = require('../db/dbwriter');
 
 /* const dbconfig = {
   host: process.env.DB_HOST,
@@ -45,23 +46,44 @@ router.get('/chat_entry/:name', (req, res) => {
   const pg = dbreader.open(dbconfig);
   const login = req.session.name;
 
-  const fullname = req.params.name;
-  const letterAdmin = fullname.split('')[0];
+  const admin = req.params.name;
+  const letterAdmin = admin.split('')[0];
 
   let username = '';
   let letterUser = '';
   pg.select('usersdata')
     .where({ login })
     .then(result => {
+      pg.close();
       username += result[0].fullname;
-      console.log('username: ', username);
+
+      const cursor = pg.select('chats_id');
+      cursor.where({ peoples: `@>{${username}, ${admin}` })
+        .then(rows => {
+          pg.close();
+          if (rows.length === 0) {
+            const peoples = { username, admin };
+            const write = dbwriter.open(dbconfig);
+            write.insert('chats_id')
+              .value(peoples)
+              .then(result => {
+                console.log('Result: ');
+                console.log(result);
+                // chat_id = result[0].chat_id;
+                // connection.send(JSON.stringify({ title: 'history',
+                //   chat_id, time: new Date() }));
+              });
+          } else {
+            console.log('showing rows...');
+            console.log(rows);
+          }
+        });
+
       letterUser += username.split('')[0];
-      console.log('letterUser: ', letterUser);
       res.render('views/chat_entry',
-        { layout: 'default', admin: fullname, username,
+        { layout: 'default', admin, username,
           letterAdmin, letterUser });
     });
-  pg.close();
 });
 
 module.exports = router;
