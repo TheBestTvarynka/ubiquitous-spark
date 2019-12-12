@@ -54,35 +54,42 @@ router.get('/chat_entry/:name', (req, res) => {
   pg.select('usersdata')
     .where({ login })
     .then(result => {
-      pg.close();
       username += result[0].fullname;
-
+      letterUser += username.split('')[0];
       const cursor = pg.select('chats_id');
-      cursor.where({ peoples: `@>{${username}, ${admin}` })
+      cursor.where({ peoples: `@>{${username}, ${admin}}` })
         .then(rows => {
-          pg.close();
           if (rows.length === 0) {
-            const peoples = { username, admin };
             const write = dbwriter.open(dbconfig);
+
             write.insert('chats_id')
-              .value(peoples)
+              .value({ peoples: [username, admin] }, { peoples: 'array' })
               .then(result => {
                 console.log('Result: ');
                 console.log(result);
-                // chat_id = result[0].chat_id;
-                // connection.send(JSON.stringify({ title: 'history',
-                //   chat_id, time: new Date() }));
+
+                const row = pg.select('chats_id');
+                row.where({ peoples: `@>{${username}, ${admin}}` })
+                  .then(result => {
+                    const id = result[0].id;
+                    console.log('Id: ', id);
+                    pg.close();
+                    res.render('views/chat_entry',
+                      { layout: 'default', admin, username,
+                        letterAdmin, letterUser, id });
+                  });
               });
           } else {
             console.log('showing rows...');
             console.log(rows);
+            const id = rows[0].id;
+            console.log('Id: ', id);
+            pg.close();
+            res.render('views/chat_entry',
+              { layout: 'default', admin, username,
+                letterAdmin, letterUser, id });
           }
         });
-
-      letterUser += username.split('')[0];
-      res.render('views/chat_entry',
-        { layout: 'default', admin, username,
-          letterAdmin, letterUser });
     });
 });
 

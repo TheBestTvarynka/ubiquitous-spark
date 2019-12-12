@@ -2,10 +2,8 @@
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
 <link rel="stylesheet" type="text/css" href="/site/stylesheets/chat_entry.css">
 <link href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap" rel="stylesheet">
-<script src="../../routing/chat.js"></script>
 <script>
-    let chat_id = {{chat_id}};
-    importScripts('../../routing/chat.js');
+
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     let connection = new WebSocket('ws://127.0.0.1:8080');
 
@@ -23,8 +21,8 @@
         content.insertAdjacentHTML("afterBegin", '<div class="message-upcoming"><div class="picture">' +
                 letter + '</div><div class="text-upcoming">' + message + '</div></div>');
         document.getElementById('input').value = '';
-        connection.send(JSON.stringify({ title: 'message', chat_id: chat_id, author: {{username}}, message: message, time: new Date() }));
-        console.log(JSON.stringify({ title: 'message', chat_id: chat_id, author: {{username}}, message: message, time: new Date() }));
+        connection.send(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: message, time: new Date() }));
+        console.log(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: message, time: new Date() }));
         console.log('Left addMessage');
     }
 
@@ -55,7 +53,7 @@
             </div>
             <form class="input_holder">
                 <input type="text" class="input" id="input" placeholder="Start typing here...">
-                <input type="button" class="submit" value="Send" onclick="addMessage({{letterUser}}, input.value);return false;">
+                <input type="button" class="submit" value="Send" onclick="addMessage('{{letterUser}}', input.value)">
             </form>
         </div>
     </div>
