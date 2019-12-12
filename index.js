@@ -93,11 +93,12 @@ const server = http.createServer(app);
 const webSoketServer = new WebSocketServer({ httpServer: server });
 
 // check correct name
-const sendNeightbourds = (clients, id, message, author) => {
+const sendNeightbourds = (clients, message) => {
+  console.log(message);
   const pg = dbreader.open(dbconfig);
   pg.select('chats_id')
     .fields([ 'peoples' ])
-    .where({ id })
+    .where({ id: message.chat_id })
     .then(result => {
       pg.close();
       const peoples = result[0].peoples;
@@ -106,7 +107,7 @@ const sendNeightbourds = (clients, id, message, author) => {
         console.log(person);
         if (clients[person] && person !== author) {
           console.log(person);
-          clients[person].send(message);
+          clients[person].send(JSON.stringify({ title: 'message', message }));
         }
       }
     });
@@ -128,7 +129,7 @@ const writeInDB = data => {
       pg.close();
       console.log(result);
     });
-  sendNeightbourds(clients, message.chat_id, message.message, message.author);
+  sendNeightbourds(clients, message);
 };
 
 const loadHistory = (data, connection) => {
@@ -144,7 +145,7 @@ const loadHistory = (data, connection) => {
     .then(result => {
       pg.close();
       console.log(result);
-      connection.send(JSON.stringify({ messages: result }));
+      connection.send(JSON.stringify({ title: 'history', messages: result }));
     });
 };
 
