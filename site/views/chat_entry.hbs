@@ -9,7 +9,7 @@
 
     connection.onopen = function () {
         console.log('Entered connection.onopen');
-        connection.send(JSON.stringify({ title: 'history', time: new Date() }));
+        connection.send(JSON.stringify({ author: '{{ username }}', title: 'history', chat_id: '{{ id }}', time: new Date() }));
         console.log('The sent data onload: ', JSON.stringify({ title: 'history', time: new Date() }));
         console.log('Left connection.onopen');
     };
@@ -59,6 +59,7 @@
         const json = JSON.parse(message.data);
 
         if (json.title === 'history' || json.title === 'message') {
+        	console.log('history:', json);
             getMessage(json, json.title);
         } else {
             console.log('Hmm..., I\'ve never seen JSON like this: ', json);

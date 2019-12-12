@@ -12,6 +12,7 @@ const dbreader = require('./db/dbreader');
 // const { Pool } = require('pg');
 const login = require('./routing/login');
 // eslint-disable-next-line no-unused-vars
+const dbwriter = require('./db/dbwriter.js');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
@@ -109,7 +110,7 @@ const sendNeightbourds = (clients, message) => {
       console.log(peoples);
       for (const person of peoples) {
         console.log(person);
-        if (clients[person] && person !== author) {
+        if (clients[person] && person !== message.author) {
           console.log(person);
           clients[person].send(JSON.stringify({ title: 'message', message }));
         }
@@ -167,18 +168,20 @@ webSoketServer.on('request', request => {
   let userName = undefined;
   connection.on('message', data => {
     if (data.type === 'utf8') {
+      const message = JSON.parse(data.utf8Data);
       if (userName) {
         console.log('on message: write in db');
-        const message = JSON.parse(data.utf8Data);
         const title = message.title;
         delete message.title;
         const action = routing[title];
         action(message, connection);
       } else {
         console.log('on message: save name');
-        userName = data.utf8Data;
+        userName = message.author;
         console.log('user name:', userName);
         clients[userName] = connection;
+        delete message.title;
+        loadHistory(message, connection);
       }
     }
   });
