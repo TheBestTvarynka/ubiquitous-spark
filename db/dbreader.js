@@ -126,7 +126,7 @@ class DBReader {
     this.config = config;
     this.logger = logger;
   }
-  // 
+  //
   query(sql, values, callback) {
     if (typeof values === 'function') {
       callback = values;
