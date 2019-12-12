@@ -169,6 +169,8 @@ webSoketServer.on('request', request => {
   connection.on('message', data => {
     if (data.type === 'utf8') {
       const message = JSON.parse(data.utf8Data);
+      console.log('data, sent to server =======================> ', message,
+        '<=========================');
       if (userName) {
         console.log('on message: write in db');
         const title = message.title;
@@ -181,6 +183,7 @@ webSoketServer.on('request', request => {
         console.log('user name:', userName);
         clients[userName] = connection;
         delete message.title;
+        delete message.author;
         loadHistory(message, connection);
       }
     }

@@ -9,7 +9,7 @@
 
     connection.onopen = function () {
         console.log('Entered connection.onopen');
-        connection.send(JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date() }));
+        connection.send(JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date(), author: '{{username}}' }));
         console.log('The sent data onload: ', JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date() }));
         console.log('Left connection.onopen');
     };

@@ -30,7 +30,7 @@ const where = conditions => {
       } else if (value.startsWith('@>')) {
         condition = `${key} @> $${i}`;
         value = value.substring(2);
-      }else if (value.includes('*') || value.includes('?')) {
+      } else if (value.includes('*') || value.includes('?')) {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
@@ -117,10 +117,14 @@ class Cursor {
         this.resolve(res);
         callback(this.rows);
       }
+      // console.log('Trying to find out what is "this": ', this);
     });
+    // delete this.args;
+    // delete this.columns;
+    // delete this.whereClause;
     return this;
   }
-};
+}
 
 class DBReader {
   constructor(config, logger) {
@@ -148,7 +152,7 @@ class DBReader {
   close() {
     this.pool.end();
   }
-};
+}
 
 module.exports = {
   open: (config, logger) => new DBReader(config, logger),
