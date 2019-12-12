@@ -8,12 +8,10 @@ const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
-const dbwriter = require('./db/dbwriter');
 const dbreader = require('./db/dbreader');
 // const { Pool } = require('pg');
 const login = require('./routing/login');
 // eslint-disable-next-line no-unused-vars
-const dbreader = require('./db/dbreader');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
@@ -25,10 +23,6 @@ const port = process.env.PORT || 8080;
 const clients = {};
 const historyPack = 4;
 
-const dbconfig = {
-  connectionString: process.env.DATABASE_URL,
-  // ssl: true
-};
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
   layoutsDir: __dirname + '/site/' }));
