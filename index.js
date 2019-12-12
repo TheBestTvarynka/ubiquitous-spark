@@ -143,7 +143,7 @@ const loadHistory = (data, connection) => {
   console.log(data);
   const pg = dbreader.open(dbconfig);
   pg.select('chat')
-    .fields([ 'author', 'message', 'time' ])
+    .fields(['author', 'message', 'time' ])
     .where(data)
     .limit(historyPack)
     .order('time', false)

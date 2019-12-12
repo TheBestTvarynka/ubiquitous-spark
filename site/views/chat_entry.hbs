@@ -9,8 +9,8 @@
 
     connection.onopen = function () {
         console.log('Entered connection.onopen');
-        connection.send(JSON.stringify({ author: '{{ username }}', title: 'history', chat_id: '{{ id }}', time: new Date() }));
-        console.log('The sent data onload: ', JSON.stringify({ title: 'history', time: new Date() }));
+        connection.send(JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date() }));
+        console.log('The sent data onload: ', JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date() }));
         console.log('Left connection.onopen');
     };
 
@@ -29,20 +29,21 @@
         console.log('Entered getMessage');
         const content = document.getElementsByClassName('messages')[0];
         if (title === 'history') {
-            json.messages.forEach(message => {
             console.log('Showing history...');
+            json.messages.forEach(message => {
                 if(message.author === '{{username}}') {
-                    console.log('');
+                    console.log('=============> user:');
                     content.insertAdjacentHTML("beforeEnd", '<div class="message-upcoming"><div class="picture">' +
                         '{{letterUser}}' + '</div><div class="text-upcoming">' + message.message + '</div></div>');
-                    console.log('User: ', message.message);
+                    console.log(message.author, ': ' , message.message);
                 }
                 else if(message.author === '{{admin}}') {
-                    console.log('');
-                    content.insertAdjacentHTML("beforeEnd", '<div class="message-upcoming"><div class="picture">' +
-                        '{{letterAdmin}}' + '</div><div class="text-upcoming">' + message.message + '</div></div>');
-                    console.log('Admin: ', message.message);
+                    console.log('=============> admin:');
+                    content.insertAdjacentHTML("beforeEnd", '<div class="message-incoming"><div class="picture">' +
+                        '{{letterAdmin}}' + '</div><div class="text-incoming">' + message.message + '</div></div>');
+                    console.log(message.author, ': ' , message.message);
                 }
+                console.log('');
             });
             console.log('Showed history');
         } else if (title === 'message') {

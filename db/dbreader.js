@@ -40,6 +40,7 @@ const where = conditions => {
     i++;
     args.push(value);
     clause = clause ? `${clause} AND ${condition}` : condition;
+    console.log(clause);
   }
   return { clause, args };
 };
@@ -102,11 +103,12 @@ class Cursor {
     const { whereClause, orderBy, orderDirection, columnName, lim } = this;
     const fields = columns.join(', ');
     // create request to db
-    let sql = `SELECT ${fields} FROM ${table}`;
-    if (whereClause) sql += ` WHERE ${whereClause}`;
-    if (orderBy && orderDirection) sql += ` ORDER BY ${orderBy} ${orderDirection}`;
-    if (lim) sql += ` LIMIT ${lim}`;
-    console.log(sql);
+    let sql = 'SELECT ' + fields + ' FROM ' + table;
+    if (whereClause) sql += (' WHERE ' + whereClause.toString());
+    if (orderBy && orderDirection) sql +=
+      ' ORDER BY ' + orderBy + ' ' + orderDirection;
+    if (lim) sql += (' LIMIT ' + lim);
+    console.log('The request: ', sql);
     this.database.query(sql, args,  (err, res) => {
       if (err) {
         console.log(err);
