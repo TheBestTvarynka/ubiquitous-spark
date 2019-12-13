@@ -173,10 +173,10 @@ const loadHistory = (data, connection, title) => {
   }
 };
 
-const routing = {
-  message: writeInDB,
-  history: loadHistory,
-};
+// const routing = {
+//   message: writeInDB,
+//   history: loadHistory,
+// };
 
 webSoketServer.on('request', request => {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
@@ -198,7 +198,7 @@ webSoketServer.on('request', request => {
           loadHistory(message, connection, 'fullHistory');
         } else {
           console.log('on message: write in db');
-          const title = message.title;
+          // const title = message.title;
           delete message.title;
           // const action = routing[title];
           // action(message, connection);

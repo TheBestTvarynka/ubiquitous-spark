@@ -9,7 +9,7 @@
     const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
 
     // const ws = new WebSocket(protocol + location.hostname + ':' + location.port + '/chat')
-    
+
     let connection = new WebSocket(protocol + location.hostname + ':' + location.port);
 
     connection.onopen = function () {
