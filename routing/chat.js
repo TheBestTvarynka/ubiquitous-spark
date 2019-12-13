@@ -24,21 +24,64 @@ const dbconfig = {
 
 router.get('/chat', (req, res) => {
   const pg = dbreader.open(dbconfig);
+  const login = req.session.name;
+
+  let permission = '';
+  let username = '';
+  let title = '';
   pg.select('usersdata')
-    .where({ permission: 'admin' })
+    .where({ login })
     .then(result => {
-      let resulting = '';
-      result.forEach(i => {
-        const name = i.fullname;
-        const letter = i.fullname.split('')[0];
-        // eslint-disable-next-line max-len
-        resulting += '<a class="a"  href="/chat_entry/' +
-          // eslint-disable-next-line max-len
-          name + '"><div class="admin"><div class="picture"><p class="letter">' +
-          letter + '</p></div><p class="text"><strong>' +
-          name + '</strong></p></div></a>';
-      });
-      res.render('views/chat', { layout: 'default', admins: resulting });
+      username += result[0].fullname;
+      permission += result[0].permission;
+      console.log('THE USER === ', username, ': ', permission);
+
+      if (permission === 'admin') {
+        console.log('Entered admin section...');
+        title += 'Chats';
+        pg.select('chats_id')
+          .then(array => {
+            let resulting = '';
+
+            array.forEach(elem => {
+              if (elem.peoples.includes(username)) {
+                const name = (elem.peoples[0] === username) ?
+                  elem.peoples[1] : elem.peoples[0];
+                const letter = name.split('')[0];
+                resulting += '<a class="a"  href="/chat_entry/' +
+                  name +
+                  // eslint-disable-next-line max-len
+                  '"><div class="admin"><div class="picture"><p class="letter">' +
+                  letter + '</p></div><p class="text"><strong>' +
+                  name + '</strong></p></div></a>';
+              }
+            });
+            pg.close();
+            res.render('views/chat', { layout: 'default',
+              admins: resulting, title });
+          });
+      } else {
+        console.log('Entered user section...');
+        title += 'Administrators';
+        pg.select('usersdata')
+          .where({ permission: 'admin' })
+          .then(result => {
+            let resulting = '';
+            result.forEach(i => {
+              const name = i.fullname;
+              const letter = i.fullname.split('')[0];
+              // eslint-disable-next-line max-len
+              resulting += '<a class="a"  href="/chat_entry/' +
+                // eslint-disable-next-line max-len
+                name + '"><div class="admin"><div class="picture"><p class="letter">' +
+                letter + '</p></div><p class="text"><strong>' +
+                name + '</strong></p></div></a>';
+            });
+            pg.close();
+            res.render('views/chat', { layout: 'default',
+              admins: resulting, title });
+          });
+      }
     });
 });
 

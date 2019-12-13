@@ -137,21 +137,34 @@ const writeInDB = data => {
   sendNeightbourds(clients, message);
 };
 
-const loadHistory = (data, connection) => {
+const loadHistory = (data, connection, title) => {
   // load history
   data.time = '< ' + data.time;
   console.log(data);
   const pg = dbreader.open(dbconfig);
-  pg.select('chat')
-    .fields(['author', 'message', 'time' ])
-    .where(data)
-    .limit(historyPack)
-    .order('time', false)
-    .then(result => {
-      pg.close();
-      console.log(result);
-      connection.send(JSON.stringify({ title: 'history', messages: result }));
-    });
+  if (title === 'fullHistory') {
+    pg.select('chat')
+      .fields(['author', 'message', 'time'])
+      .where(data)
+      .order('time', false)
+      .then(result => {
+        pg.close();
+        console.log(result);
+        connection.send(JSON.stringify({ title: 'fullHistory',
+          messages: result }));
+      });
+  } else {
+    pg.select('chat')
+      .fields(['author', 'message', 'time'])
+      .where(data)
+      .limit(historyPack)
+      .order('time', false)
+      .then(result => {
+        pg.close();
+        console.log(result);
+        connection.send(JSON.stringify({ title: 'history', messages: result }));
+      });
+  }
 };
 
 const routing = {
@@ -171,12 +184,19 @@ webSoketServer.on('request', request => {
       const message = JSON.parse(data.utf8Data);
       console.log('data, sent to server =======================> ', message,
         '<=========================');
-      if (userName) {
-        console.log('on message: write in db');
-        const title = message.title;
-        delete message.title;
-        const action = routing[title];
-        action(message, connection);
+      if (userName || message.title === 'fullHistory') {
+        if (message.title === 'fullHistory') {
+          console.log('on message: full history');
+          delete message.title;
+          delete message.author;
+          loadHistory(message, connection, 'fullHistory');
+        } else {
+          console.log('on message: write in db');
+          const title = message.title;
+          delete message.title;
+          const action = routing[title];
+          action(message, connection);
+        }
       } else {
         console.log('on message: save name');
         userName = message.author;
@@ -184,7 +204,7 @@ webSoketServer.on('request', request => {
         clients[userName] = connection;
         delete message.title;
         delete message.author;
-        loadHistory(message, connection);
+        loadHistory(message, connection, message.title);
       }
     }
   });

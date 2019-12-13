@@ -25,10 +25,20 @@
         console.log('Left addMessage');
     }
 
-    function getMessage(json, title) {
-        console.log('Entered getMessage');
+    function rewriteMessages() {
+        console.log('Entered rewriteMessages...');
         const content = document.getElementsByClassName('messages')[0];
-        if (title === 'history') {
+        content.innerHTML = '';
+
+        connection.send(JSON.stringify({ title: 'fullHistory', chat_id: '{{ id }}', time: new Date(), author: '{{username}}' }));
+
+        console.log('Left rewriteMessages');
+    }
+
+    function getMessage(json, title) {
+        console.log('Entered getMessage...');
+        const content = document.getElementsByClassName('messages')[0];
+        if (title === 'history' || title === 'fullHistory') {
             console.log('Showing history...');
             json.messages.forEach(message => {
                 if(message.author === '{{username}}') {
@@ -45,6 +55,8 @@
                 }
                 console.log('');
             });
+            if (title === 'history') content.insertAdjacentHTML("beforeEnd",
+                    '<input type="button" class="history" value="Show previous messages..." onclick="rewriteMessages()">');
             console.log('Showed history');
         } else if (title === 'message') {
             console.log('');
@@ -59,13 +71,13 @@
         console.log('Started rendering messages...');
         const json = JSON.parse(message.data);
 
-        console.log('JSON in string: ');
-        console.log(message);
+        // console.log('JSON in string: ');
+        // console.log(message);
         console.log('JSON in JSON: ');
         console.log(json);
 
-        if (json.title === 'history' || json.title === 'message') {
-        	console.log('history:', json);
+        if (json.title === 'history' || json.title === 'message' || json.title === 'fullHistory') {
+            console.log(json.title, ': ', json);
             getMessage(json, json.title);
         } else {
             console.log('Hmm..., I\'ve never seen JSON like this: ', json);
@@ -89,8 +101,7 @@
         </div>
         <div class="content">
             <h1 class="title">Chat with {{admin}}</h1>
-            <div class="messages">
-            </div>
+            <div class="messages"></div>
             <form class="input_holder">
                 <input type="text" class="input" id="input" placeholder="Start typing here...">
                 <input type="button" class="submit" value="Send" onclick="addMessage('{{letterUser}}', input.value)">
