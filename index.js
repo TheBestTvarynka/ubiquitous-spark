@@ -51,8 +51,32 @@ app.use(search);
 app.use(book);
 app.use(chat);
 
+function getBooks(rows) {
+  let arr = '';
+
+  rows.forEach(row => {
+    console.log(row);
+    let description = row.author + ' - ' + row.name;
+    if (description.length > 55)
+      description = description.substr(0, 38) + '...';
+
+    arr += `<a href="/book/${row.id}"><div class="book"><img class="cover"
+ src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${row.photos[0]}"
+ ><p class="description">${description}</p>
+ <div class="price">100$</div></div></a>`;
+  });
+  return arr;
+}
+
 app.get('/', (req, res) => {
-  res.render('views/home', { layout: 'default' });
+  const pg = dbreader.open(dbconfig);
+
+  pg.select('books')
+    .then(rows => {
+      console.log(rows);
+      const list = getBooks(rows);
+      res.render('views/home', { layout: 'default', books: list });
+    });
 });
 
 
