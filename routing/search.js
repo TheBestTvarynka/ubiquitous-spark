@@ -29,7 +29,7 @@ function parseBooks(rows) {
       ${row.author} - ${row.name}
       </p><div class="price">100$</div></div></a>`;
   });
- return arr;
+  return arr;
 }
 
 router.post('/search', (req, res) => {
@@ -50,7 +50,8 @@ router.post('/search', (req, res) => {
     .then(rows => {
       console.log(rows);
       const list = parseBooks(rows);
-      res.render('views/search', { layout: 'default', message: list, where: where });
+      res.render('views/search', { layout: 'default', message: list,
+        where });
     });
 });
 
