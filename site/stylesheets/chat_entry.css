@@ -10,6 +10,8 @@
     flex-direction: column-reverse;
     flex-flow: column-reverse;
     overflow-y: scroll;
+    overflow: scroll;
+    overflow-y: -moz-scrollbars-vertical;
     /*justify-content: flex-start;*/
     scroll-behavior: smooth;
     border: 2px solid black;

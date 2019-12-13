@@ -99,7 +99,9 @@ const webSoketServer = new WebSocketServer({ httpServer: server });
 
 // check correct name
 const sendNeightbourds = (clients, message) => {
-  console.log(message);
+  console.log('===================> Entered sendNeightbourds');
+  console.log('Sending message: =====', message, '===== to clients =====',
+    clients, '=====');
   const pg = dbreader.open(dbconfig);
   pg.select('chats_id')
     .fields([ 'peoples' ])
@@ -112,13 +114,16 @@ const sendNeightbourds = (clients, message) => {
         console.log(person);
         if (clients[person] && person !== message.author) {
           console.log(person);
-          clients[person].send(JSON.stringify({ title: 'message', message }));
+          clients[person].send(JSON.stringify({ title: 'message',
+            messages: [ message ] }));
         }
       }
+      console.log('===================> Entered sendNeightbourds');
     });
 };
 
 const writeInDB = data => {
+  console.log('===================> Entered writeInDb');
   const message = data;
   console.log('message');
   const types = {};
@@ -135,6 +140,7 @@ const writeInDB = data => {
       console.log(result);
     });
   sendNeightbourds(clients, message);
+  console.log('===================> Left writeInDb');
 };
 
 const loadHistory = (data, connection, title) => {
@@ -194,8 +200,9 @@ webSoketServer.on('request', request => {
           console.log('on message: write in db');
           const title = message.title;
           delete message.title;
-          const action = routing[title];
-          action(message, connection);
+          // const action = routing[title];
+          // action(message, connection);
+          writeInDB(message);
         }
       } else {
         console.log('on message: save name');
