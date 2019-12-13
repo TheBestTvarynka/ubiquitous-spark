@@ -16,14 +16,22 @@
 
     function addMessage(letter, message) {
         console.log('Entered addMessage');
+        const result = htmlEntities(message);
+        console.log(result);
         const content = document.getElementsByClassName('messages')[0];
         content.insertAdjacentHTML("afterBegin", '<div class="message-upcoming"><div class="picture">' +
                 letter + '</div><div class="text-upcoming">' + message + '</div></div>');
         document.getElementById('input').value = '';
-        connection.send(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: message, time: new Date() }));
-        console.log(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: message, time: new Date() }));
+        connection.send(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: result, time: new Date() }));
+        console.log(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: result, time: new Date() }));
         console.log('Left addMessage');
     }
+
+    function htmlEntities(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
 
     function rewriteMessages() {
         console.log('Entered rewriteMessages...');
