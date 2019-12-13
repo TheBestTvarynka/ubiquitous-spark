@@ -30,7 +30,7 @@ const where = conditions => {
       } else if (value.startsWith('@>')) {
         condition = `${key} @> $${i}`;
         value = value.substring(2);
-      }else if (value.includes('*') || value.includes('?')) {
+      } else if (value.includes('*') || value.includes('?')) {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
@@ -40,6 +40,7 @@ const where = conditions => {
     i++;
     args.push(value);
     clause = clause ? `${clause} AND ${condition}` : condition;
+    console.log(clause);
   }
   return { clause, args };
 };
@@ -102,11 +103,12 @@ class Cursor {
     const { whereClause, orderBy, orderDirection, columnName, lim } = this;
     const fields = columns.join(', ');
     // create request to db
-    let sql = `SELECT ${fields} FROM ${table}`;
-    if (whereClause) sql += ` WHERE ${whereClause}`;
-    if (orderBy && orderDirection) sql += ` ORDER BY ${orderBy} ${orderDirection}`;
-    if (lim) sql += ` LIMIT ${lim}`;
-    console.log(sql);
+    let sql = 'SELECT ' + fields + ' FROM ' + table;
+    if (whereClause) sql += (' WHERE ' + whereClause.toString());
+    if (orderBy && orderDirection) sql +=
+      ' ORDER BY ' + orderBy + ' ' + orderDirection;
+    if (lim) sql += (' LIMIT ' + lim);
+    console.log('The request: ', sql);
     this.database.query(sql, args,  (err, res) => {
       if (err) {
         console.log(err);
@@ -115,10 +117,14 @@ class Cursor {
         this.resolve(res);
         callback(this.rows);
       }
+      // console.log('Trying to find out what is "this": ', this);
     });
+    // delete this.args;
+    // delete this.columns;
+    // delete this.whereClause;
     return this;
   }
-};
+}
 
 class DBReader {
   constructor(config, logger) {
@@ -126,7 +132,7 @@ class DBReader {
     this.config = config;
     this.logger = logger;
   }
-  // 
+  //
   query(sql, values, callback) {
     if (typeof values === 'function') {
       callback = values;
@@ -146,7 +152,7 @@ class DBReader {
   close() {
     this.pool.end();
   }
-};
+}
 
 module.exports = {
   open: (config, logger) => new DBReader(config, logger),
