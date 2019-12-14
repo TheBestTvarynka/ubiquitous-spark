@@ -63,7 +63,7 @@ function getBooks(rows) {
     arr += `<a href="/book/${row.id}"><div class="book"><img class="cover"
  src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${row.photos[0]}"
  ><p class="description">${description}</p>
- <div class="price">100$</div></div></a>`;
+ <div class="price">${row.price}$</div></div></a>`;
   });
   return arr;
 }

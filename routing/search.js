@@ -32,7 +32,7 @@ function parseBooks(rows) {
 
     arr += `<a href="/book/${row.id}"><div class="test"><img class="cover" 
 src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${row.photos[0]}">
-<p class="description">${description}</p><div class="price">100$</div>
+<p class="description">${description}</p><div class="price">${row.price}$</div>
 </div></a>`;
   });
   return arr;
