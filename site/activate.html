@@ -18,12 +18,23 @@
 		</form>
 	</main>
 	<script type="text/javascript">
+		let cc = document.getElementById('card');
+		let	events  = ['input', 'change', 'blur', 'keyup', 'load'];
+		for (let i in events) {
+	    cc.addEventListener('input', formatCardCode, false);
+	    cc.addEventListener('load', formatCardCode, false);
+	}
+	function formatCardCode(a) {
+	    let cardCode = this.value.replace(/[^\d]/g, '').substring(0,16);
+	    cardCode = cardCode !== '' ? cardCode.match(/.{1,4}/g).join(' ') : '';
+	    this.value = cardCode;
+	}
 		function checkCardNumber(form) {
 			console.log('test');
 			const re_number = new RegExp('^[0-9]+$');
 			const input = document.getElementById('card');
 			const submitButton = document.getElementById('submit');
-			const curdNumber = form.cardNumber.value;
+			const curdNumber = form.cardNumber.value.replace(/\s+/g, '');
 			if (re_number.test(curdNumber) && curdNumber.length === 16) {
 				console.log('true');
 				input.setAttribute('class', 'input_text');
