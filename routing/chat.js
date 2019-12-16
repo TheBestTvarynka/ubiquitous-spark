@@ -57,7 +57,8 @@ router.get('/chat', (req, res) => {
               }
             });
             console.log(array);
-            if (array.length === 0) resulting = 'No chats here yet';
+            if (array.length === 0) resulting = '<p class="warning"' +
+              '>No chats here yet</p>';
             pg.close();
             res.render('views/chat', { layout: 'default',
               admins: resulting, title });
