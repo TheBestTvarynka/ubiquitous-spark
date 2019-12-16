@@ -223,4 +223,14 @@ router.get('/likedbooks/page/:page', (req, res) => {
   getBooks(login, 'liked_books', '/account/likedbooks', req.params.page, res);
 });
 
+router.get('/boughtbooks', (req, res) => {
+  const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account/boughtbooks');
+    res.redirect('/login');
+    return;
+  }
+  getBooks(login, 'bought_books', '/account/boughtbooks', 1, res);
+});
+
 module.exports = router;

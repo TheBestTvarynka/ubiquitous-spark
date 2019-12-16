@@ -88,6 +88,10 @@ app.get('/about', (req, res) => {
   res.render('views/about', { layout: 'default' });
 });
 
+app.get('/purchases', (req, res) => {
+  res.redirect('/account/boughtbooks');
+});
+
 const printErr = err => {
   if (err) {
     console.log(err);
