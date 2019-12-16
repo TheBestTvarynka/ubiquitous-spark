@@ -68,7 +68,7 @@
                 }
                 console.log('');
             });
-            if (title === 'history') content.insertAdjacentHTML("beforeEnd",
+            if (title === 'history' && json.messages.length >= 4) content.insertAdjacentHTML("beforeEnd",
                     '<input type="button" class="history" value="Show previous messages..." onclick="rewriteMessages()">');
             console.log('Showed history');
         } else if (title === 'message') {
