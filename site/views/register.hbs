@@ -3,13 +3,13 @@
 	<form name="registration" id="reg" class="form" method="post" action="/register" style="width: 40%">
 		{{{ message }}}
 		<div class="title">Login</div>
-		<input type="text" name="username" class="input_text" placeholder="the.travynka" oninput="submitState(registration)" id="username">
+		<input type="text" name="username" class="input_text" placeholder="theTravynka" oninput="submitState(registration)" id="username">
 		<div class="title">Full Name</div>
 		<input type="text" name="fullname" class="input_text" placeholder="e. g. Pavlo Myroniyk">
 		<div class="title">Email Address</div>
 		<input type="text" name="email" class="input_text" placeholder="example@e.mail" oninput="submitState(registration)" id="email">
 		<div class="title">Phone Number</div>
-		<input type="text" name="phone" class="input_text" placeholder="+38 011 1111 111" oninput="submitState(registration)" id="phone">
+		<input type="text" name="phone" class="input_text" placeholder="0999999999" oninput="submitState(registration)" id="phone">
 		<div class="title">Password</div>
 		<input type="password" name="password" class="input_text" oninput="submitState(registration)" id="password">
 		<div class="title">Submit password</div>
@@ -44,7 +44,7 @@
 	function checkPhone(form) {
 		const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
 		const input = document.getElementById('phone');
-		if (re_phone.test(form.phone.value) && form.phone.value !== 0) {
+		if (re_phone.test(form.phone.value)) {
 			input.setAttribute('class', 'input_text');
 			return true;
 		} else {
