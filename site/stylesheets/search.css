@@ -1,0 +1,155 @@
+.main {
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.filters {
+    border-radius: 10px;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding-right: 2%;
+    padding-left: 2%;
+    padding-bottom: 2%;
+    font-size: 20px;
+    margin: 2% 5% 2% 7%;
+    background-color: rgb(200, 200, 200);
+    /*max-height: 220px;*/
+    align-self: flex-start;
+}
+
+.filters .form {
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 290px;
+}
+
+.filters .select {
+    font-family: 'Raleway', sans-serif;
+    font-size: 17px;
+    width: 290px;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+    background-color: white;
+
+}
+
+.filters .input_text {
+    border-radius: 5px;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    width: 270px;
+}
+
+.filters .title {
+    color: black;
+    text-align: left;
+    padding: 20px 0 0 0;
+}
+
+.filters .button {
+    width: 290px;
+    margin: 20px 0 0 0;
+    padding: 10px 10px 10px 10px;
+    background: black;
+    border-radius: 3px;
+    border: 1px solid black;
+    color: white;
+    transition: all .2s ease-in-out;
+}
+
+.filters .button:hover {
+    background: rgb(50, 50, 50);
+}
+
+.filters .button:disabled {
+    background: rgb(50, 50, 50);
+    color: black;
+}
+
+.filters .show_advanced {
+    width: 290px;
+    margin: 20px 0 0 0;
+    padding: 4px 10px 4px 10px;
+    background: #A4A4A4;
+    border-radius: 3px;
+    border: 1px solid #A4A4A4;
+    color: black;
+}
+
+.filters .show_advanced:hover {
+    background: darkgray;
+}
+
+.filters .line {
+    background-color: #A4A4A4;
+    height: 1.5px;
+    margin: 20px 0 0 0;
+    border: none;
+}
+
+.results {
+    align-self: stretch;
+    margin: 2% 5% 2% 0;
+    border-radius: 10px;
+    flex: 1 1 auto;
+    display: flex;
+    height: 100%;
+    flex-flow: wrap;
+    justify-content: space-around;
+    /*background-color: rgb(200, 200, 200);*/
+    padding: 0 2% 0 2%;
+}
+
+.test {
+    margin: 0 4% 4% 0;
+    border: 3px solid black;
+    border-radius: 10px;
+    background: white;
+    height: 350px;
+    width: 200px;
+    transition: all .2s ease-in-out;
+}
+
+.test:hover {
+    transform: scale(1.1);
+}
+
+.testing {
+    margin: 0 4% 4% 0;
+    border: 3px solid black;
+    border-radius: 10px;
+    background: red;
+    height: 350px;
+    width: 200px;
+    transition: all .2s ease-in-out;
+}
+
+.testing:hover {
+    transform: scale(1.1);
+}
+
+
+.cover {
+    border-radius: 8px 8px 0 0;
+    height: 80%;
+    width: 100%;
+}
+
+.description {
+    height: 12%;
+    margin: 0 8px 0 8px;
+}
+
+.price {
+    text-align: right;
+    height: 5%;
+    margin-bottom: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
+}

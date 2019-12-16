@@ -4,3 +4,6 @@ db/testinsert.js
 db/testupdate.js
 .env
 uploads/
+.idea/
+index1.js
+site/testchat.html

@@ -1,0 +1,148 @@
+.container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+}
+
+.up {
+    flex-direction: row;
+    display: inline-flex;
+}
+
+.cover {
+    border-radius: 10px;
+    margin: 2% 5% 2% 11%;
+    width: 28%;
+    /*border: 1px solid black;*/
+}
+
+.details {
+    /*align-self: stretch;*/
+    margin: 2% 11% 2% 0;
+    border-radius: 10px;
+    /*flex: 1 1 auto;*/
+    display: flex;
+    font-size: 24px;
+    flex-flow: nowrap;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: rgb(200, 200, 200);
+    padding: 0 2% 2% 2%;
+    width: max-content;
+    max-width: 50%;
+    height: max-content;
+}
+
+.down {
+    margin: 2% 5% 2% 7%;
+    align-self: stretch;
+    border-radius: 10px;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-around;
+    /*background-color: red;*/
+    background-color: rgb(200, 200, 200);
+    font-size: 20px;
+    /*padding: 0 2% 0 2%;*/
+    /*height: 200px;*/
+    /*width: 100%;*/
+}
+
+.form {
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.input_text {
+    border-radius: 5px;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    width: 270px;
+}
+
+.title {
+    color: black;
+    text-align: left;
+    padding: 20px 0 0 0;
+}
+
+.button {
+    width: 290px;
+    margin: 20px 0 0 0;
+    padding: 10px 10px 10px 10px;
+    background: black;
+    font-size: 25px;
+    border-radius: 3px;
+    border: 1px solid black;
+    color: white;
+}
+
+.button:hover {
+    background: rgb(50, 50, 50);
+}
+
+.button:disabled {
+    background: rgb(50, 50, 50);
+    color: black;
+}
+
+.results {
+    align-self: stretch;
+    margin: 2% 5% 2% 0;
+    border-radius: 10px;
+    flex: 1 1 auto;
+    display: flex;
+    height: 100%;
+    flex-flow: wrap;
+    justify-content: space-around;
+    /*background-color: rgb(200, 200, 200);*/
+    padding: 0 2% 0 2%;
+}
+
+.down {
+    height: 12%;
+    margin: 2% 11% 2% 11%;
+    font-size: 24px;
+    padding: 1% 1% 1% 1%;
+}
+
+.price {
+    text-align: right;
+    height: 5%;
+    margin-bottom: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Popup container - can be anything you want */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 12px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+}

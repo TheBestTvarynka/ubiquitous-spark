@@ -1,0 +1,126 @@
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/forms.css">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/account.css">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/chat_entry.css">
+<link href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap" rel="stylesheet">
+<script>
+
+    window.WebSocket = window.WebSocket || window.MozWebSocket;
+
+    const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
+
+    // const ws = new WebSocket(protocol + location.hostname + ':' + location.port + '/chat')
+
+    let connection = new WebSocket(protocol + location.hostname + ':' + location.port);
+
+    connection.onopen = function () {
+        console.log('Entered connection.onopen');
+        connection.send(JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date(), author: '{{username}}' }));
+        console.log('The sent data onload: ', JSON.stringify({ title: 'history', chat_id: '{{ id }}', time: new Date() }));
+        console.log('Left connection.onopen');
+    };
+
+    function addMessage(letter, message) {
+        console.log('Entered addMessage');
+        const result = htmlEntities(message);
+        console.log(result);
+        const content = document.getElementsByClassName('messages')[0];
+        content.insertAdjacentHTML("afterBegin", '<div class="message-upcoming"><div class="picture">' +
+                letter + '</div><div class="text-upcoming">' + message + '</div></div>');
+        document.getElementById('input').value = '';
+        connection.send(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: result, time: new Date() }));
+        console.log(JSON.stringify({ title: 'message', chat_id: {{id}}, author: '{{username}}', message: result, time: new Date() }));
+        console.log('Left addMessage');
+    }
+
+    function htmlEntities(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+
+    function rewriteMessages() {
+        console.log('Entered rewriteMessages...');
+        const content = document.getElementsByClassName('messages')[0];
+        content.innerHTML = '';
+
+        connection.send(JSON.stringify({ title: 'fullHistory', chat_id: '{{ id }}', time: new Date(), author: '{{username}}' }));
+
+        console.log('Left rewriteMessages');
+    }
+
+    function getMessage(json, title) {
+        console.log('Entered getMessage...');
+        const content = document.getElementsByClassName('messages')[0];
+        if (title === 'history' || title === 'fullHistory') {
+            console.log('Showing history...');
+            json.messages.forEach(message => {
+                if(message.author === '{{username}}') {
+                    console.log('=============> user:');
+                    content.insertAdjacentHTML("beforeEnd", '<div class="message-upcoming"><div class="picture">' +
+                        '{{letterUser}}' + '</div><div class="text-upcoming">' + message.message + '</div></div>');
+                    console.log(message.author, ': ' , message.message);
+                }
+                else if(message.author === '{{admin}}') {
+                    console.log('=============> admin:');
+                    content.insertAdjacentHTML("beforeEnd", '<div class="message-incoming"><div class="picture">' +
+                        '{{letterAdmin}}' + '</div><div class="text-incoming">' + message.message + '</div></div>');
+                    console.log(message.author, ': ' , message.message);
+                }
+                console.log('');
+            });
+            if (title === 'history') content.insertAdjacentHTML("beforeEnd",
+                    '<input type="button" class="history" value="Show previous messages..." onclick="rewriteMessages()">');
+            console.log('Showed history');
+        } else if (title === 'message') {
+            console.log('');
+            console.log('');
+
+            content.insertAdjacentHTML("afterBegin", '<div class="message-incoming"><div class="picture">' +
+                '{{letterAdmin}}' + '</div><div class="text-incoming">' + json.messages[0].message + '</div></div>');
+            console.log('Admin: ', json.messages[0].message);
+        }
+        console.log('Left getMessage');
+    }
+
+    connection.onmessage = function (message) {
+        console.log('Started rendering messages...');
+        const json = JSON.parse(message.data);
+
+        // console.log('JSON in string: ');
+        // console.log(message);
+        console.log('JSON in JSON: ');
+        console.log(json);
+
+        if (json.title === 'history' || json.title === 'message' || json.title === 'fullHistory') {
+            console.log(json.title, ': ', json);
+            getMessage(json, json.title);
+        } else {
+            console.log('Hmm..., I\'ve never seen JSON like this: ', json);
+        }
+
+        console.log('Rendered messages');
+    };
+
+</script>
+<main>
+    <div class="pagecontainer">
+        <div class="navigationcontainer">
+            <div class="navigation">
+                <a href="/account">Account</a>
+                <a href="/account/mybooks">My books</a>
+                <a href="/account/addbook">Add book</a>
+                <a href="/account/likedbooks">Liked books</a>
+                <a href="/chat" style="background-color: grey;">Chat - demo</a>
+                <a href="/logout">Log out</a>
+            </div>
+        </div>
+        <div class="content">
+            <h1 class="title">Chat with {{admin}}</h1>
+            <div class="messages"></div>
+            <form class="input_holder">
+                <input type="text" class="input" id="input" placeholder="Start typing here...">
+                <input type="button" class="submit" value="Send" onclick="addMessage('{{letterUser}}', input.value)">
+            </form>
+        </div>
+    </div>
+</main>

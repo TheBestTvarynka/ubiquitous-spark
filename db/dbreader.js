@@ -27,18 +27,20 @@ const where = conditions => {
       } else if (value.startsWith('<')) {
         condition = `${key} < $${i}`;
         value = value.substring(1);
+      } else if (value.startsWith('@>')) {
+        condition = `${key} @> $${i}`;
+        value = value.substring(2);
       } else if (value.includes('*') || value.includes('?')) {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
-        // ch
-        // condition = `${key} = ${value}`;
         condition = `${key} = $${i}`;
       }
     }
     i++;
     args.push(value);
     clause = clause ? `${clause} AND ${condition}` : condition;
+    console.log(clause);
   }
   return { clause, args };
 };
@@ -60,6 +62,8 @@ class Cursor {
     this.args = [];
     // ORDER BY condition
     this.orderBy = undefined;
+    this.orderDirection = undefined;
+    this.lim = undefined;
   }
   // add WHERE contitions
   where(conditions) {
@@ -73,9 +77,15 @@ class Cursor {
     this.columns = list;
     return this;
   }
+  limit(lim) {
+    this.lim = lim;
+    return this;
+  }
   // set column for ordering
-  order(name) {
+  order(name, direction) {
     this.orderBy = name;
+    if (direction) this.orderDirection = 'ASC';
+    else this.orderDirection = 'DESC';
     return this;
   }
   // cut data from result of selecting and collect them in variables
@@ -90,12 +100,15 @@ class Cursor {
   then(callback) {
     // collect data for selecting
     const { mode, table, columns, args } = this;
-    const { whereClause, orderBy, columnName } = this;
+    const { whereClause, orderBy, orderDirection, columnName, lim } = this;
     const fields = columns.join(', ');
     // create request to db
-    let sql = `SELECT ${fields} FROM ${table}`;
-    if (whereClause) sql += ` WHERE ${whereClause}`;
-    if (orderBy) sql += ` ORDER BY ${orderBy}`;
+    let sql = 'SELECT ' + fields + ' FROM ' + table;
+    if (whereClause) sql += (' WHERE ' + whereClause.toString());
+    if (orderBy && orderDirection) sql +=
+      ' ORDER BY ' + orderBy + ' ' + orderDirection;
+    if (lim) sql += (' LIMIT ' + lim);
+    console.log('The request: ', sql);
     this.database.query(sql, args,  (err, res) => {
       if (err) {
         console.log(err);
@@ -104,10 +117,14 @@ class Cursor {
         this.resolve(res);
         callback(this.rows);
       }
+      // console.log('Trying to find out what is "this": ', this);
     });
+    // delete this.args;
+    // delete this.columns;
+    // delete this.whereClause;
     return this;
   }
-};
+}
 
 class DBReader {
   constructor(config, logger) {
@@ -115,7 +132,7 @@ class DBReader {
     this.config = config;
     this.logger = logger;
   }
-  // 
+  //
   query(sql, values, callback) {
     if (typeof values === 'function') {
       callback = values;
@@ -135,7 +152,7 @@ class DBReader {
   close() {
     this.pool.end();
   }
-};
+}
 
 module.exports = {
   open: (config, logger) => new DBReader(config, logger),

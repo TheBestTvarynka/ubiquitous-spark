@@ -1,3 +1,14 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+a {
+	text-decoration: none;
+}
+li {
+	text-decoration: none;
+	list-style: none;
+}
 h1 {
 	text-align: left;
 	padding-left: 30px;
@@ -8,7 +19,7 @@ h1 {
 	justify-content: center;
 	text-align: center;
 	flex-wrap: wrap;
-	padding-bottom: 40px;
+	padding-bottom: 20px;
 	padding-top: 40px;
 }
 .navigationcontainer {
@@ -44,7 +55,6 @@ h1 {
 	border-bottom: 2px solid black;
 }
 .content {
-	/*border: 2px solid black;*/
 	width: 70%;
 	display: flex;
 	flex-direction: row;
@@ -61,8 +71,11 @@ h1 {
 	transition: all .2s ease-in-out;
 	font-size: 15px;
 }
+.book a {
+	color: black;
+}
 .book:hover {
-	transform: scale(1.1);
+	transform: scale(1.05);
 }
 .book img {
 	width: 100%;
@@ -76,6 +89,43 @@ h1 {
 	padding-bottom: 10px;
 	font-weight: bold;
 }
+
+.contentcount {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	padding-bottom: 20px;
+}
+.pagenumber {
+	width: 50px;
+	height: 50px;
+	padding-top: 2px;
+	text-align: center;
+	background: rgb(200, 200, 200);
+	border: 2px solid white;
+	border-radius: 5px;
+	color: black;
+	font-size: 30px;
+	font-weight: normal;
+	margin: 5px;
+}
+.pagenumber:hover {
+	border: 2px solid black;
+}
+.pagenumber_selected {
+	width: 50px;
+	height: 50px;
+	padding-top: 2px;
+	text-align: center;
+	background: rgb(180, 180, 180);
+	border: 2px solid rgb(40, 40, 40);
+	border-radius: 10px;
+	color: black;
+	font-size: 30px;
+	font-weight: normal;
+	margin: 5px;
+}
+
 @media screen and (max-width: 1150px) {
 	.book {
 		width: 30%;
