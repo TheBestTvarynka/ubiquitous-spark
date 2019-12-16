@@ -9,9 +9,7 @@ const cookie = require('cookie-parser');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const dbreader = require('./db/dbreader');
-// const { Pool } = require('pg');
 const login = require('./routing/login');
-// eslint-disable-next-line no-unused-vars
 const dbwriter = require('./db/dbwriter.js');
 const register = require('./routing/register');
 const account = require('./routing/account');
@@ -30,7 +28,6 @@ app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
 app.set('views', path.join(__dirname, 'site'));
 app.set('view engine', 'hbs');
 
-// eslint-disable-next-line no-unused-vars
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -124,8 +121,7 @@ const webSoketServer = new WebSocketServer({ httpServer: server });
 // check correct name
 const sendNeightbourds = (clients, message) => {
   console.log('===================> Entered sendNeightbourds');
-  console.log('Sending message: =====', message, '===== to clients =====',
-    clients, '=====');
+  console.log('Sending message: =====', message, '===== to clients =====');
   const pg = dbreader.open(dbconfig);
   pg.select('chats_id')
     .fields([ 'peoples' ])
@@ -134,8 +130,9 @@ const sendNeightbourds = (clients, message) => {
       pg.close();
       const peoples = result[0].peoples;
       console.log(peoples);
+      console.log(message.author);
       for (const person of peoples) {
-        console.log(person);
+        console.log('PERSON:', person);
         if (clients[person] && person !== message.author) {
           console.log(person);
           clients[person].send(JSON.stringify({ title: 'message',
