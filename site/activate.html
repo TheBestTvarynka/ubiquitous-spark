@@ -13,27 +13,37 @@
 	<main class="main">
 		<form name="activate" action="/activate" class="form" method="post">
 			<p>So, it seems like you resenetly registered and try to visit account page. But before starting you need to activate account. Please, enter credit card number for continue:</p>
-			<input type="text" name="cardNumber" class="input_text" oninput="checkCardNumber(activate)" id="card">
+			<input type="text" name="card_number" class="input_text" oninput="submitState(activate)" id="card_number">
 			<input type="submit" name="submit" class="button" value="Submit" id="submit">
 		</form>
 	</main>
 	<script type="text/javascript">
-		function checkCardNumber(form) {
-			console.log('test');
-			const re_number = new RegExp('^[0-9]+$');
-			const input = document.getElementById('card');
-			const submitButton = document.getElementById('submit');
-			const curdNumber = form.cardNumber.value;
-			if (re_number.test(curdNumber) && curdNumber.length === 16) {
-				console.log('true');
-				input.setAttribute('class', 'input_text');
-				submitButton.removeAttribute('disabled');
-			} else {
-				console.log('false');
-				input.setAttribute('class', 'input_text_false');
-				submitButton.setAttribute('disabled', 'true');
-			}
+	function formatCardCode(form) {
+	    let cardCode = form.card_number.value.replace(/[^\d]/g, '').substring(0,16);
+	    cardCode = cardCode !== '' ? cardCode.match(/.{1,4}/g).join(' ') : '';
+	    form.card_number.value = cardCode;
+	}
+	function checkCardNumber(form) {
+		const re_card = new RegExp('^[0-9]+$');
+		const input = document.getElementById('card_number');
+		formatCardCode(form);
+		const card = form.card_number.value.replace(/[^\d]/g, '');
+		if (re_card.test(card) && card.length === 16) {
+			input.setAttribute('class', 'input_text');
+			return true;
+		} else {
+			input.setAttribute('class', 'input_text_false');
+			return false;
 		}
+	}
+	function submitState(form) {
+		const submitButton = document.getElementById('submit');
+		if (checkCardNumber(form)) {
+			submitButton.removeAttribute('disabled');
+		} else {
+			submitButton.setAttribute('disabled', 'true');
+		}
+	}
 	</script>
 </body>
 </html>

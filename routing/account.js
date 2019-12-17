@@ -55,7 +55,7 @@ router.get('/account', (req, res) => {
 
 const validate = (user) => {
   const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{2})[-. ]?([0-9]{2})$/;
   const re_card = new RegExp('^[0-9]+$');
   return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.card_number));
 };
@@ -86,9 +86,10 @@ router.post('/updateprofile', (req, res) => {
     login,
     fullname: req.body.fullname,
     email: req.body.email,
-    phone: req.body.phone,
-    card_number: req.body.card_number,
+    phone: req.body.phone.replace(/\s+/g, ''),
+    card_number: req.body.card_number.replace(/\s+/g, ''),
   };
+  console.log(user);
   if (validate(user)) {
     updateUserData(res, 'usersdata', user);
   } else {

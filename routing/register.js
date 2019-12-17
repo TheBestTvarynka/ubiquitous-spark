@@ -34,7 +34,7 @@ router.get('/register', (req, res) => {
 const validate = (user) => {
   const re_login = /^[a-zA-Z0-9]+$/;
   const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{2})[-. ]?([0-9]{2})$/;
   return (re_login.test(user.login) && re_email.test(user.email) && re_phone.test(user.phone) && user.password === user.password_r);
 };
 
@@ -107,7 +107,7 @@ router.post('/register', (req, res) => {
     password_r: req.body.password_r,
     fullname: req.body.fullname,
     email: req.body.email,
-    phone: req.body.phone,
+    phone: req.body.phone.replace(/\s+/g, ''),
   };
   if (validate(user)) {
     findUser(res, user);
@@ -133,7 +133,7 @@ router.post('/activate', (req, res) => {
   const login = req.session.name;
   const setters = {
     activated: true,
-    card_number: req.body.cardNumber,
+    card_number: req.body.card_number.replace(/\s+/g, ''),
   };
   const types = {
     activated: 'value',
