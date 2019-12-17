@@ -175,9 +175,7 @@ const getBooks = (login, bookType, url, page, res) => {
         booksRender.push(bookHtml);
       }
       // set up the disclaimer text if there are no books
-      const type = bookType.split('').map(item => {
-        return (item === '_') ? ' ' : item;
-      }).join('');
+      const type = bookType.split('').map(item => ((item === '_') ? ' ' : item)).join('');
       console.log(type);
       const disclaimer = (books.length === 0) ?
         '<p class="disclaimer">There are no ' +
@@ -283,12 +281,62 @@ router.get('/cart', (req, res) => {
 
       const title = (cartItems.length !== 0) ?
         'Your cart items:' : 'Your cart is empty at the moment :(';
+      pg.close();
       res.render('views/cart', { layout: 'default', items, title, button });
     });
 });
 
-router.get('/payment', (req, res) => {
+const deleteCart = async login => {
+  const pool = new Pool(dbconfig);
+  const client = await pool.connect();
+  const temp = await client.query({
+    rowMode: 'object',
+    text: `UPDATE TABLE usersdata SET cart = '{}::integer[]' WHERE login = ${login};`,
+  });
+  await client.end();
+};
 
+router.get('/payment', (req, res) => {
+  const pg = dbreader.open(dbconfig);
+  const login = req.session.name;
+
+  console.log('Hello');
+  if (!login) {
+    res.cookie('redirect', '/cart');
+    res.redirect('/login');
+    return;
+  }
+
+  console.log('login :', login);
+  pg.select('usersdata')
+    .where({ login })
+    .then(result => {
+      console.log(result);
+
+      if (!result[0].activated) {
+        res.cookie('redirect', '/cart');
+        res.redirect('/activate');
+      }
+
+
+      const books = result[0].cart;
+      const pgU = dbwriter.open(dbconfig);
+      const updateUser = pgU.update('usersdata');
+      updateUser.set(
+        { bought_books: `array_cat(bought_books, ARRAY[${books}])` },
+        { bought_books: 'function' })
+        .where({ login })
+        .then(result => {
+          console.log('=========UPDATE========');
+          console.log(result);
+          console.log('=========UPDATE========');
+        });
+
+      deleteCart(login);
+
+      pg.close();
+      res.redirect('/purchases');
+    });
 });
 
 module.exports = router;
