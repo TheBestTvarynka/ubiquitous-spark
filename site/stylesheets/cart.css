@@ -1,0 +1,91 @@
+.container {
+    width: 70%;
+    display: flex;
+    margin: 0 0 5% 17%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pay {
+    width: 60%;
+    height: 50px;
+    margin: 0 0 0 20%;
+    font-size: 25px;
+    padding: 10px 10px 10px 10px;
+    background: black;
+    border-radius: 3px;
+    border: 1px solid black;
+    color: white;
+    transition: all .2s ease-in-out;
+}
+
+.pay:hover {
+    background: rgb(50, 50, 50);
+}
+
+.pay:disabled {
+    background: rgb(50, 50, 50);
+    color: black;
+}
+
+.results {
+    align-self: stretch;
+    margin: 2% 5% 0 0;
+    border-radius: 10px;
+    flex: 1 1 auto;
+    display: flex;
+    height: 100%;
+    flex-flow: wrap;
+    justify-content: space-around;
+    /*background-color: rgb(200, 200, 200);*/
+    /*padding: 4% 2% 0 2%;*/
+}
+
+.test {
+    margin: 0 4% 4% 0;
+    border: 3px solid black;
+    border-radius: 10px;
+    background: white;
+    height: 350px;
+    width: 200px;
+    transition: all .2s ease-in-out;
+}
+
+.test:hover {
+    transform: scale(1.01);
+}
+
+.testing {
+    margin: 0 4% 4% 0;
+    border: 3px solid black;
+    border-radius: 10px;
+    background: red;
+    height: 350px;
+    width: 200px;
+    transition: all .2s ease-in-out;
+}
+
+.testing:hover {
+    transform: scale(1.1);
+}
+
+
+.cover {
+    border-radius: 8px 8px 0 0;
+    height: 80%;
+    width: 100%;
+}
+
+.description {
+    height: 12%;
+    margin: 0 8px 0 8px;
+}
+
+.price {
+    text-align: right;
+    height: 5%;
+    margin-bottom: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
