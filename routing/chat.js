@@ -46,29 +46,30 @@ router.get('/chat', (req, res) => {
             let resulting = '';
             array.forEach(elem => {
               if (elem.peoples.includes(login)) {
+                console.log('rewerger');
                 const name = (elem.peoples[0] === login) ?
                   elem.peoples[1] : elem.peoples[0];
                 console.log('name of client:', name);
-                pg.select('usersdata')
+                /* pg.select('usersdata')
                   .where({ login: name })
                   .fields([ 'fullname' ])
                   .then(result => {
-                    pg.close();
-                    const letter = result[0].fullname.split('')[0];
+                    console.log('RESULT:', result);*/
+                    const letter = name.split('')[0];
                     resulting += '<a class="a"  href="/chat_entry/' +
                       name +
                     '"><div class="admin"><div class="picture"><p class="letter">' +
                     letter + '</p></div><p class="text"><strong>' +
-                    result[0].fullname + '</strong></p></div></a>';
-                    res.render('views/chat', { layout: 'default',
-                      admins: resulting, title });
-                  });
+                    name + '</strong></p></div></a>';
+                  // });
               }
             });
+            pg.close();
+            console.log('res: ', resulting);
             console.log(array);
             if (array.length === 0) resulting = '<p class="warning"' +
               '>No chats here yet</p>';
-            pg.close();
+            // pg.close();
             res.render('views/chat', { layout: 'default',
               admins: resulting, title });
           });
