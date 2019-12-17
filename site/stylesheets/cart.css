@@ -4,12 +4,20 @@
     margin: 0 0 5% 17%;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: bold;
+    color: grey;
+    margin: 5% 0 5% -7%;
 }
 
 .pay {
     width: 60%;
     height: 50px;
-    margin: 0 0 0 20%;
+    margin: 0 0 0 -9%;
     font-size: 25px;
     padding: 10px 10px 10px 10px;
     background: black;

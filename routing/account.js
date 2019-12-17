@@ -194,24 +194,24 @@ router.post('/buybook/:id', (req, res) => {
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
-    .fields([ 'bought_books' ])
+    .fields([ 'cart' ])
     .then(result => {
       pg.close();
       const up = dbwriter.open(dbconfig);
       const cursor = up.update('usersdata');
       cursor.where({ login });
-      const books = result[0].bought_books;
+      const books = result[0].cart;
       if (books.includes(parseInt(id))) {
-        cursor.set({ bought_books: `array_remove(bought_books, '${id}')` },
-          { bought_books: 'function' })
+        cursor.set({ cart: `array_remove(bought_books, '${id}')` },
+          { cart: 'function' })
           .then(result => {
             up.close();
             console.log(result);
             res.end('Removed from your Cart');
           });
       } else {
-        cursor.set({ bought_books: `array_cat(bought_books, ARRAY[${id}])` },
-          { bought_books: 'function' })
+        cursor.set({ cart: `array_cat(bought_books, ARRAY[${id}])` },
+          { cart: 'function' })
           .then(result => {
             up.close();
             console.log(result);

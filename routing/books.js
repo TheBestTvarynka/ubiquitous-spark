@@ -36,7 +36,7 @@ const getBookId = async () => {
   const client = await pool.connect();
   const result = await client.query({
     rowMode: 'array',
-    text: `SELECT nextval('book_id')`,
+    text: 'SELECT nextval(\'book_id\')',
   });
   await client.end();
   return result.rows[0][0];
@@ -56,12 +56,12 @@ const addBook = (res, bookData) => {
   const pgU = dbwriter.open(dbconfig);
   const updateUser = pgU.update('usersdata');
   updateUser.set({ uploaded_books: `array_cat(uploaded_books, ARRAY[${bookData.id}])` }, { uploaded_books: 'function' })
-            .where({ login: bookData.login })
-            .then(result => {
-              console.log('=========UPDATE========');
-              console.log(result);
-              console.log('=========UPDATE========');
-            });
+    .where({ login: bookData.login })
+    .then(result => {
+      console.log('=========UPDATE========');
+      console.log(result);
+      console.log('=========UPDATE========');
+    });
   const types = [];
   for (const field in bookData) {
     types[field] = 'value';
@@ -71,11 +71,11 @@ const addBook = (res, bookData) => {
   const pg = dbwriter.open(dbconfig);
   const writeData = pg.insert('books');
   writeData.value(bookData, types)
-           .then(result => {
-             pg.close();
-             console.log(result);
-             res.render('views/addbook', { layout: 'default', message: 'Your book has been added! Maybe you have something else?' });
-           });
+    .then(result => {
+      pg.close();
+      console.log(result);
+      res.render('views/addbook', { layout: 'default', message: 'Your book has been added! Maybe you have something else?' });
+    });
 };
 
 router.post('/addbook', async (req, res) => {
@@ -101,7 +101,7 @@ router.post('/addbook', async (req, res) => {
       bookData['path'].push(key);
     } else return;
     console.log('filename:', key);
-    s3.upload(process.env.BUCKET, file, key, mimetype, err => { if(err) console.log(err); });
+    s3.upload(process.env.BUCKET, file, key, mimetype, err => { if (err) console.log(err); });
   });
   busboy.on('field', (name, value) => {
     bookData[name] = value;
@@ -114,7 +114,7 @@ router.post('/addbook', async (req, res) => {
   return req.pipe(busboy);
 });
 
-const createBook = async id => {
+const createBook = async (id, style) => {
   let book = '';
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
@@ -124,11 +124,17 @@ const createBook = async id => {
   });
   await client.end();
   const bookData = result.rows[0];
-  book = `<div class="book">
+  if (!style) book = `<div class="book">
   <a href="/book/${bookData.id}">
   <img src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
   <p>${bookData.name}</p>
   <div class="year">${bookData.year}</div>
+  <div class="price">${bookData.price} $</div>
+  </a></div>`;
+  else book = `<div class="test">
+  <a href="/book/${bookData.id}">
+  <img class="cover" src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
+  <p class="description">${bookData.name}</p>
   <div class="price">${bookData.price} $</div>
   </a></div>`;
   return book;
@@ -163,15 +169,15 @@ const getBooks = (login, bookType, url, page, res) => {
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
       // load books from db
       const booksRender = [];
-      for (let bookId of currentBooks) {
-        const bookHtml = await createBook(bookId);
+      for (const bookId of currentBooks) {
+        const bookHtml = await createBook(bookId, 0);
         booksRender.push(bookHtml);
       }
       // set up pagination for page
       const pagesCount = Math.ceil(books.length / 8);
       const pagination = createPagination(pagesCount, url, page);
       // render the page
-      res.render('views' + url, { layout: 'default', pagination: pagination, books: booksRender });
+      res.render('views' + url, { layout: 'default', pagination, books: booksRender });
     });
 };
 
@@ -231,6 +237,44 @@ router.get('/boughtbooks', (req, res) => {
     return;
   }
   getBooks(login, 'bought_books', '/account/boughtbooks', 1, res);
+});
+
+router.get('/cart', (req, res) => {
+  const pg = dbreader.open(dbconfig);
+  const login = req.session.name;
+
+  if (!login) {
+    res.cookie('redirect', '/cart');
+    res.redirect('/login');
+    return;
+  }
+
+  console.log('login :', login);
+  pg.select('usersdata')
+    .where({ login })
+    .then(async result => {
+      console.log('login: ', login);
+      console.log(result);
+      const cartItems = result[0].cart;
+      console.log(cartItems);
+
+      let items = '';
+      if (cartItems.length !== 0)
+        for (const bookId of cartItems) {
+          const bookHtml = await createBook(bookId, 1);
+          //yes, I know that += is not good
+          items += bookHtml;
+        }
+
+      const button = (cartItems.length !== 0) ?
+        '<a href="/payment">' +
+        '<input type="button" class="pay" value="Proceed to payment"></a>' :
+        '<a href="/"><input type="button" class="pay" value="Go shopping"></a>';
+
+      const title = (cartItems.length !== 0) ?
+        'Your cart items:' : 'Your cart is empty at the moment :(';
+      res.render('views/cart', { layout: 'default', items, title, button });
+    });
 });
 
 module.exports = router;

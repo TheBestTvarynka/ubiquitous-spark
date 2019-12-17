@@ -17,8 +17,8 @@ const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
 const chat = require('./routing/chat');
-const cart = require('./routing/cart');
 const book = require('./routing/book');
+const books = require('./routing/books');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -50,8 +50,8 @@ app.use(register);
 app.use(account);
 app.use(search);
 app.use(book);
+app.use(books);
 app.use(chat);
-app.use(cart);
 
 function getBooks(rows) {
   let arr = '';
