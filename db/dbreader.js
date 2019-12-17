@@ -30,11 +30,19 @@ const where = conditions => {
       } else if (value.startsWith('@>')) {
         condition = `${key} @> $${i}`;
         value = value.substring(2);
+      } else if (value.startsWith('IN')) {
+        condition = `${key} IN $${i}`;
+        value = value.substring(2);
+      // } else if (value.startsWith('ANY')) {
+      //   condition = `${key} ANY $${i}`;
+      //   value = value.substring(3);
+      //   console.log(value);
       } else if (value.includes('*') || value.includes('?')) {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
         condition = `${key} = $${i}`;
+        console.log(value);
       }
     }
     i++;

@@ -126,7 +126,7 @@ const createBook = async (id, style) => {
   const bookData = result.rows[0];
   if (!style) book = `<div class="book">
   <a href="/book/${bookData.id}">
-  <img src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
+  <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
   <p>${bookData.name}</p>
   <div class="year">${bookData.year}</div>
   <div class="price">${bookData.price} $</div>

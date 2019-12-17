@@ -86,9 +86,10 @@ router.post('/updateprofile', (req, res) => {
     login,
     fullname: req.body.fullname,
     email: req.body.email,
-    phone: req.body.phone.replace(/\s+/g, '').replace(/\s+/g, ''),
-    bank_number: req.body.card_number.replace(/\s+/g, ''),
+    phone: req.body.phone.replace(/\s+/g, ''),
+    card_number: req.body.card_number.replace(/\s+/g, ''),
   };
+  console.log(user);
   if (validate(user)) {
     updateUserData(res, 'usersdata', user);
   } else {
