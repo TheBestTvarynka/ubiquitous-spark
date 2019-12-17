@@ -133,7 +133,7 @@ router.post('/activate', (req, res) => {
   const login = req.session.name;
   const setters = {
     activated: true,
-    card_number: req.body.cardNumber,
+    card_number: req.body.cardNumber.replace(/\s+/g, ''),
   };
   const types = {
     activated: 'value',
