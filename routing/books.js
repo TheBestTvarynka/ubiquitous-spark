@@ -310,7 +310,7 @@ router.get('/payment', (req, res) => {
   console.log('login :', login);
   pg.select('usersdata')
     .where({ login })
-    .then(result => {
+    .then(async result => {
       console.log(result);
 
       if (!result[0].activated) {
@@ -320,22 +320,26 @@ router.get('/payment', (req, res) => {
 
 
       const books = result[0].cart;
+      console.log('books: ', books);
+      const bought_books = result[0].bought_books;
+      const boughtBooks = bought_books.concat(books);
+      console.log('boughtBooks: ', boughtBooks);
+      const boughtBooksFinal = Array.from(new Set(boughtBooks));
+      console.log('The boughtBooksFinal: ', boughtBooksFinal);
+      console.log('The boughtBooksFinal string: ', boughtBooksFinal.toString());
       const pgU = dbwriter.open(dbconfig);
-      const updateUser = pgU.update('usersdata');
-      updateUser.set(
-        { bought_books: `array_cat(bought_books, ARRAY[${books}])` },
-        { bought_books: 'function' })
-        .where({ login })
-        .then(result => {
-          console.log('=========UPDATE========');
-          console.log(result);
-          console.log('=========UPDATE========');
+      pgU.query(`UPDATE usersdata SET cart = '{}' WHERE login = '${login}'`,
+        0, (err, result) => {
+          // console.log(result);
+          // console.log(err);
+        });
+      pgU.query(`UPDATE usersdata SET bought_books = '{${boughtBooksFinal.toString()}}' WHERE login = '${login}'`,
+        0, (err, result) => {
+          res.redirect('/purchases');
         });
 
-      deleteCart(login);
-
+      pgU.close();
       pg.close();
-      res.redirect('/purchases');
     });
 });
 

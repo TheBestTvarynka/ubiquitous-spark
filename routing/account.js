@@ -202,7 +202,7 @@ router.post('/buybook/:id', (req, res) => {
       cursor.where({ login });
       const books = result[0].cart;
       if (books.includes(parseInt(id))) {
-        cursor.set({ cart: `array_remove(bought_books, '${id}')` },
+        cursor.set({ cart: `array_remove(cart, ARRAY[${id}])` },
           { cart: 'function' })
           .then(result => {
             up.close();
@@ -210,7 +210,7 @@ router.post('/buybook/:id', (req, res) => {
             res.end('Removed from your Cart');
           });
       } else {
-        cursor.set({ cart: `array_cat(bought_books, ARRAY[${id}])` },
+        cursor.set({ cart: `array_cat(cart, ARRAY[${id}])` },
           { cart: 'function' })
           .then(result => {
             up.close();
