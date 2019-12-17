@@ -166,6 +166,7 @@ const getBooks = (login, bookType, url, page, res) => {
     .then(async result => {
       pg.close();
       const books = result[0][bookType];
+      console.log('Books in getBooks: ', books);
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
       // load books from db
       const booksRender = [];
@@ -173,11 +174,20 @@ const getBooks = (login, bookType, url, page, res) => {
         const bookHtml = await createBook(bookId, 0);
         booksRender.push(bookHtml);
       }
+      // set up the disclaimer text if there are no books
+      const type = bookType.split('').map(item => {
+        return (item === '_') ? ' ' : item;
+      }).join('');
+      console.log(type);
+      const disclaimer = (books.length === 0) ?
+        '<p class="disclaimer">There are no ' +
+        type + ' at the moment :(</p>' : '';
       // set up pagination for page
       const pagesCount = Math.ceil(books.length / 8);
       const pagination = createPagination(pagesCount, url, page);
       // render the page
-      res.render('views' + url, { layout: 'default', pagination, books: booksRender });
+      res.render('views' + url, { layout: 'default', pagination,
+        books: booksRender, disclaimer });
     });
 };
 
@@ -275,6 +285,10 @@ router.get('/cart', (req, res) => {
         'Your cart items:' : 'Your cart is empty at the moment :(';
       res.render('views/cart', { layout: 'default', items, title, button });
     });
+});
+
+router.get('/payment', (req, res) => {
+
 });
 
 module.exports = router;
