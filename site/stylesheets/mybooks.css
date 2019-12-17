@@ -13,6 +13,13 @@ h1 {
 	text-align: left;
 	padding-left: 30px;
 }
+
+.disclaimer {
+	font-size: 30px;
+	font-weight: bold;
+	color: grey;
+}
+
 .pagecontainer {
 	display: flex;
 	flex-direction: row;
