@@ -32,6 +32,8 @@ router.get('/chat', (req, res) => {
   pg.select('usersdata')
     .where({ login })
     .then(result => {
+      console.log('result of SELECT login: ', result);
+      // read username and permission for user
       username += result[0].fullname;
       permission += result[0].permission;
       console.log('THE USER === ', username, ': ', permission);
@@ -42,18 +44,25 @@ router.get('/chat', (req, res) => {
         pg.select('chats_id')
           .then(array => {
             let resulting = '';
-
             array.forEach(elem => {
-              if (elem.peoples.includes(username)) {
-                const name = (elem.peoples[0] === username) ?
+              if (elem.peoples.includes(login)) {
+                const name = (elem.peoples[0] === login) ?
                   elem.peoples[1] : elem.peoples[0];
-                const letter = name.split('')[0];
-                resulting += '<a class="a"  href="/chat_entry/' +
-                  name +
-                  // eslint-disable-next-line max-len
-                  '"><div class="admin"><div class="picture"><p class="letter">' +
-                  letter + '</p></div><p class="text"><strong>' +
-                  name + '</strong></p></div></a>';
+                console.log('name of client:', name);
+                pg.select('usersdata')
+                  .where({ login: name })
+                  .fields([ 'fullname' ])
+                  .then(result => {
+                    pg.close();
+                    const letter = result[0].fullname.split('')[0];
+                    resulting += '<a class="a"  href="/chat_entry/' +
+                      name +
+                    '"><div class="admin"><div class="picture"><p class="letter">' +
+                    letter + '</p></div><p class="text"><strong>' +
+                    result[0].fullname + '</strong></p></div></a>';
+                    res.render('views/chat', { layout: 'default',
+                      admins: resulting, title });
+                  });
               }
             });
             console.log(array);
@@ -72,11 +81,10 @@ router.get('/chat', (req, res) => {
             let resulting = '';
             result.forEach(i => {
               const name = i.fullname;
+              const adminLogin = i.login;
               const letter = i.fullname.split('')[0];
-              // eslint-disable-next-line max-len
-              resulting += '<a class="a"  href="/chat_entry/' +
-                // eslint-disable-next-line max-len
-                name + '"><div class="admin"><div class="picture"><p class="letter">' +
+              resulting += '<a class="a" href="/chat_entry/' +
+                adminLogin + '"><div class="admin"><div class="picture"><p class="letter">' +
                 letter + '</p></div><p class="text"><strong>' +
                 name + '</strong></p></div></a>';
             });
@@ -103,36 +111,34 @@ router.get('/chat_entry/:name', (req, res) => {
       username += result[0].fullname;
       letterUser += username.split('')[0];
       const cursor = pg.select('chats_id');
-      cursor.where({ peoples: `@>{${username}, ${admin}}` })
+      cursor.where({ peoples: `@>{${login}, ${admin}}` })
         .then(rows => {
           if (rows.length === 0) {
             const write = dbwriter.open(dbconfig);
-
             write.insert('chats_id')
-              .value({ peoples: [username, admin] }, { peoples: 'array' })
+              .value({ peoples: [login, admin] }, { peoples: 'array' })
               .then(result => {
                 console.log('Result: ');
                 console.log(result);
-
                 const row = pg.select('chats_id');
-                row.where({ peoples: `@>{${username}, ${admin}}` })
+                row.where({ peoples: `@>{${login}, ${admin}}` })
                   .then(result => {
                     const id = result[0].id;
                     console.log('Id: ', id);
                     pg.close();
                     res.render('views/chat_entry',
-                      { layout: 'default', admin, username,
+                      { layout: 'default', admin, username: login,
                         letterAdmin, letterUser, id });
                   });
               });
           } else {
-            console.log('showing rows...');
+            console.log('Chat exist. Showing rows...');
             console.log(rows);
             const id = rows[0].id;
-            console.log('Id: ', id);
+            console.log('chat_id: ', id);
             pg.close();
             res.render('views/chat_entry',
-              { layout: 'default', admin, username,
+              { layout: 'default', admin, username: login,
                 letterAdmin, letterUser, id });
           }
         });

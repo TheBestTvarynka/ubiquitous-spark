@@ -1,0 +1,28 @@
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/mybooks.css">
+<main>
+    <div class="pagecontainer">
+        <div class="navigationcontainer">
+            <div class="navigation">
+                <a href="/account">Account</a>
+                <a href="/account/mybooks">Uploaded books</a>
+                <a href="/account/boughtbooks"   style="background-color: grey;">Bought books</a>
+                <a href="/account/likedbooks">Liked books</a>
+                <a href="/account/addbook">Add book</a>
+                <a href="/chat">Chat - demo</a>
+                <a href="/logout">Log out</a>
+            </div>
+        </div>
+        <div class="content">
+            <h1 style="width: 100%;">Bought books</h1>
+            {{{ disclaimer }}}
+            {{#each books}}
+                {{{this}}}
+            {{/each}}
+        </div>
+    </div>
+    <div class="contentcount">
+        {{#each pagination}}
+            {{{this}}}
+        {{/each}}
+    </div>
+</main>

@@ -9,15 +9,14 @@ const cookie = require('cookie-parser');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
 const dbreader = require('./db/dbreader');
-// const { Pool } = require('pg');
 const login = require('./routing/login');
-// eslint-disable-next-line no-unused-vars
 const dbwriter = require('./db/dbwriter.js');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
 const chat = require('./routing/chat');
 const book = require('./routing/book');
+const books = require('./routing/books');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -30,7 +29,6 @@ app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
 app.set('views', path.join(__dirname, 'site'));
 app.set('view engine', 'hbs');
 
-// eslint-disable-next-line no-unused-vars
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -49,6 +47,7 @@ app.use(register);
 app.use(account);
 app.use(search);
 app.use(book);
+app.use(books);
 app.use(chat);
 
 function getBooks(rows) {
@@ -63,7 +62,7 @@ function getBooks(rows) {
     arr += `<a href="/book/${row.id}"><div class="book"><img class="cover"
  src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${row.photos[0]}"
  ><p class="description">${description}</p>
- <div class="price">100$</div></div></a>`;
+ <div class="price">${row.price}$</div></div></a>`;
   });
   return arr;
 }
@@ -86,6 +85,10 @@ app.get('/search', (req, res) => {
 
 app.get('/about', (req, res) => {
   res.render('views/about', { layout: 'default' });
+});
+
+app.get('/purchases', (req, res) => {
+  res.redirect('/account/boughtbooks');
 });
 
 const printErr = err => {
@@ -124,8 +127,7 @@ const webSoketServer = new WebSocketServer({ httpServer: server });
 // check correct name
 const sendNeightbourds = (clients, message) => {
   console.log('===================> Entered sendNeightbourds');
-  console.log('Sending message: =====', message, '===== to clients =====',
-    clients, '=====');
+  console.log('Sending message: =====', message, '===== to clients =====');
   const pg = dbreader.open(dbconfig);
   pg.select('chats_id')
     .fields([ 'peoples' ])
@@ -134,8 +136,9 @@ const sendNeightbourds = (clients, message) => {
       pg.close();
       const peoples = result[0].peoples;
       console.log(peoples);
+      console.log(message.author);
       for (const person of peoples) {
-        console.log(person);
+        console.log('PERSON:', person);
         if (clients[person] && person !== message.author) {
           console.log(person);
           clients[person].send(JSON.stringify({ title: 'message',

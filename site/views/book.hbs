@@ -14,7 +14,7 @@
                 <input type="button" name="like" value="Like" class="button" onclick="likeBook()">
                   <span class="popuptext" id="message" onclick="hide()"></span>
               </div>
-              <input type="button" name="buy" value="Buy" class="button">
+              <input type="button" name="buy" value="Buy" class="button" onclick="buyBook()">
           </form>
       </div>
   </div>
@@ -45,6 +45,26 @@
         popup.classList.toggle("show");
       }
     });
+  }
+  function buyBook() {
+    console.log('buying a book...');
+      const id = {{ id }};
+      const buyRequest = new XMLHttpRequest();
+      buyRequest.open('POST', `/buybook/${id}`, true);
+      buyRequest.send();
+      buyRequest.addEventListener("load", (env) => {
+          if (buyRequest.status === 404) {
+              console.log('Bad request: return status code 404');
+          } else {
+              const popup = document.getElementById("message");
+              // popup.hidden = true;
+              const message = buyRequest.response;
+              console.log(message);
+              popup.innerHTML = `${message}`;
+              // popup.hidden = false;
+              popup.classList.toggle("show");
+          }
+      });
   }
 </script>
 </main>

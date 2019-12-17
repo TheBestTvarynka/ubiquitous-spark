@@ -89,9 +89,10 @@ router.post('/updateprofile', (req, res) => {
     login,
     fullname: req.body.fullname,
     email: req.body.email,
-    phone: req.body.phone.replace(/\s+/g, '').replace(/\s+/g, ''),
-    bank_number: req.body.card_number.replace(/\s+/g, ''),
+    phone: req.body.phone.replace(/\s+/g, ''),
+    card_number: req.body.card_number.replace(/\s+/g, ''),
   };
+  console.log(user);
   if (validate(user)) {
     updateUserData(res, 'usersdata', user);
   } else {
@@ -183,7 +184,44 @@ router.post('/likebook/:id', (req, res) => {
           });
       }
     });
+});
 
+router.post('/buybook/:id', (req, res) => {
+  console.log('buybook - processing...');
+  const login = req.session.name;
+  const id = req.params.id;
+  if (!login) {
+    res.status('401').send('Login please');
+    return;
+  }
+  const pg = dbreader.open(dbconfig);
+  pg.select('usersdata')
+    .where({ login })
+    .fields([ 'cart' ])
+    .then(result => {
+      pg.close();
+      const up = dbwriter.open(dbconfig);
+      const cursor = up.update('usersdata');
+      cursor.where({ login });
+      const books = result[0].cart;
+      if (books.includes(parseInt(id))) {
+        cursor.set({ cart: `array_remove(cart, ARRAY[${id}])` },
+          { cart: 'function' })
+          .then(result => {
+            up.close();
+            console.log(result);
+            res.end('Removed from your Cart');
+          });
+      } else {
+        cursor.set({ cart: `array_cat(cart, ARRAY[${id}])` },
+          { cart: 'function' })
+          .then(result => {
+            up.close();
+            console.log(result);
+            res.end('Added to your Cart');
+          });
+      }
+    });
 });
 
 module.exports = router;
