@@ -6,6 +6,12 @@
 	font-size: 20px;
 }
 
+.warning {
+	font-size: 30px;
+	color: grey;
+	font-weight: bold;
+}
+
 .admin {
 	display: flex;
 	flex-direction: row;

@@ -44,16 +44,19 @@ router.get('/account', (req, res) => {
     return;
   }
   readUserData(login, 'usersdata', result => {
-      if (!result[0].activated) {
-        res.cookie('redirect', '/account');
-        res.redirect('/activate');
-      } else {
-        res.render('views/account/account', { layout: 'default' , user: result[0] });
-      }
-    });
+    if (!result[0].activated) {
+      res.cookie('redirect', '/account');
+      res.redirect('/activate');
+    } else {
+      const settings = (result[0].permission === 'admin') ?
+        'Admin profile settings' : 'Profile settings';
+      res.render('views/account/account', { layout: 'default',
+        user: result[0], settings });
+    }
+  });
 });
 
-const validate = (user) => {
+const validate = user => {
   const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{2})[-. ]?([0-9]{2})$/;
   const re_card = new RegExp('^[0-9]+$');
@@ -95,8 +98,8 @@ router.post('/updateprofile', (req, res) => {
   } else {
     // user enter incorrect new information
     readUserData(login, 'usersdata', result => {
-        res.render('views/account/account', { layout: 'default' , user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
-      });
+      res.render('views/account/account', { layout: 'default', user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
+    });
   }
 });
 
@@ -167,21 +170,20 @@ router.post('/likebook/:id', (req, res) => {
       const books = result[0].liked_books;
       if (books.includes(parseInt(id))) {
         cursor.set({ liked_books: `array_remove(liked_books, '${id}')` }, { liked_books: 'function' })
-              .then(result => {
-                up.close();
-                console.log(result);
-                res.end('Removed from your Liked Books');
-              });
+          .then(result => {
+            up.close();
+            console.log(result);
+            res.end('Removed from your Liked Books');
+          });
       } else {
         cursor.set({ liked_books: `array_cat(liked_books, ARRAY[${id}])` }, { liked_books: 'function' })
-              .then(result => {
-                up.close();
-                console.log(result);
-                res.end('Added to your Liked Books');
-              });
+          .then(result => {
+            up.close();
+            console.log(result);
+            res.end('Added to your Liked Books');
+          });
       }
     });
-
 });
 
 router.post('/buybook/:id', (req, res) => {
@@ -220,7 +222,6 @@ router.post('/buybook/:id', (req, res) => {
           });
       }
     });
-
 });
 
 module.exports = router;
