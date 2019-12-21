@@ -11,7 +11,7 @@ const dbconfig = {
 };
 
 const renderBook = (b, id, res) => {
-  console.log(id);
+  console.log(id, b);
   const pg = dbreader.open(dbconfig);
   pg.select('books')
     .where({ id })
@@ -26,27 +26,29 @@ const renderBook = (b, id, res) => {
       res.render('views/book', { layout: 'default', image: imageSource,
         description: book.description, author: book.author, year: book.year,
         publishing: book.publishing, price: book.price, name: book.name,
-        id: book.id, bought: b });
+        id: book.id, bought: String(b) });
     });
 };
 
 const purchasedBook = (id, login, res) => {
   if (!login) {
-    return false;
+    renderBook(false, id, res);
+    return;
   }
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
     .fields([ 'bought_books' ])
-    .then(res => {
-      console.log(res);
-      renderBook(res[0].bought_books.includes(id), id, res);
+    .then(result => {
+      const books = result[0].bought_books;
+      renderBook(books.includes(Number(id)), id, res);
     });
 };
 
 router.get('/book/:id', (req, res) => {
   const id = req.params.id;
   const login = req.session.name;
+  console.log('in get: ', id, login);
   purchasedBook(id, login, res);
 });
 
