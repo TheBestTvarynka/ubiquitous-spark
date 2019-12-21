@@ -14,7 +14,12 @@
                 <input type="button" name="like" value="Like" class="button" onclick="likeBook()">
                   <span class="popuptext" id="message" onclick="hide()"></span>
               </div>
+              {{#if bought false}}
               <input type="button" name="buy" value="Buy" class="button" onclick="buyBook()">
+              {{/if}}
+              {{#if bought true}}
+              <input type="button" name="download" value="Buy" class="button" onclick="buyBook()">
+              {{/if}}
           </form>
       </div>
   </div>

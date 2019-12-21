@@ -10,8 +10,7 @@ const dbconfig = {
   ssl: true
 };
 
-router.get('/book/:id', (req, res) => {
-  const id = req.params.id;
+const renderBook = (b, id, res) => {
   console.log(id);
   const pg = dbreader.open(dbconfig);
   pg.select('books')
@@ -27,8 +26,28 @@ router.get('/book/:id', (req, res) => {
       res.render('views/book', { layout: 'default', image: imageSource,
         description: book.description, author: book.author, year: book.year,
         publishing: book.publishing, price: book.price, name: book.name,
-        id: book.id });
+        id: book.id, bought: b });
     });
+};
+
+const purchasedBook = (id, login, res) => {
+  if (!login) {
+    return false;
+  }
+  const pg = dbreader.open(dbconfig);
+  pg.select('usersdata')
+    .where({ login })
+    .fields([ 'bought_books' ])
+    .then(res => {
+      console.log(res);
+      renderBook(res[0].bought_books.includes(id), id, res);
+    });
+};
+
+router.get('/book/:id', (req, res) => {
+  const id = req.params.id;
+  const login = req.session.name;
+  purchasedBook(id, login, res);
 });
 
 module.exports = router;
