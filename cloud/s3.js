@@ -11,14 +11,14 @@ class Cloud {
       Bucket: bucket,
       Key: filename,
       Body: file,
-      ContentType: mimetype
+      ContentType: mimetype,
     };
     this.s3.upload(params, callback);
   }
   download(bucket, filename, callback) {
     const params = {
       Bucket: bucket,
-      Key: filename
+      Key: filename,
     };
     this.s3.getObject(params, callback);
   }

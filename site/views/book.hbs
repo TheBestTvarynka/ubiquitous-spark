@@ -14,7 +14,11 @@
                 <input type="button" name="like" value="Like" class="button" onclick="likeBook()">
                   <span class="popuptext" id="message" onclick="hide()"></span>
               </div>
-              <input type="button" name="buy" value="Buy" class="button" onclick="buyBook()">
+              {{#if bought}}
+              <input type="button" name="download" value="Download" class="button" onclick="location.href = '/{{path}}';">
+              {{else}}
+              <input type="button" name="false" value="Buy" class="button" onclick="buyBook()">
+              {{/if}}
           </form>
       </div>
   </div>
@@ -46,6 +50,32 @@
       }
     });
   }
+  {{#if bought}}
+  function buyBook(argument) {
+      const book = new XMLHttpRequest();
+      book.responseType = 'blob';
+      book.open('GET', '/downloadbook/{{id}}');
+      book.send();
+      book.addEventListener('load', res => {
+        if (res.status !== 200) {
+          console.log(`Error: ${res.status}`);
+          console.log(res.response);
+          return;
+        }
+        console.log('book downloaded');
+        const file = new Blob(res.response, { type: 'application/pdf' });
+
+        const a = document.createElement("a");
+        a.style = "display: none";
+        document.body.appendChild(a);
+        let url = window.URL.createObjectURL(file);
+        a.href = url;
+        a.download = '{{name}}';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+  }
+  {{else}}
   function buyBook() {
     console.log('buying a book...');
       const id = {{ id }};
@@ -66,5 +96,6 @@
           }
       });
   }
+  {{/if}}
 </script>
 </main>
