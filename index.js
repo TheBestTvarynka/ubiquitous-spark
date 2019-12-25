@@ -6,11 +6,9 @@ const path = require('path');
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const cookie = require('cookie-parser');
-const WebSocketServer = require('websocket').server;
-const http = require('http');
 const dbreader = require('./db/dbreader');
-const login = require('./routing/login');
 const dbwriter = require('./db/dbwriter.js');
+const login = require('./routing/login');
 const register = require('./routing/register');
 const account = require('./routing/account');
 const search = require('./routing/search');
@@ -18,10 +16,11 @@ const chat = require('./routing/chat');
 const book = require('./routing/book');
 const books = require('./routing/books');
 
+const WebSocketServer = require('websocket').server;
+const http = require('http');
+
 const app = express();
 const port = process.env.PORT || 8080;
-const clients = {};
-const historyPack = 4;
 
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
@@ -121,6 +120,85 @@ app.get('/users/:permission', (req, res) => {
     });
 });
 
+const createChat = (login, letterUser, admin, letterAdmin, authToken, res) => {
+  const write = dbwriter.open(dbconfig);
+  write.insert('chats_id')
+    .value({ peoples: [login, admin] }, { peoples: 'array' })
+    .then(result => {
+      console.log('Result:', result);
+      const pg = dbreader.open(dbconfig);
+      const row = pg.select('chats_id');
+      row.where({ peoples: `@>{${login}, ${admin}}` })
+        .then(result => {
+          pg.close();
+          const id = result[0].id;
+          console.log('Id: ', id);
+          res.render('views/chat_entry',
+            { layout: 'default', admin, username: login,
+              letterAdmin, letterUser, id, token: authToken });
+        });
+    });
+};
+
+const generateAuthToken = lenght => {
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let token = '';
+  for (let i = 0; i < lenght; ++i) {
+    token += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return token;
+};
+
+const clients = {};
+const historyPack = 4;
+const remoteAddresses = {};
+
+app.get('/chat_entry/:name', (req, res) => {
+  const pg = dbreader.open(dbconfig);
+  const login = req.session.name;
+
+  const remote = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  // if (remote === '::1') {
+  //   remote = '::ffff:127.0.0.1';
+  // }
+  console.log('remote address get root:', remote);
+  const authToken = generateAuthToken(50);
+  console.log(authToken);
+  remoteAddresses[authToken] = remote;
+
+  const admin = req.params.name;
+  const letterAdmin = admin.split('')[0];
+
+  let username = '';
+  let letterUser = '';
+  pg.select('usersdata')
+    .where({ login })
+    .then(result => {
+      username += result[0].fullname;
+      letterUser += username.split('')[0];
+      const cursor = pg.select('chats_id');
+      cursor.where({ peoples: `@>{${login}, ${admin}}` })
+        .then(rows => {
+          if (rows.length === 0) {
+            createChat(login, letterUser, admin, letterAdmin, authToken, res);
+          } else {
+            console.log('Chat exist. Showing rows...');
+            console.log(rows);
+            const id = rows[0].id;
+            console.log('chat_id: ', id);
+            pg.close();
+            res.render('views/chat_entry',
+              { layout: 'default', admin, username: login,
+                letterAdmin, letterUser, id, token: authToken });
+          }
+        });
+    });
+});
+
+
+
+
 const server = http.createServer(app);
 const webSoketServer = new WebSocketServer({ httpServer: server });
 
@@ -200,15 +278,24 @@ const loadHistory = (data, connection, title) => {
   }
 };
 
-// const routing = {
-//   message: writeInDB,
-//   history: loadHistory,
-// };
-
 webSoketServer.on('request', request => {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
-  console.log(request.httpRequest.headers);
-  const connection = request.accept(null, request.origin);
+  
+  const authToken = request.httpRequest.headers['sec-websocket-protocol'];
+  const savedAddress = remoteAddresses[authToken];
+  delete remoteAddresses[authToken];
+  console.log(authToken);
+  console.log(savedAddress);
+  console.log(request.remoteAddress);
+  console.log(request.requestedProtocols);
+
+  if (!savedAddress || savedAddress !== request.remoteAddress) {
+    console.log('REQUEST NOT ACCEPTED');
+    request.reject();
+    return;
+  }
+
+  let connection = request.accept(authToken, request.origin);
   console.log((new Date()) + ' Connection accepted.');
 
   let userName = undefined;

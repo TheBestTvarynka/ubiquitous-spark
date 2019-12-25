@@ -8,9 +8,7 @@
 
     const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
 
-    // const ws = new WebSocket(protocol + location.hostname + ':' + location.port + '/chat')
-
-    let connection = new WebSocket(protocol + location.hostname + ':' + location.port);
+    const connection = new WebSocket(protocol + location.hostname + ':' + location.port, '{{ token }}');
 
     connection.onopen = function () {
         console.log('Entered connection.onopen');
