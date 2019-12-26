@@ -25,4 +25,11 @@
 		    {{{this}}}
 		{{/each}}
 	</div>
+	<script type="text/javascript">
+		function delete_book(id, address) {
+			const book = document.getElementById(id);
+			book.parentNode.removeChild(book);
+    		return false;
+		}
+	</script>
 </main>

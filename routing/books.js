@@ -121,8 +121,8 @@ const createBook = async (type, id, style) => {
   await client.end();
   const bookData = result.rows[0];
   if (!style) {
-    book = `<div class="book">
-    <a href="/delete/${type}/${id}" class="delete_button">&#x274C;</a>
+    book = `<div class="book" id="${bookData.id}">
+    <a href="javascript:void(0))" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
     <a href="/book/${bookData.id}">
     <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
     <p>${bookData.name}</p>
@@ -131,7 +131,7 @@ const createBook = async (type, id, style) => {
     </a></div>`;
   } else {
     book = `<div class="test">
-    <a href="/book/${bookData.id}">
+    <a href="javascript:void(0))" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
     <img class="cover" src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
     <a href="/account">&#x274C;</p>
     <p class="description">${bookData.name}</p>
@@ -142,6 +142,9 @@ const createBook = async (type, id, style) => {
 };
 
 const createBooks = async (type, ids, style) => {
+  if (ids.length === 0) {
+    return [];
+  }
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
   const result = await client.query({
@@ -154,8 +157,8 @@ const createBooks = async (type, ids, style) => {
   const books = result.rows.reduce((arr, bookData) => {
     let book;
     if (!style) {
-      book = `<div class="book">
-      <a href="/delete/${type}/${bookData.id}" class="delete_button">&#x274C;</a>
+      book = `<div class="book" id="${bookData.id}">
+      <a href="javascript:void(0)" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
       <a href="/book/${bookData.id}">
       <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
       <p>${bookData.name}</p>
@@ -163,8 +166,8 @@ const createBooks = async (type, ids, style) => {
       <div class="price">${bookData.price} $</div>
       </a></div>`;
     } else {
-      book = `<div class="test">
-      <a href="/book/${bookData.id}">
+      book = `<div class="test" id="${bookData.id}">
+      <a href="javascript:void(0))" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
       <img class="cover" src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
       <a href="/account">&#x274C;</p>
       <p class="description">${bookData.name}</p>
@@ -218,7 +221,6 @@ const getBooks = (login, bookType, url, page, res) => {
       const pagesCount = Math.ceil(books.length / 8);
       const pagination = createPagination(pagesCount, url, page);
       // render the page
-      console.log('Books for Render:', booksRender);
       res.render('views' + url, { layout: 'default', pagination,
         books: booksRender, disclaimer });
     });
@@ -370,7 +372,7 @@ router.get('/payment', (req, res) => {
     });
 });
 
-router.get('/delete/:type/:id', (req, res) => {
+router.post('/delete/:type/:id', (req, res) => {
   const login = req.session.name;
   if (!login) {
     res.redirect('login');
@@ -387,8 +389,9 @@ router.get('/delete/:type/:id', (req, res) => {
     .where({ login })
     .set(values, types)
     .then(result => {
+      console.log(result);
       pg.close();
-      res.redirect(`/account/${type}`);
+      res.status(200).end('Deleted');
     });
 });
 

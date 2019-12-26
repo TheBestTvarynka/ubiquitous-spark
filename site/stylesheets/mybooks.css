@@ -1,194 +1,218 @@
 *{
-	margin: 0px;
-	padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 a {
-	text-decoration: none;
+  text-decoration: none;
 }
 li {
-	text-decoration: none;
-	list-style: none;
+  text-decoration: none;
+  list-style: none;
 }
 h1 {
-	text-align: left;
-	padding-left: 30px;
+  text-align: left;
+  padding-left: 30px;
 }
 
 .disclaimer {
-	font-size: 30px;
-	font-weight: bold;
-	color: grey;
+  font-size: 30px;
+  font-weight: bold;
+  color: grey;
 }
 
 .pagecontainer {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	text-align: center;
-	flex-wrap: wrap;
-	padding-bottom: 20px;
-	padding-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  padding-top: 40px;
 }
 .navigationcontainer {
-	padding-top: 50px;
-	width: 20%;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
+  padding-top: 50px;
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .navigation {
-	border: 2px solid black;
-	border-radius: 5px;
-	padding: 10px;
-	width: 90%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	text-align: center;
-	flex-wrap: wrap;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
 }
 .navigation a {
-	padding-top: 14px;
-	height: 40px;
-	font-size: 20px;
-	color: black;
-	background: white;
-	border-bottom: 2px solid white;
-	border-radius: 5px 5px 0 0;
-	vertical-align: middle;
+  padding-top: 14px;
+  height: 40px;
+  font-size: 20px;
+  color: black;
+  background: white;
+  border-bottom: 2px solid white;
+  border-radius: 5px 5px 0 0;
+  vertical-align: middle;
 }
 .navigation a:hover {
-	background: rgb(200, 200, 200);
-	border-bottom: 2px solid black;
+  background: rgb(200, 200, 200);
+  border-bottom: 2px solid black;
 }
 .content {
-	width: 70%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	text-align: left;
-	flex-wrap: wrap;
+  width: 70%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: left;
+  flex-wrap: wrap;
 }
 .book {
-	background: white;
-	width: 22%;
-	margin: 10px;
-	border: 2px solid black;
-	border-radius: 5px;
-	transition: all .2s ease-in-out;
-	font-size: 15px;
+  background: white;
+  width: 22%;
+  margin: 10px;
+  border: 2px solid black;
+  border-radius: 5px;
+  transition: all .2s ease-in-out;
+  font-size: 15px;
 }
 .book .delete_button {
-	visibility: hidden;
+  visibility: hidden;
 }
 .book a {
-	color: black;
+  color: black;
 }
 .book:hover {
-	transform: scale(1.05);
+  transform: scale(1.05);
 }
 .book:hover .delete_button {
-	visibility: visible;
+  visibility: visible;
 }
 .book img {
-	width: 100%;
+  width: 100%;
 }
 .book p {
-	text-align: center;
+  text-align: center;
 }
 .price {
-	text-align: right;
-	padding-right: 10px;
-	padding-bottom: 10px;
-	font-weight: bold;
+  text-align: right;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  font-weight: bold;
 }
 
 .contentcount {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	padding-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-bottom: 20px;
 }
 .pagenumber {
-	width: 50px;
-	height: 50px;
-	padding-top: 2px;
-	text-align: center;
-	background: rgb(200, 200, 200);
-	border: 2px solid white;
-	border-radius: 5px;
-	color: black;
-	font-size: 30px;
-	font-weight: normal;
-	margin: 5px;
+  width: 50px;
+  height: 50px;
+  padding-top: 2px;
+  text-align: center;
+  background: rgb(200, 200, 200);
+  border: 2px solid white;
+  border-radius: 5px;
+  color: black;
+  font-size: 30px;
+  font-weight: normal;
+  margin: 5px;
 }
 .pagenumber:hover {
-	border: 2px solid black;
+  border: 2px solid black;
 }
 .pagenumber_selected {
-	width: 50px;
-	height: 50px;
-	padding-top: 2px;
-	text-align: center;
-	background: rgb(180, 180, 180);
-	border: 2px solid rgb(40, 40, 40);
-	border-radius: 10px;
-	color: black;
-	font-size: 30px;
-	font-weight: normal;
-	margin: 5px;
+  width: 50px;
+  height: 50px;
+  padding-top: 2px;
+  text-align: center;
+  background: rgb(180, 180, 180);
+  border: 2px solid rgb(40, 40, 40);
+  border-radius: 10px;
+  color: black;
+  font-size: 30px;
+  font-weight: normal;
+  margin: 5px;
 }
 
 .delete_button {
-	text-align: left;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	background: white;
-	border-style: solid;
-	border-width: 0px 2px 2px 0px;
-	border-color: black;
-	border-radius: 2px;
-	padding-left: 5px;
-	padding-right: 5px;
-	font-size: 16px;
-	transition: all .2s ease-in-out;
+  text-align: left;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: white;
+  border-style: solid;
+  border-width: 0px 2px 2px 0px;
+  border-color: black;
+  border-radius: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 16px;
+  transition: all .2s ease-in-out;
 }
 
+.popupcontainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.popuptext {
+  margin-top: 5px;
+  cursor: pointer;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+/* Toggle this class - hide and show the popup 
+.popup .show {
+  visibility: visible;
+}*/
+
 @media screen and (max-width: 1150px) {
-	.book {
-		width: 30%;
-	}
+  .book {
+    width: 30%;
+  }
 }
 @media screen and (max-width: 1030px) {
-	.book {
-		width: 40%;
-	}
+  .book {
+    width: 40%;
+  }
 }
 @media screen and (max-width: 820px) {
-	.book {
-		width: 40%;
-	}
+  .book {
+    width: 40%;
+  }
 }
 @media screen and (max-width: 700px) {
-	.pagecontainer {
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-	}
-	.navigationcontainer {
-		flex-direction: row;
-		justify-content: center;
-		padding-top: 0px;
-		width: 95%;
-	}
-	.content {
-		padding-top: 40px;
-		width: 100%;
-	}
+  .pagecontainer {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .navigationcontainer {
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 0px;
+    width: 95%;
+  }
+  .content {
+    padding-top: 40px;
+    width: 100%;
+  }
 }
 @media screen and (max-width: 300px) {
-	.book {
-		width: 80%;
-	}
+  .book {
+    width: 80%;
+  }
 }
