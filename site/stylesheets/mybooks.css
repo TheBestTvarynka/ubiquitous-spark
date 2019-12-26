@@ -78,11 +78,17 @@ h1 {
 	transition: all .2s ease-in-out;
 	font-size: 15px;
 }
+.book .delete_button {
+	visibility: hidden;
+}
 .book a {
 	color: black;
 }
 .book:hover {
 	transform: scale(1.05);
+}
+.book:hover .delete_button {
+	visibility: visible;
 }
 .book img {
 	width: 100%;
@@ -131,6 +137,23 @@ h1 {
 	font-size: 30px;
 	font-weight: normal;
 	margin: 5px;
+}
+
+.delete_button {
+	/*visibility: hidden;*/
+	text-align: left;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background: white;
+	border-style: solid;
+	border-width: 0px 2px 2px 0px;
+	border-color: black;
+	border-radius: 2px;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 16px;
+	transition: all .2s ease-in-out;
 }
 
 @media screen and (max-width: 1150px) {

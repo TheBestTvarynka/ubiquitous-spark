@@ -124,19 +124,24 @@ const createBook = async (id, style) => {
   });
   await client.end();
   const bookData = result.rows[0];
-  if (!style) book = `<div class="book">
-  <a href="/book/${bookData.id}">
-  <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
-  <p>${bookData.name}</p>
-  <div class="year">${bookData.year}</div>
-  <div class="price">${bookData.price} $</div>
-  </a></div>`;
-  else book = `<div class="test">
-  <a href="/book/${bookData.id}">
-  <img class="cover" src="https://${process.env.BUCKET}.s3.us-east-2.amazonaws.com/${bookData.photos[0]}">
-  <p class="description">${bookData.name}</p>
-  <div class="price">${bookData.price} $</div>
-  </a></div>`;
+  if (!style) {
+    book = `<div class="book">
+    <a href="/account" class="delete_button">&#x274C;</a>
+    <a href="/book/${bookData.id}">
+    <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+    <p>${bookData.name}</p>
+    <div class="year">${bookData.year}</div>
+    <div class="price">${bookData.price} $</div>
+    </a></div>`;
+  } else {
+    book = `<div class="test">
+    <a href="/book/${bookData.id}">
+    <img class="cover" src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+    <a href="/account">&#x274C;</p>
+    <p class="description">${bookData.name}</p>
+    <div class="price">${bookData.price} $</div>
+    </a></div>`;
+  }
   return book;
 };
 
