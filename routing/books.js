@@ -47,7 +47,6 @@ router.get('/addbook', (req, res) => {
     res.cookie('redirect', '/addbook');
     res.redirect('login');
   } else {
-    console.log('get [book]: ', req.session.name);
     res.render('views/addbook', { layout: 'default', message: 'Have a book? Good idea to sell it' });
   }
 });
@@ -58,9 +57,7 @@ const addBook = (res, bookData) => {
   updateUser.set({ uploadedbooks: `array_cat(uploadedbooks, ARRAY[${bookData.id}])` }, { uploadedbooks: 'function' })
     .where({ login: bookData.login })
     .then(result => {
-      console.log('=========UPDATE========');
       console.log(result);
-      console.log('=========UPDATE========');
     });
   const types = [];
   for (const field in bookData) {
@@ -88,7 +85,6 @@ router.post('/addbook', async (req, res) => {
   }
   bookData['login'] = req.session.name;
   bookData['id'] = id;
-  console.log(s3config);
   const s3 = cloud.open(s3config);
   const busboy = new Busboy({ headers: req.headers });
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
@@ -145,6 +141,42 @@ const createBook = async (type, id, style) => {
   return book;
 };
 
+const createBooks = async (type, ids, style) => {
+  const pool = new Pool(dbconfig);
+  const client = await pool.connect();
+  const result = await client.query({
+    rowMode: 'object',
+    text: `SELECT id, name, year, price, photos FROM books WHERE id = ANY(ARRAY[${ids.join(', ')}]);`,
+  });
+  await client.end();
+  const bookData = result.rows[0];
+
+  const books = result.rows.reduce((arr, bookData) => {
+    let book;
+    if (!style) {
+      book = `<div class="book">
+      <a href="/delete/${type}/${bookData.id}" class="delete_button">&#x274C;</a>
+      <a href="/book/${bookData.id}">
+      <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+      <p>${bookData.name}</p>
+      <div class="year">${bookData.year}</div>
+      <div class="price">${bookData.price} $</div>
+      </a></div>`;
+    } else {
+      book = `<div class="test">
+      <a href="/book/${bookData.id}">
+      <img class="cover" src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+      <a href="/account">&#x274C;</p>
+      <p class="description">${bookData.name}</p>
+      <div class="price">${bookData.price} $</div>
+      </a></div>`;
+    }
+    arr.push(book);
+    return arr;
+  }, []);
+  return books;
+};
+
 const createPagination = (pagesCount, url, page) => {
   if (pagesCount < 2) {
     return [];
@@ -164,22 +196,19 @@ const createPagination = (pagesCount, url, page) => {
 };
 
 const getBooks = (login, bookType, url, page, res) => {
+  console.log(login, bookType);
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
     .fields([ bookType ])
     .then(async result => {
       pg.close();
+      console.log(result);
       const books = result[0][bookType];
       console.log('Books in getBooks: ', books);
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
       // load books from db
-      const booksRender = [];
-      for (const bookId of currentBooks) {
-        const bookHtml = await createBook(bookType, bookId, 0);
-        booksRender.push(bookHtml);
-      }
-      // set up the disclaimer text if there are no books
+      const booksRender = await createBooks(bookType, currentBooks, 0);
       const type = bookType.split('').map(item => ((item === '_') ? ' ' : item)).join('');
       console.log(type);
       const disclaimer = (books.length === 0) ?
@@ -189,15 +218,16 @@ const getBooks = (login, bookType, url, page, res) => {
       const pagesCount = Math.ceil(books.length / 8);
       const pagination = createPagination(pagesCount, url, page);
       // render the page
+      console.log('Books for Render:', booksRender);
       res.render('views' + url, { layout: 'default', pagination,
         books: booksRender, disclaimer });
     });
 };
 
-router.get('/mybooks', (req, res) => {
+router.get('/uploadedbooks', (req, res) => {
   const login = req.session.name;
   if (!login) {
-    res.cookie('redirect', '/account/mybooks');
+    res.cookie('redirect', '/account/uploadedbooks');
     res.redirect('/login');
     return;
   }
@@ -262,12 +292,10 @@ router.get('/cart', (req, res) => {
     return;
   }
 
-  console.log('login :', login);
+  console.log('login: ', login);
   pg.select('usersdata')
     .where({ login })
     .then(async result => {
-      console.log('login: ', login);
-      console.log(result);
       const cartItems = result[0].cart;
       console.log(cartItems);
 
@@ -305,7 +333,6 @@ router.get('/payment', (req, res) => {
   const pg = dbreader.open(dbconfig);
   const login = req.session.name;
 
-  console.log('Hello');
   if (!login) {
     res.cookie('redirect', '/cart');
     res.redirect('/login');
@@ -324,13 +351,9 @@ router.get('/payment', (req, res) => {
       }
 
       const books = result[0].cart;
-      console.log('books: ', books);
       const bought_books = result[0].boughtbooks;
       const boughtBooks = boughtbooks.concat(books);
-      console.log('boughtBooks: ', boughtBooks);
       const boughtBooksFinal = Array.from(new Set(boughtBooks));
-      console.log('The boughtBooksFinal: ', boughtBooksFinal);
-      console.log('The boughtBooksFinal string: ', boughtBooksFinal.toString());
       const pgU = dbwriter.open(dbconfig);
       pgU.query(`UPDATE usersdata SET cart = '{}' WHERE login = '${login}'`,
         0, (err, result) => {
@@ -348,7 +371,6 @@ router.get('/payment', (req, res) => {
 });
 
 router.get('/delete/:type/:id', (req, res) => {
-  console.log('in delete book:', req.params);
   const login = req.session.name;
   if (!login) {
     res.redirect('login');
