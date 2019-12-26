@@ -25,11 +25,38 @@
 		    {{{this}}}
 		{{/each}}
 	</div>
-	<script type="text/javascript">
-		function delete_book(id, address) {
-			const book = document.getElementById(id);
-			book.parentNode.removeChild(book);
-    		return false;
-		}
-	</script>
+	<div id="contentcount" class="popupcontainer">
+  </div>
+  <script type="text/javascript">
+    let count = 0;
+    function hide(id) {
+      console.log('in hide');
+      const popup = document.getElementById(id)
+      popup.parentNode.removeChild(popup);
+    }
+    function delete_book(id, address) {
+      console.log('in delete');
+      const book = document.getElementById(id);
+      count += 1;
+      const deleteBook = new XMLHttpRequest();
+        deleteBook.open('POST', `${address}`, true);
+        deleteBook.send();
+        deleteBook.addEventListener("load", (env) => {
+          if (deleteBook.status === 404) {
+            console.log('Bad request: return status code 404');
+          } else {
+            book.parentNode.removeChild(book);
+            const message = deleteBook.response;
+            console.log(message);
+            const popups = document.getElementById("contentcount");
+            popups.innerHTML += `<span class="popuptext" id="${count}" onclick="hide(${count})">${message}</span>`;
+            const popup = document.getElementById(`${count}`)
+            setTimeout(() => {
+              hide(`${count}`);
+            }, 3000);
+          }
+        });
+      return false;
+    }
+  </script>
 </main>

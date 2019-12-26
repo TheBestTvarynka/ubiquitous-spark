@@ -353,7 +353,7 @@ router.get('/payment', (req, res) => {
       }
 
       const books = result[0].cart;
-      const bought_books = result[0].boughtbooks;
+      const boughtbooks = result[0].boughtbooks;
       const boughtBooks = boughtbooks.concat(books);
       const boughtBooksFinal = Array.from(new Set(boughtBooks));
       const pgU = dbwriter.open(dbconfig);
