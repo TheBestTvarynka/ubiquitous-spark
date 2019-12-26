@@ -161,22 +161,22 @@ router.post('/likebook/:id', (req, res) => {
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
-    .fields([ 'liked_books' ])
+    .fields([ 'likedbooks' ])
     .then(result => {
       pg.close();
       const up = dbwriter.open(dbconfig);
       const cursor = up.update('usersdata');
       cursor.where({ login });
-      const books = result[0].liked_books;
+      const books = result[0].likedbooks;
       if (books.includes(parseInt(id))) {
-        cursor.set({ liked_books: `array_remove(liked_books, '${id}')` }, { liked_books: 'function' })
+        cursor.set({ likedbooks: `array_remove(likedbooks, '${id}')` }, { likedbooks: 'function' })
           .then(result => {
             up.close();
             console.log(result);
             res.end('Removed from your Liked Books');
           });
       } else {
-        cursor.set({ liked_books: `array_cat(liked_books, ARRAY[${id}])` }, { liked_books: 'function' })
+        cursor.set({ likedbooks: `array_cat(likedbooks, ARRAY[${id}])` }, { likedbooks: 'function' })
           .then(result => {
             up.close();
             console.log(result);
@@ -223,5 +223,7 @@ router.post('/buybook/:id', (req, res) => {
       }
     });
 });
+
+
 
 module.exports = router;

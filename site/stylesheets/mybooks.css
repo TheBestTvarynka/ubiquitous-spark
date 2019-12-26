@@ -140,7 +140,6 @@ h1 {
 }
 
 .delete_button {
-	/*visibility: hidden;*/
 	text-align: left;
 	position: absolute;
 	top: 0px;

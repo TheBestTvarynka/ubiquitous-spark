@@ -55,7 +55,7 @@ router.get('/addbook', (req, res) => {
 const addBook = (res, bookData) => {
   const pgU = dbwriter.open(dbconfig);
   const updateUser = pgU.update('usersdata');
-  updateUser.set({ uploaded_books: `array_cat(uploaded_books, ARRAY[${bookData.id}])` }, { uploaded_books: 'function' })
+  updateUser.set({ uploadedbooks: `array_cat(uploadedbooks, ARRAY[${bookData.id}])` }, { uploadedbooks: 'function' })
     .where({ login: bookData.login })
     .then(result => {
       console.log('=========UPDATE========');
@@ -114,7 +114,7 @@ router.post('/addbook', async (req, res) => {
   return req.pipe(busboy);
 });
 
-const createBook = async (id, style) => {
+const createBook = async (type, id, style) => {
   let book = '';
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
@@ -126,7 +126,7 @@ const createBook = async (id, style) => {
   const bookData = result.rows[0];
   if (!style) {
     book = `<div class="book">
-    <a href="/account" class="delete_button">&#x274C;</a>
+    <a href="/delete/${type}/${id}" class="delete_button">&#x274C;</a>
     <a href="/book/${bookData.id}">
     <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
     <p>${bookData.name}</p>
@@ -176,7 +176,7 @@ const getBooks = (login, bookType, url, page, res) => {
       // load books from db
       const booksRender = [];
       for (const bookId of currentBooks) {
-        const bookHtml = await createBook(bookId, 0);
+        const bookHtml = await createBook(bookType, bookId, 0);
         booksRender.push(bookHtml);
       }
       // set up the disclaimer text if there are no books
@@ -201,7 +201,7 @@ router.get('/mybooks', (req, res) => {
     res.redirect('/login');
     return;
   }
-  getBooks(login, 'uploaded_books', '/account/mybooks', 1, res);
+  getBooks(login, 'uploadedbooks', '/account/mybooks', 1, res);
 });
 
 router.get('/mybooks/page/:page', (req, res) => {
@@ -215,7 +215,7 @@ router.get('/mybooks/page/:page', (req, res) => {
     res.redirect('/account/mybooks');
     return;
   }
-  getBooks(login, 'uploaded_books', '/account/mybooks', req.params.page, res);
+  getBooks(login, 'uploadedbooks', '/account/mybooks', req.params.page, res);
 });
 
 router.get('/likedbooks', (req, res) => {
@@ -225,7 +225,7 @@ router.get('/likedbooks', (req, res) => {
     res.redirect('/login');
     return;
   }
-  getBooks(login, 'liked_books', '/account/likedbooks', 1, res);
+  getBooks(login, 'likedbooks', '/account/likedbooks', 1, res);
 });
 
 router.get('/likedbooks/page/:page', (req, res) => {
@@ -239,7 +239,7 @@ router.get('/likedbooks/page/:page', (req, res) => {
     res.redirect('/account/likedbooks');
     return;
   }
-  getBooks(login, 'liked_books', '/account/likedbooks', req.params.page, res);
+  getBooks(login, 'likedbooks', '/account/likedbooks', req.params.page, res);
 });
 
 router.get('/boughtbooks', (req, res) => {
@@ -249,7 +249,7 @@ router.get('/boughtbooks', (req, res) => {
     res.redirect('/login');
     return;
   }
-  getBooks(login, 'bought_books', '/account/boughtbooks', 1, res);
+  getBooks(login, 'boughtbooks', '/account/boughtbooks', 1, res);
 });
 
 router.get('/cart', (req, res) => {
@@ -274,7 +274,7 @@ router.get('/cart', (req, res) => {
       let items = '';
       if (cartItems.length !== 0)
         for (const bookId of cartItems) {
-          const bookHtml = await createBook(bookId, 1);
+          const bookHtml = await createBook('cart', bookId, 1);
           //yes, I know that += is not good
           items += bookHtml;
         }
@@ -323,11 +323,10 @@ router.get('/payment', (req, res) => {
         res.redirect('/activate');
       }
 
-
       const books = result[0].cart;
       console.log('books: ', books);
-      const bought_books = result[0].bought_books;
-      const boughtBooks = bought_books.concat(books);
+      const bought_books = result[0].boughtbooks;
+      const boughtBooks = boughtbooks.concat(books);
       console.log('boughtBooks: ', boughtBooks);
       const boughtBooksFinal = Array.from(new Set(boughtBooks));
       console.log('The boughtBooksFinal: ', boughtBooksFinal);
@@ -338,13 +337,36 @@ router.get('/payment', (req, res) => {
           // console.log(result);
           // console.log(err);
         });
-      pgU.query(`UPDATE usersdata SET bought_books = '{${boughtBooksFinal.toString()}}' WHERE login = '${login}'`,
+      pgU.query(`UPDATE usersdata SET boughtbooks = '{${boughtBooksFinal.toString()}}' WHERE login = '${login}'`,
         0, (err, result) => {
           res.redirect('/purchases');
         });
 
       pgU.close();
       pg.close();
+    });
+});
+
+router.get('/delete/:type/:id', (req, res) => {
+  console.log('in delete book:', req.params);
+  const login = req.session.name;
+  if (!login) {
+    res.redirect('login');
+    return;
+  }
+  const type = req.params.type;
+  const id = req.params.id; 
+  const values = {};
+  values[type] = `array_remove(${type}, '${id}')`;
+  const types = {};
+  types[type] = 'function';
+  const pg = dbwriter.open(dbconfig);
+  pg.update('usersdata')
+    .where({ login })
+    .set(values, types)
+    .then(result => {
+      pg.close();
+      res.redirect(`/account/${type}`);
     });
 });
 

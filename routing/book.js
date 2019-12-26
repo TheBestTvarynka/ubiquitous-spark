@@ -45,9 +45,9 @@ const purchasedBook = (id, login, res) => {
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
-    .fields([ 'bought_books' ])
+    .fields([ 'boughtbooks' ])
     .then(result => {
-      const books = result[0].bought_books;
+      const books = result[0].boughtbooks;
       renderBook(books.includes(Number(id)), id, res);
     });
 };
@@ -92,9 +92,9 @@ router.get('/books/:id/:name', (req, res) => {
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
-    .fields([ 'login', 'bought_books' ])
+    .fields([ 'login', 'boughtbooks' ])
     .then(result => {
-      const books = result[0].bought_books;
+      const books = result[0].boughtbooks;
       console.log(books, bookid);
       if (books.includes(Number(bookid))) {
         downloadBook(bookid, bookname, res);
