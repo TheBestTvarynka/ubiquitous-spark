@@ -174,10 +174,27 @@ h1 {
   padding: 8px 12px;
 }
 
-/* Toggle this class - hide and show the popup 
-.popup .show {
-  visibility: visible;
-}*/
+.pay {
+    width: 20%;
+    height: 50px;
+    font-size: 25px;
+    padding: 10px 10px 10px 10px;
+    margin-bottom: 20px;
+    background: black;
+    border-radius: 3px;
+    border: 1px solid black;
+    color: white;
+    transition: all .2s ease-in-out;
+}
+
+.pay:hover {
+    background: rgb(50, 50, 50);
+}
+
+.pay:disabled {
+    background: rgb(50, 50, 50);
+    color: black;
+}
 
 @media screen and (max-width: 1150px) {
   .book {

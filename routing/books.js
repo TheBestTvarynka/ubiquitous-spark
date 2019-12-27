@@ -285,8 +285,8 @@ router.get('/boughtbooks', (req, res) => {
 });
 
 router.get('/cart', (req, res) => {
-  const pg = dbreader.open(dbconfig);
   const login = req.session.name;
+  console.log('login: ', login);
 
   if (!login) {
     res.cookie('redirect', '/cart');
@@ -294,20 +294,14 @@ router.get('/cart', (req, res) => {
     return;
   }
 
-  console.log('login: ', login);
+  const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
     .then(async result => {
       const cartItems = result[0].cart;
       console.log(cartItems);
 
-      let items = '';
-      if (cartItems.length !== 0)
-        for (const bookId of cartItems) {
-          const bookHtml = await createBook('cart', bookId, 1);
-          //yes, I know that += is not good
-          items += bookHtml;
-        }
+      const items = await createBooks('cart', cartItems, 0);
 
       const button = (cartItems.length !== 0) ?
         '<a href="/payment">' +
@@ -317,7 +311,7 @@ router.get('/cart', (req, res) => {
       const title = (cartItems.length !== 0) ?
         'Your cart items:' : 'Your cart is empty at the moment :(';
       pg.close();
-      res.render('views/cart', { layout: 'default', items, title, button });
+      res.render('views/cart', { layout: 'default', books: items, disclaimer: title, button });
     });
 });
 

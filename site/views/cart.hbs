@@ -1,11 +1,13 @@
-<link rel="stylesheet" type="text/css" href="/site/stylesheets/cart.css">
+<link rel="stylesheet" type="text/css" href="/site/stylesheets/mybooks.css">
 <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 <main>
-    <div class="container">
-        <p class="title">{{ title }}</p>
-        <div class="results">
-            {{{ items }}}
-        </div>
-        {{{ button }}}
-    </div>
+	<div class="pagecontainer">
+	    <div class="content">
+			<h1 style="width: 100%;">{{ disclaimer }}</h1>
+			{{#each books}}
+			    {{{this}}}
+			{{/each}}
+		</div>
+	</div>
+	<center>{{{ button }}}</center>
 </main>
