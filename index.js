@@ -21,6 +21,7 @@ const http = require('http');
 
 const app = express();
 const port = process.env.PORT || 8080;
+const CONNECTIONTIMEOUT = 30000;
 
 // view render engine setup
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'default',
@@ -159,13 +160,15 @@ app.get('/chat_entry/:name', (req, res) => {
   const login = req.session.name;
 
   const remote = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  // if (remote === '::1') {
-  //   remote = '::ffff:127.0.0.1';
-  // }
   console.log('remote address get root:', remote);
   const authToken = generateAuthToken(50);
   console.log(authToken);
   remoteAddresses[authToken] = remote;
+  setTimeout(() => {
+    if (remoteAddresses[authToken]) {
+      delete remoteAddresses[authToken];
+    }
+  }, CONNECTIONTIMEOUT);
 
   const admin = req.params.name;
   const letterAdmin = admin.split('')[0];
@@ -195,9 +198,6 @@ app.get('/chat_entry/:name', (req, res) => {
         });
     });
 });
-
-
-
 
 const server = http.createServer(app);
 const webSoketServer = new WebSocketServer({ httpServer: server });
@@ -280,7 +280,6 @@ const loadHistory = (data, connection, title) => {
 
 webSoketServer.on('request', request => {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
-  
   const authToken = request.httpRequest.headers['sec-websocket-protocol'];
   const savedAddress = remoteAddresses[authToken];
   delete remoteAddresses[authToken];
@@ -296,6 +295,7 @@ webSoketServer.on('request', request => {
   }
 
   let connection = request.accept(authToken, request.origin);
+  delete remoteAddresses[authToken];
   console.log((new Date()) + ' Connection accepted.');
 
   let userName = undefined;
@@ -312,10 +312,7 @@ webSoketServer.on('request', request => {
           loadHistory(message, connection, 'fullHistory');
         } else {
           console.log('on message: write in db');
-          // const title = message.title;
           delete message.title;
-          // const action = routing[title];
-          // action(message, connection);
           writeInDB(message);
         }
       } else {
