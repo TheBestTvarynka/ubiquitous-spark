@@ -294,7 +294,7 @@ webSoketServer.on('request', request => {
     return;
   }
 
-  let connection = request.accept(authToken, request.origin);
+  const connection = request.accept(authToken, request.origin);
   delete remoteAddresses[authToken];
   console.log((new Date()) + ' Connection accepted.');
 
