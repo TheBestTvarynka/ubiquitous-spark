@@ -11,7 +11,11 @@
               <div class="title">The price: <strong>${{price}}</strong></div>
 
               <div class="popup">
+              {{#if liked}}
+                <button type="button" name="like" class="button" onclick="likeBook()" id="like_button">&#9733;  Liked</button>
+              {{else}}
                 <button type="button" name="like" class="button" onclick="likeBook()" id="like_button">&#9734;  Like</button>
+              {{/if}}
                   <span class="popuptext" id="message" onclick="hide()"></span>
               </div>
               {{#if bought}}

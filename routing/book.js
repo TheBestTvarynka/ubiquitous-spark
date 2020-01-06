@@ -17,7 +17,7 @@ const s3config = {
   region: process.env.REGION,
 };
 
-const renderBook = (b, id, res) => {
+const renderBook = (l, b, id, res) => {
   console.log(id, b);
   const pg = dbreader.open(dbconfig);
   pg.select('books')
@@ -33,22 +33,23 @@ const renderBook = (b, id, res) => {
       res.render('views/book', { layout: 'default', image: imageSource,
         description: book.description, author: book.author, year: book.year,
         publishing: book.publishing, price: book.price, name: book.name,
-        id: book.id, bought: b, path: book.path[0] });
+        id: book.id, bought: b, liked: l, path: book.path[0] });
     });
 };
 
 const purchasedBook = (id, login, res) => {
   if (!login) {
-    renderBook(false, id, res);
+    renderBook(false, false, id, res);
     return;
   }
   const pg = dbreader.open(dbconfig);
   pg.select('usersdata')
     .where({ login })
-    .fields([ 'boughtbooks' ])
+    .fields([ 'boughtbooks', 'likedbooks' ])
     .then(result => {
-      const books = result[0].boughtbooks;
-      renderBook(books.includes(Number(id)), id, res);
+      const boughtbooks = result[0].boughtbooks;
+      const likedbooks = result[0].likedbooks;
+      renderBook(likedbooks.includes(Number(id)), boughtbooks.includes(Number(id)), id, res);
     });
 };
 
