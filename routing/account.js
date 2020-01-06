@@ -173,14 +173,14 @@ router.post('/likebook/:id', (req, res) => {
           .then(result => {
             up.close();
             console.log(result);
-            res.end('Removed from your Liked Books');
+            res.status('200').send('Removed from your Liked Books');
           });
       } else {
         cursor.set({ likedbooks: `array_cat(likedbooks, ARRAY[${id}])` }, { likedbooks: 'function' })
           .then(result => {
             up.close();
             console.log(result);
-            res.end('Added to your Liked Books');
+            res.status('200').send('Added to your Liked Books');
           });
       }
     });

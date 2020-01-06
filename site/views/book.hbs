@@ -11,7 +11,7 @@
               <div class="title">The price: <strong>${{price}}</strong></div>
 
               <div class="popup">
-                <input type="button" name="like" value="Like" class="button" onclick="likeBook()">
+                <button type="button" name="like" class="button" onclick="likeBook()" id="like_button">&#9734;  Like</button>
                   <span class="popuptext" id="message" onclick="hide()"></span>
               </div>
               {{#if bought}}
@@ -43,6 +43,15 @@
         console.log('Bad request: return status code 404');
       } else {
         const message = likeRequest.response;
+        console.log(likeRequest.status, message);
+        if (likeRequest.status === 200) {
+            const likedButton = document.getElementById('like_button');
+            if (message === 'Added to your Liked Books') {
+                likedButton.innerHTML = "&#9733;  Liked";
+            } else if (message === 'Removed from your Liked Books') {
+                likedButton.innerHTML = "&#9734;  Like";
+            }
+        }
         console.log(message);
         const popup = document.getElementById("message");
         popup.innerHTML = `${message}`;
