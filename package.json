@@ -5,9 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "precommit": "npm test",
     "dev": "nodemon index.js",
-    "test": "eslint *.js"
+    "test": "eslint *.js",
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm test"
+        }
+    }
   },
   "repository": {
     "type": "git",
