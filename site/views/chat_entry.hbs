@@ -18,6 +18,9 @@
     };
 
     function addMessage(letter, message) {
+        if (message === '') {
+            return;
+        }
         console.log('Entered addMessage');
         const result = htmlEntities(message);
         console.log(result);
