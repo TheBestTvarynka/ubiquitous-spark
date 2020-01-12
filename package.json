@@ -8,9 +8,9 @@
     "dev": "nodemon index.js",
     "test": "eslint *.js",
     "husky": {
-        "hooks": {
-            "pre-commit": "npm test"
-        }
+      "hooks": {
+        "pre-commit": "npm test"
+      }
     }
   },
   "repository": {
