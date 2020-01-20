@@ -110,6 +110,7 @@ class DBUpdater {
     this.args = [];
     // object of setters
     this.fields = {};
+    this.result = null;
   }
   // add WHERE conditions
   where(conditions) {
@@ -125,6 +126,9 @@ class DBUpdater {
     this.fields = setters;
     return this;
   }
+  resolve(result) {
+    this.result = result;
+  }
   then(callback) {
     console.log(callback);
     const { table, fields, whereClause, args } = this;
@@ -138,11 +142,10 @@ class DBUpdater {
     console.log(sql);
     this.database.query(sql, args, (err, res) => {
       if (err) {
-        console.log(err);
-        callback('');
-      } else {
-        callback(res);
+        res = err;
       }
+      this.resolve(res);
+      callback(res);
     });
   }
 };
