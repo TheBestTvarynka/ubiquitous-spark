@@ -33,126 +33,146 @@ const where = conditions => {
       } else if (value.startsWith('IN')) {
         condition = `${key} IN $${i}`;
         value = value.substring(2);
-      // } else if (value.startsWith('ANY')) {
-      //   condition = `${key} ANY $${i}`;
-      //   value = value.substring(3);
-      //   console.log(value);
       } else if (value.includes('*') || value.includes('?')) {
         value = value.replace(/\*/g, '%').replace(/\?/g, '_');
         condition = `${key} LIKE $${i}`;
       } else {
         condition = `${key} = $${i}`;
-        console.log(value);
       }
     }
     i++;
     args.push(value);
     clause = clause ? `${clause} AND ${condition}` : condition;
-    console.log(clause);
   }
   return { clause, args };
 };
+
+const MODE_ROWS = 0;
+const MODE_VALUE = 1;
+const MODE_ROW = 2;
+const MODE_COL = 3;
+const MODE_COUNT = 4;
 
 class Cursor {
   constructor(database, table) {
     this.database = database;
     this.table = table;
-    // results of selecting
     this.cols = null;
     this.rows = null;
     this.rowCount = 0;
-    // this.ready = false;
-    // this.mode = MODE_ROWS;
-    // WHERE condition
+    this.ready = false;
+    this.mode = MODE_ROWS;
     this.whereClause = undefined;
-    // columns (fields) for selecting
     this.columns = ['*'];
     this.args = [];
-    // ORDER BY condition
     this.orderBy = undefined;
     this.orderDirection = undefined;
     this.lim = undefined;
   }
-  // add WHERE contitions
+
+  resolve(result) {
+    console.log('resolve');
+    const { rows, fields, rowCount } = result;
+    this.rows = rows;
+    this.cols = fields;
+    this.rowCount = rowCount;
+  }
+
   where(conditions) {
     const { clause, args } = where(conditions);
     this.whereClause = clause;
     this.args = args;
     return this;
   }
-  // set fields that we want to select ( '*' by default )
+
   fields(list) {
     this.columns = list;
     return this;
   }
+
   limit(lim) {
     this.lim = lim;
     return this;
   }
-  // set column for ordering
-  order(name, direction) {
-    this.orderBy = name;
-    if (direction) this.orderDirection = 'ASC';
-    else this.orderDirection = 'DESC';
+
+  value() {
+    this.mode = MODE_VALUE;
     return this;
   }
-  // cut data from result of selecting and collect them in variables
-  resolve(result) {
-    // console.log(result);
-    const { rows, fields, rowCount } = result;
-    this.rows = rows;
-    this.cols = fields;
-    this.rowCount = rowCount;
+
+  row() {
+    this.mode = MODE_ROW;
+    return this;
   }
-  // function for selecting
+
+  col(name) {
+    this.mode = MODE_COL;
+    this.columnName = name;
+    return this;
+  }
+
+  count() {
+    this.mode = MODE_COUNT;
+    return this;
+  }
+
+  order(name) {
+    this.orderBy = name;
+    return this;
+  }
+
   then(callback) {
-    // collect data for selecting
     const { mode, table, columns, args } = this;
     const { whereClause, orderBy, orderDirection, columnName, lim } = this;
     const fields = columns.join(', ');
-    // create request to db
-    let sql = 'SELECT ' + fields + ' FROM ' + table;
-    if (whereClause) sql += (' WHERE ' + whereClause.toString());
+    let sql = `SELECT ${fields} FROM ${table}`;
+    if (whereClause) sql += ` WHERE ${whereClause}`;
     if (orderBy && orderDirection) sql +=
       ' ORDER BY ' + orderBy + ' ' + orderDirection;
     if (lim) sql += (' LIMIT ' + lim);
     console.log('The request: ', sql);
     this.database.query(sql, args,  (err, res) => {
-      if (err) {
-        console.log(err);
-        callback('');
+      this.resolve(res);
+      const { rows, cols } = this;
+      if (mode === MODE_VALUE) {
+        const col = cols[0];
+        const row = rows[0];
+        callback(row[col.name]);
+      } else if (mode === MODE_ROW) {
+        callback(rows[0]);
+      } else if (mode === MODE_COL) {
+        const col = [];
+        for (const row of rows) {
+          col.push(row[columnName]);
+        }
+        callback(col);
+      } else if (mode === MODE_COUNT) {
+        callback(this.rowCount);
       } else {
-        this.resolve(res);
-        callback(this.rows);
+        callback(rows);
       }
-      // console.log('Trying to find out what is "this": ', this);
     });
-    // delete this.args;
-    // delete this.columns;
-    // delete this.whereClause;
     return this;
   }
 }
 
-class DBReader {
+class Database {
   constructor(config, logger) {
     this.pool = new Pool(config);
     this.config = config;
     this.logger = logger;
   }
-  //
+
   query(sql, values, callback) {
     if (typeof values === 'function') {
       callback = values;
       values = [];
     }
     this.pool.query(sql, values, (err, res) => {
-      if (callback) {
-        callback(err, res);
-      }
+      if (callback) callback(err, res);
     });
   }
-  // choose table for selecting
+
   select(table) {
     return new Cursor(this, table);
   }
@@ -163,5 +183,5 @@ class DBReader {
 }
 
 module.exports = {
-  open: (config, logger) => new DBReader(config, logger),
+  open: (config, logger) => new Database(config, logger),
 };
