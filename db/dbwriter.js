@@ -54,6 +54,7 @@ class DBInserter {
     this.table = table;
     this.fieldsOrder = [];
     this.values = [];
+    this.result = null;
   }
   value(values, types) {
     const resultValue = [];
@@ -75,6 +76,9 @@ class DBInserter {
     this.values = [];
     return this;
   }
+  resolve(result) {
+    this.result = result;
+  }
   then(callback) {
     const { table, fields, values } = this;
     const { pool } = this;
@@ -89,13 +93,11 @@ class DBInserter {
 
     this.database.query(sql, (err, res) => {
       if (err) {
-        console.log(err);
-        callback('');
-      } else {
-        callback(res);
+        res = err;
       }
+      this.resolve(res);
+      callback(res);
     });
-
     return this;
   }
 };
