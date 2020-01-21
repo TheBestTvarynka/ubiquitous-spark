@@ -7,19 +7,10 @@ const dbreader = require('../db/dbreader');
 
 dotenv.config();
 
-/* const dbconfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-};
-*/
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
 };
-const pg = dbreader.open(dbconfig);
 
 const router = express.Router();
 
@@ -32,58 +23,43 @@ router.get('/login', (req, res) => {
   }
 });
 
-const compare = (req, res, user) => {
-  const hash = user.hash;
-  const password = user.password;
-  bcrypt.compare(password, hash, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      if (result) {
-        // login success
-        req.session.name = user.login;
-        const readUserData = pg.select('usersdata');
-        readUserData.where({ login: user.login })
-                    .then(rows => {
-                      if (rows[0].activated) {
-                        const redirect = req.cookies.redirect;
-                        res.cookie('redirect', '');
-                        if (redirect) {
-                          res.redirect(redirect);
-                        } else {
-                          res.redirect('/account');
-                        }
-                      } else res.redirect('/activate');
-                    });
-      } else {
-        res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
-      }
-    }
-  });
-};
-
-const parseUser = (req, res, user, rows) => {
-  if (rows.length === 0) {
-    // user not found
-    res.render('views/login', { layout: 'default', message: '<p style="color: red">User with this login does not exist</p>' });
-  } else {
-    // compare passwords
-    user.hash = rows[0].hash;
-    compare(req, res, user);
-  }
-};
-
-router.post('/login', (req, res) => {
-  const user = {
-    login: req.body.username,
-    password: req.body.password,
-  };
+router.post('/login', async (req, res) => {
+  const login = req.body.username;
+  const password = req.body.password;
   // search user in db
-  pg.select('users')
-    .where({ login: user.login })
-    .then(rows => {
-      parseUser(req, res, user, rows);
-    });
+  const pg = dbreader.open(dbconfig);
+  const cursor = pg.select('users');
+  const result = await cursor.where({ login });
+  if (result.length === 0) {
+    // user not found
+    res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
+    return;
+  }
+  // at least user exist
+  const hash = result[0].hash;
+  // check pssword
+  const match = await bcrypt.compare(password, hash);
+  if (match) {
+    req.session.name = login;
+    const readUserData = pg.select('usersdata');
+    const data = await readUserData.where({ login }).fields([ 'activated' ]);
+    pg.close();
+    const userData = data[0];
+    if (userData.activated) {
+      const redirect = req.cookies.redirect;
+      res.cookie('redirect', '');
+      if (redirect) {
+        res.redirect(redirect);
+      } else {
+        res.redirect('/account');
+      }
+    } else {
+      res.redirect('/activate');
+    }
+  } else {
+    // password incorrect
+    res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
+  }
 });
 
 router.get('/logout', (req, res) => {
@@ -92,3 +68,4 @@ router.get('/logout', (req, res) => {
 });
 
 module.exports = router;
+

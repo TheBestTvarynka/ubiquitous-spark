@@ -103,7 +103,6 @@ const sendFile = (fileName, res) => {
 
 app.use('/site', (req, res) => {
   const filename = __dirname + '/site' + req.url;
-  console.log(filename);
   sendFile(filename, res);
 });
 app.use('/uploads', (req, res) => {
