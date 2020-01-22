@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "eslint *.js",
+    "test": "eslint *.js && eslint routing/*.js && eslint db/*.js && eslint cloud/*.js",
     "husky": {
       "hooks": {
         "pre-commit": "npm test"

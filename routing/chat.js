@@ -2,20 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-// const fs = require('fs');
-// const path = require('path');
-// const dotenv = require('dotenv');
 const dbreader = require('../db/dbreader');
-const dbwriter = require('../db/dbwriter');
-
-/* const dbconfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-};
-*/
+// const dbwriter = require('../db/dbwriter');
 
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
@@ -50,18 +38,11 @@ router.get('/chat', (req, res) => {
                 const name = (elem.peoples[0] === login) ?
                   elem.peoples[1] : elem.peoples[0];
                 console.log('name of client:', name);
-                /* pg.select('usersdata')
-                  .where({ login: name })
-                  .fields([ 'fullname' ])
-                  .then(result => {
-                    console.log('RESULT:', result);*/
-                    const letter = name.split('')[0];
-                    resulting += '<a class="a"  href="/chat_entry/' +
-                      name +
-                    '"><div class="admin"><div class="picture"><p class="letter">' +
-                    letter + '</p></div><p class="text"><strong>' +
-                    name + '</strong></p></div></a>';
-                  // });
+                const letter = name.split('')[0];
+                resulting += '<a class="a"  href="/chat_entry/' +
+                  name + '"><div class="admin"><div class="picture">' +
+                  '<p class="letter">' + letter + '</p></div>' +
+                  '<p class="text"><strong>' + name + '</strong></p></div></a>';
               }
             });
             pg.close();
@@ -85,9 +66,9 @@ router.get('/chat', (req, res) => {
               const adminLogin = i.login;
               const letter = i.fullname.split('')[0];
               resulting += '<a class="a" href="/chat_entry/' +
-                adminLogin + '"><div class="admin"><div class="picture"><p class="letter">' +
-                letter + '</p></div><p class="text"><strong>' +
-                name + '</strong></p></div></a>';
+                adminLogin + '"><div class="admin"><div class="picture">' +
+                '<p class="letter">' + letter + '</p></div>' +
+                '<p class="text"><strong>' + name + '</strong></p></div></a>';
             });
             pg.close();
             res.render('views/chat', { layout: 'default',

@@ -2,7 +2,6 @@
 
 const express = require('express');
 const Busboy = require('busboy');
-const path = require('path');
 const dotenv = require('dotenv');
 const dbwriter = require('../db/dbwriter');
 const dbreader = require('../db/dbreader');
@@ -13,13 +12,6 @@ dotenv.config();
 
 const router = express.Router();
 
-/* const dbconfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-};*/
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -47,14 +39,20 @@ router.get('/addbook', (req, res) => {
     res.cookie('redirect', '/addbook');
     res.redirect('login');
   } else {
-    res.render('views/addbook', { layout: 'default', message: 'Have a book? Good idea to sell it' });
+    res.render('views/addbook', {
+      layout: 'default',
+      message: 'Have a book? Good idea to sell it'
+    });
   }
 });
 
 const addBook = (res, bookData) => {
   const pgU = dbwriter.open(dbconfig);
   const updateUser = pgU.update('usersdata');
-  updateUser.set({ uploadedbooks: `array_cat(uploadedbooks, ARRAY[${bookData.id}])` }, { uploadedbooks: 'function' })
+  updateUser.set({
+    uploadedbooks: `array_cat(uploadedbooks, ARRAY[${bookData.id}])` }, {
+    uploadedbooks: 'function'
+  })
     .where({ login: bookData.login })
     .then(result => {
       console.log(result);
@@ -71,7 +69,10 @@ const addBook = (res, bookData) => {
     .then(result => {
       pg.close();
       console.log(result);
-      res.render('views/addbook', { layout: 'default', message: 'Your book has been added! Maybe you have something else?' });
+      res.render('views/addbook', {
+        layout: 'default',
+        message: 'Your book has been added! Maybe you have something else?'
+      });
     });
 };
 
@@ -97,7 +98,9 @@ router.post('/addbook', async (req, res) => {
       bookData['path'].push(key);
     } else return;
     console.log('filename:', key);
-    s3.upload(process.env.BUCKET, file, key, mimetype, err => { if (err) console.log(err); });
+    s3.upload(process.env.BUCKET, file, key, mimetype, err => {
+      if (err) console.log(err);
+    });
   });
   busboy.on('field', (name, value) => {
     bookData[name] = value;
@@ -110,7 +113,7 @@ router.post('/addbook', async (req, res) => {
   return req.pipe(busboy);
 });
 
-const createBook = async (type, id, style) => {
+/* const createBook = async (type, id, style) => {
   let book = '';
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
@@ -122,17 +125,21 @@ const createBook = async (type, id, style) => {
   const bookData = result.rows[0];
   if (!style) {
     book = `<div class="book" id="${bookData.id}">
-    <a href="javascript:void(0))" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
+    <a href="javascript:void(0))" onclick="delete_book(${bookData.id},` +
+      `'/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
     <a href="/book/${bookData.id}">
-    <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+    <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.` +
+      `amazonaws.com/${bookData.photos[0]}">
     <p>${bookData.name}</p>
     <div class="year">${bookData.year}</div>
     <div class="price">${bookData.price} $</div>
     </a></div>`;
   } else {
     book = `<div class="test">
-    <a href="javascript:void(0))" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
-    <img class="cover" src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+    <a href="javascript:void(0))" onclick="delete_book(${bookData.id},` +
+     `'/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
+    <img class="cover" src="https://${process.env.BUCKET}.s3.` +
+    `${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
     <a href="/account">&#x274C;</p>
     <p class="description">${bookData.name}</p>
     <div class="price">${bookData.price} $</div>
@@ -140,35 +147,41 @@ const createBook = async (type, id, style) => {
   }
   return book;
 };
-
+*/
 const createBooks = async (type, ids, style) => {
   if (ids.length === 0) {
     return [];
   }
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
+  const text = `SELECT id, name, year, price, photos FROM books WHERE id =
+    ANY(ARRAY[${ids.join(', ')}]);`;
   const result = await client.query({
     rowMode: 'object',
-    text: `SELECT id, name, year, price, photos FROM books WHERE id = ANY(ARRAY[${ids.join(', ')}]);`,
+    text,
   });
   await client.end();
-  const bookData = result.rows[0];
+  // const bookData = result.rows[0];
 
   const books = result.rows.reduce((arr, bookData) => {
     let book;
     if (!style) {
       book = `<div class="book" id="${bookData.id}">
-      <a href="javascript:void(0)" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
+      <a href="javascript:void(0)" onclick="delete_book(${bookData.id},` +
+        `'/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
       <a href="/book/${bookData.id}">
-      <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+      <img src="https://${process.env.BUCKET}.s3.${process.env.REGION}` +
+        `.amazonaws.com/${bookData.photos[0]}">
       <p>${bookData.name}</p>
       <div class="year">${bookData.year}</div>
       <div class="price">${bookData.price} $</div>
       </a></div>`;
     } else {
       book = `<div class="test" id="${bookData.id}">
-      <a href="javascript:void(0))" onclick="delete_book(${bookData.id}, '/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
-      <img class="cover" src="https://${process.env.BUCKET}.s3.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
+      <a href="javascript:void(0))" onclick="delete_book(${bookData.id},` +
+        `'/delete/${type}/${bookData.id}')" class="delete_button">&#x274C;</a>
+      <img class="cover" src="https://${process.env.BUCKET}.s3` +
+        `.${process.env.REGION}.amazonaws.com/${bookData.photos[0]}">
       <a href="/account">&#x274C;</p>
       <p class="description">${bookData.name}</p>
       <div class="price">${bookData.price} $</div>
@@ -188,12 +201,15 @@ const createPagination = (pagesCount, url, page) => {
   for (let i = 1; i <= pagesCount; i++) {
     pagination.push(`<a href="${url}/page/${i}" class="pagenumber">${i}</a>`);
   }
-  pagination[page - 1] = `<a href="${url}/page/${page}" class="pagenumber_selected">${page}</a>`;
+  pagination[page - 1] = `<a href="${url}/page/${page}"
+  class="pagenumber_selected">${page}</a>`;
   if (parseInt(page) !== 1) {
-    pagination.unshift(`<a href="${url}/page/${page - 1}" class="pagenumber">&lt</a>`);
+    pagination.unshift(`<a href="${url}/page/${page - 1}"
+    class="pagenumber">&lt</a>`);
   }
   if (parseInt(page) < pagesCount) {
-    pagination.push(`<a href="${url}/page/${page + 1}" class="pagenumber">&gt</a>`);
+    pagination.push(`<a href="${url}/page/${page + 1}"
+    class="pagenumber">&gt</a>`);
   }
   return pagination;
 };
@@ -212,7 +228,9 @@ const getBooks = (login, bookType, url, page, res) => {
       const currentBooks = books.slice((page - 1) * 8, (page - 1) * 8 + 8);
       // load books from db
       const booksRender = await createBooks(bookType, currentBooks, 0);
-      const type = bookType.split('').map(item => ((item === '_') ? ' ' : item)).join('');
+      const type = bookType.split('')
+        .map(item => ((item === '_') ? ' ' : item))
+        .join('');
       console.log(type);
       const disclaimer = (books.length === 0) ?
         '<p class="disclaimer">There are no ' +
@@ -307,23 +325,29 @@ router.get('/cart', (req, res) => {
         '<a href="/payment">' +
         '<input type="button" class="pay" value="Proceed to payment"></a>' :
         '<a href="/"><input type="button" class="pay" value="Go shopping"></a>';
-
       const title = (cartItems.length !== 0) ?
         'Your cart items:' : 'Your cart is empty at the moment :(';
       pg.close();
-      res.render('views/cart', { layout: 'default', books: items, disclaimer: title, button });
+      res.render('views/cart', {
+        layout: 'default',
+        books: items,
+        disclaimer: title,
+        button
+      });
     });
 });
 
-const deleteCart = async login => {
+/* const deleteCart = async login => {
   const pool = new Pool(dbconfig);
   const client = await pool.connect();
-  const temp = await client.query({
+  await client.query({
     rowMode: 'object',
-    text: `UPDATE TABLE usersdata SET cart = '{}::integer[]' WHERE login = ${login};`,
+    text: `UPDATE TABLE usersdata SET cart = '{}::integer[]' WHERE` +
+    `login = ${login};`,
   });
   await client.end();
 };
+*/
 
 router.get('/payment', (req, res) => {
   const pg = dbreader.open(dbconfig);
@@ -352,15 +376,14 @@ router.get('/payment', (req, res) => {
       const boughtBooksFinal = Array.from(new Set(boughtBooks));
       const pgU = dbwriter.open(dbconfig);
       pgU.query(`UPDATE usersdata SET cart = '{}' WHERE login = '${login}'`,
-        0, (err, result) => {
-          // console.log(result);
-          // console.log(err);
-        });
-      pgU.query(`UPDATE usersdata SET boughtbooks = '{${boughtBooksFinal.toString()}}' WHERE login = '${login}'`,
-        0, (err, result) => {
-          res.redirect('/purchases');
-        });
-
+        0,
+        () => { });
+      pgU.query(`UPDATE usersdata SET boughtbooks =
+      '{${boughtBooksFinal.toString()}}' WHERE login = '${login}'`,
+      0,
+      () => {
+        res.redirect('/purchases');
+      });
       pgU.close();
       pg.close();
     });
@@ -373,7 +396,7 @@ router.post('/delete/:type/:id', (req, res) => {
     return;
   }
   const type = req.params.type;
-  const id = req.params.id; 
+  const id = req.params.id;
   const values = {};
   values[type] = `array_remove(${type}, '${id}')`;
   const types = {};

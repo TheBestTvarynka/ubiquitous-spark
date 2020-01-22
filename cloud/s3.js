@@ -22,8 +22,8 @@ class Cloud {
     };
     this.s3.getObject(params, callback);
   }
-};
+}
 
-module.exports = { 
+module.exports = {
   open: s3config => new Cloud(s3config),
 };

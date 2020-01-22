@@ -9,6 +9,7 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "require-atomic-updates": "off",
     "indent": [
       "error",
       2

@@ -25,9 +25,7 @@ const renderBook = (l, b, id, res) => {
     .then(books => {
       pg.close();
       const book = books[0];
-      console.log('The book : <<<');
       console.log(book);
-      console.log('>>>');
       const imageSource = 'https://' + process.env.BUCKET +
         '.s3.us-east-2.amazonaws.com/' + book.photos[0];
       res.render('views/book', { layout: 'default', image: imageSource,
@@ -49,7 +47,8 @@ const purchasedBook = (id, login, res) => {
     .then(result => {
       const boughtbooks = result[0].boughtbooks;
       const likedbooks = result[0].likedbooks;
-      renderBook(likedbooks.includes(Number(id)), boughtbooks.includes(Number(id)), id, res);
+      renderBook(likedbooks.includes(Number(id)),
+        boughtbooks.includes(Number(id)), id, res);
     });
 };
 
@@ -65,10 +64,11 @@ const downloadBook = (id, name, res) => {
   const s3 = cloud.open(s3config);
   console.log(process.env.BUCKET, `books/${id}/${name}`);
   s3.download(process.env.BUCKET, `books/${id}/${name}`, (err, data) => {
-    if (err){
+    if (err) {
       console.error(err);
       res.writeHead(503, { 'Content-Type': 'text/plain' });
-      res.write('Error: can not download the book: server is not available or book not found. Service Unavailable!')
+      res.write('Error: can not download the book:' +
+        'server is not available or book not found. Service Unavailable!');
       res.end();
       return;
     }

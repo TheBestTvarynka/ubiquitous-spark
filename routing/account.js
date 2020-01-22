@@ -9,14 +9,6 @@ const dbwriter = require('../db/dbwriter');
 
 dotenv.config();
 
-/* const dbconfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-};
-*/
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -57,10 +49,15 @@ router.get('/account', (req, res) => {
 });
 
 const validate = user => {
-  const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{2})[-. ]?([0-9]{2})$/;
-  const re_card = new RegExp('^[0-9]+$');
-  return (re_email.test(user.email) && re_phone.test(user.phone) && re_card.test(user.card_number));
+  const reEmail = new RegExp(['/^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>(',
+    ')\\[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]',
+    '+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$/i'].join(''));
+  const rePhone = new RegExp(['/^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?(',
+    '[0-9]{2})[-. ]?([0-9]{2})$/'].join(''));
+  const reCard = new RegExp('^[0-9]+$');
+  return reEmail.test(user.email) &&
+    rePhone.test(user.phone) &&
+    reCard.test(user.cardnumber);
 };
 
 const updateUserData = (res, table, user) => {
@@ -72,7 +69,7 @@ const updateUserData = (res, table, user) => {
   pg.update(table)
     .where({ login })
     .set(user, types)
-    .then(result => {
+    .then(() => {
       res.redirect('/account');
     });
   pg.close();
@@ -90,7 +87,7 @@ router.post('/updateprofile', (req, res) => {
     fullname: req.body.fullname,
     email: req.body.email,
     phone: req.body.phone.replace(/\s+/g, ''),
-    card_number: req.body.card_number.replace(/\s+/g, ''),
+    cardnumber: req.body.card_number.replace(/\s+/g, ''),
   };
   console.log(user);
   if (validate(user)) {
@@ -98,7 +95,12 @@ router.post('/updateprofile', (req, res) => {
   } else {
     // user enter incorrect new information
     readUserData(login, 'usersdata', result => {
-      res.render('views/account/account', { layout: 'default', user: result[0], message: '<p style="color:red">New data is incorrect. Updating aborted!</p>' });
+      res.render('views/account/account', {
+        layout: 'default',
+        user: result[0],
+        message: `<p style="color:red">New data is incorrect.
+        Updating aborted!</p>`
+      });
     });
   }
 });
@@ -107,7 +109,7 @@ const comparePasswords = (res, hash, user) => {
   const readData = readUserData.bind(null, user.login, 'usersaccounts');
   bcrypt.compare(user.oldpassword, hash, (err, result) => {
     if (result) {
-      if (user.newpassword === user.newpassword_r) {
+      if (user.newpassword === user.newpasswordr) {
         bcrypt.hash(user.newpassword, saltRounds, (err, hash) => {
           user.hash = hash;
           delete user.oldpassword;
@@ -117,12 +119,22 @@ const comparePasswords = (res, hash, user) => {
         });
       } else {
         readData(userdata => {
-          res.render('views/account/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: New passwords are not the same</p>' });
+          res.render('views/account/account', {
+            layout: 'default',
+            user: userdata[0],
+            message: `<p style="color:red">Can't change password: New
+            passwords are not the same</p>`
+          });
         });
       }
     } else {
       readData(userdata => {
-        res.render('views/account/account', { layout: 'default', user: userdata[0], message: '<p style="color:red">Can\'t change password: Entered incorrect old password</p>' });
+        res.render('views/account/account', {
+          layout: 'default',
+          user: userdata[0],
+          message: `<p style="color:red">Can't change password: Entered
+          incorrect old password</p>`
+        });
       });
     }
   });
@@ -134,7 +146,7 @@ router.post('/updatepassword', (req, res) => {
     login,
     oldpassword: req.body.oldpassword,
     newpassword: req.body.newpassword,
-    newpassword_r: req.body.newpassword_r,
+    newpasswordr: req.body.newpassword_r,
   };
   if (!login) {
     res.cookie('redirect', '/account');
@@ -169,14 +181,16 @@ router.post('/likebook/:id', (req, res) => {
       cursor.where({ login });
       const books = result[0].likedbooks;
       if (books.includes(parseInt(id))) {
-        cursor.set({ likedbooks: `array_remove(likedbooks, '${id}')` }, { likedbooks: 'function' })
+        cursor.set({ likedbooks: `array_remove(likedbooks, '${id}')` }, {
+          likedbooks: 'function' })
           .then(result => {
             up.close();
             console.log(result);
             res.status('200').send('Removed from your Liked Books');
           });
       } else {
-        cursor.set({ likedbooks: `array_cat(likedbooks, ARRAY[${id}])` }, { likedbooks: 'function' })
+        cursor.set({ likedbooks: `array_cat(likedbooks, ARRAY[${id}])` }, {
+          likedbooks: 'function' })
           .then(result => {
             up.close();
             console.log(result);

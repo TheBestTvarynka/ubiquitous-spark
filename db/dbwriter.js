@@ -44,8 +44,9 @@ const where = conditions => {
 const formatValue = (value, type) => {
   if (type === 'value') return `'${value}'`;
   else if (type === 'function') return value;
-  else if (type === 'array') return 'ARRAY[' + value.map(elem => `'${elem}'`).join(', ') + ']';
-  else null;
+  else if (type === 'array') {
+    return 'ARRAY[' + value.map(elem => `'${elem}'`).join(', ') + ']';
+  } else null;
 };
 
 class DBInserter {
@@ -70,7 +71,7 @@ class DBInserter {
     return this;
   }
   getvalues() {
-    return values;
+    return this.values;
   }
   clearValues() {
     this.values = [];
@@ -80,8 +81,7 @@ class DBInserter {
     this.result = result;
   }
   then(callback) {
-    const { table, fields, values } = this;
-    const { pool } = this;
+    const { table, values } = this;
     // create a request to db
     let sql = `INSERT INTO ${table}`;
     if (this.fieldsOrder !== []) {
@@ -100,7 +100,7 @@ class DBInserter {
     });
     return this;
   }
-};
+}
 
 class DBUpdater {
   constructor(database, table) {
@@ -114,7 +114,7 @@ class DBUpdater {
   }
   // add WHERE conditions
   where(conditions) {
-    const { clause, args} = where(conditions);
+    const { clause, args } = where(conditions);
     this.whereClause = clause;
     this.args = args;
     return this;
@@ -148,7 +148,7 @@ class DBUpdater {
       callback(res);
     });
   }
-};
+}
 
 class DBWriter {
   constructor(config, logger) {
@@ -177,7 +177,7 @@ class DBWriter {
   close() {
     this.pool.end();
   }
-};
+}
 
 module.exports = {
   open: (config, logger) => new DBWriter(config, logger),

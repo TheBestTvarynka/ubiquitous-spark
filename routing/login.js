@@ -17,7 +17,10 @@ const router = express.Router();
 router.get('/login', (req, res) => {
   const login = req.session.name;
   if (!login) {
-    res.render('views/login', { layout: 'default', message: 'Hmmm, I see you haven\'t logged in to your account so far :(' });
+    res.render('views/login', {
+      layout: 'default',
+      message: 'Hmmm, I see you haven\'t logged in to your account so far :('
+    });
   } else {
     res.redirect('/account');
   }
@@ -32,7 +35,10 @@ router.post('/login', async (req, res) => {
   const result = await cursor.where({ login });
   if (result.length === 0) {
     // user not found
-    res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
+    res.render('views/login', {
+      layout: 'default',
+      message: '<p style="color: red">Login or password incorrect</p>'
+    });
     return;
   }
   // at least user exist
@@ -58,7 +64,10 @@ router.post('/login', async (req, res) => {
     }
   } else {
     // password incorrect
-    res.render('views/login', { layout: 'default', message: '<p style="color: red">Login or password incorrect</p>' });
+    res.render('views/login', {
+      layout: 'default',
+      message: '<p style="color: red">Login or password incorrect</p>'
+    });
   }
 });
 

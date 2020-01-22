@@ -8,14 +8,6 @@ const dbwriter = require('../db/dbwriter');
 
 dotenv.config();
 
-/* const dbconfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-};
-*/
 const dbconfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -28,14 +20,23 @@ const saltRounds = 10;
 const router = express.Router();
 
 router.get('/register', (req, res) => {
-  res.render('views/register', { layout: 'default', message: '<p>Let\'s create an account in a few second:)</p>' });
+  res.render('views/register', {
+    layout: 'default',
+    message: '<p>Let\'s create an account in a few second:)</p>'
+  });
 });
 
-const validate = (user) => {
-  const re_login = /^[a-zA-Z0-9]+$/;
-  const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  const re_phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{2})[-. ]?([0-9]{2})$/;
-  return (re_login.test(user.login) && re_email.test(user.email) && re_phone.test(user.phone) && user.password === user.password_r);
+const validate = user => {
+  const reEmail = new RegExp(['/^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>(',
+    ')\\[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]',
+    '+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$/i'].join(''));
+  const rePhone = new RegExp(['/^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?(',
+    '[0-9]{2})[-. ]?([0-9]{2})$/'].join(''));
+  const reCard = new RegExp('^[0-9]+$');
+  return reEmail.test(user.email) &&
+    rePhone.test(user.phone) &&
+    reCard.test(user.cardnumber) &&
+    user.password === user.passwordr;
 };
 
 const writeUserData = (res, user) => {
@@ -50,33 +51,39 @@ const writeUserData = (res, user) => {
   const wr = dbwriter.open(dbconfig);
   const writePas = wr.insert('users');
   writePas.value(values, types)
-          .then(result => {
-            const values = {
-              login: user.login,
-              fullName: user.fullname,
-              email: user.email,
-              phone: user.phone,
-            };
-            const types = {
-              login: 'value',
-              fullName: 'value',
-              email: 'value',
-              phone: 'value',
-            };
-            const writeData = wr.insert('usersdata');
-            writeData.value(values, types)
-                     .then(result => {
-                       res.render('views/login', { layout: 'default', message: '<p>You resenetly registered, login please to continue</p>'});
-                       wr.close();
-                     });
+    .then(() => {
+      const values = {
+        login: user.login,
+        fullName: user.fullname,
+        email: user.email,
+        phone: user.phone,
+      };
+      const types = {
+        login: 'value',
+        fullName: 'value',
+        email: 'value',
+        phone: 'value',
+      };
+      const writeData = wr.insert('usersdata');
+      writeData.value(values, types)
+        .then(() => {
+          res.render('views/login', {
+            layout: 'default',
+            message: '<p>You resenetly registered, login please to continue</p>'
           });
+          wr.close();
+        });
+    });
 };
 
 const hashPassword = (res, user) => {
   bcrypt.hash(user.password, saltRounds, (err, hash) => {
-    if(err) {
+    if (err) {
       console.log(err);
-      res.render('views/register', { layout: 'default', message: '<p>Sorry, can\'t hash your password</p>' });
+      res.render('views/register', {
+        layout: 'default',
+        message: '<p>Sorry, can\'t hash your password</p>'
+      });
     } else {
       user.hash = hash;
       writeUserData(res, user);
@@ -94,7 +101,10 @@ const findUser = (res, user) => {
       if (rows.length === 0) {
         hashPassword(res, user);
       } else {
-        res.render('views/register', { layout: 'default', message: '<p style="color: red">User with this login already exist</p>' });
+        res.render('views/register', {
+          layout: 'default',
+          message: '<p style="color: red">User already exist</p>'
+        });
       }
     });
 };
@@ -104,7 +114,7 @@ router.post('/register', (req, res) => {
   const user = {
     login: req.body.username,
     password: req.body.password,
-    password_r: req.body.password_r,
+    passwordr: req.body.password_r,
     fullname: req.body.fullname,
     email: req.body.email,
     phone: req.body.phone.replace(/\s+/g, ''),
@@ -112,7 +122,10 @@ router.post('/register', (req, res) => {
   if (validate(user)) {
     findUser(res, user);
   } else {
-    res.render('views/register', { layout: 'default', message: '<p style="color: red">Entered data isn\'t valid(</p>' });
+    res.render('views/register', {
+      layout: 'default',
+      message: '<p style="color: red">Entered data isn\'t valid(</p>'
+    });
   }
 });
 
@@ -133,23 +146,23 @@ router.post('/activate', (req, res) => {
   const login = req.session.name;
   const setters = {
     activated: true,
-    card_number: req.body.card_number.replace(/\s+/g, ''),
+    cardnumber: req.body.card_number.replace(/\s+/g, ''),
   };
   const types = {
     activated: 'value',
-    card_number: 'value',
+    cardnumber: 'value',
   };
   const activateHandler = dbwriter.open(dbconfig);
   activateHandler.update('usersdata')
-                 .set(setters, types)
-                 .where({ login })
-                 .then(result => {
-                   if (req.cookies.redirect) {
-                    res.redirect(req.cookies.redirect);
-                   } else {
-                    res.redirect('/account');
-                   }
-                 });
+    .set(setters, types)
+    .where({ login })
+    .then(() => {
+      if (req.cookies.redirect) {
+        res.redirect(req.cookies.redirect);
+      } else {
+        res.redirect('/account');
+      }
+    });
 });
 
 module.exports = router;
