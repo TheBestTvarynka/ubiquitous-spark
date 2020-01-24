@@ -49,11 +49,11 @@ router.get('/account', (req, res) => {
 });
 
 const validate = user => {
-  const reEmail = new RegExp(['/^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>(',
+  const reEmail = new RegExp(['^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>(',
     ')\\[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]',
-    '+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$/i'].join(''));
-  const rePhone = new RegExp(['/^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?(',
-    '[0-9]{2})[-. ]?([0-9]{2})$/'].join(''));
+    '+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$'].join(''), 'i');
+  const rePhone = new RegExp(['^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]',
+    '?([0-9]{2})[-. ]?([0-9]{2})$'].join(''), 'i');
   const reCard = new RegExp('^[0-9]+$');
   return reEmail.test(user.email) &&
     rePhone.test(user.phone) &&

@@ -13,7 +13,11 @@ const dbconfig = {
 router.get('/chat', (req, res) => {
   const pg = dbreader.open(dbconfig);
   const login = req.session.name;
-
+  if (!login) {
+    res.cookie('redirect', '/chat');
+    res.redirect('/login');
+    return;
+  }
   let permission = '';
   let username = '';
   let title = '';

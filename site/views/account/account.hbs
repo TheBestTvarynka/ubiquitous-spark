@@ -19,15 +19,15 @@
 				{{{ message }}}
 				<div class="title">Full Name</div>
 				<input type="text" name="fullname" class="input_text" value="{{ user.fullname }}">
-				<div class="tooltip">You have been married?) Change second name in this case :)</div>
+				<div class="tooltip">You have been married?) Change name in this case :)</div>
 				<div class="title">Email Address</div>
 				<input type="text" name="email" class="input_text" oninput="submitState(profile)" value="{{ user.email }}" id="email">
-				<div class="tooltip">Set new email address if you lost or delete a previous adsress</div>
+				<div class="tooltip">Set new email address if you lost or delete a previous addsress</div>
 				<div class="title">Phone Number</div>
 				<input type="text" name="phone" class="input_text" oninput="submitState(profile)" onload="formatPhone(profile)" id="phone" value="{{ user.phone }}">
-				<div class="tooltip">If you have new phone number, you can easy change it</div>
+				<div class="tooltip">If you have got new phone number, you can easy change it</div>
 				<div class="title">Card Number</div>
-				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.card_number }}">
+				<input type="text" name="card_number" class="input_text" oninput="submitState(profile)" id="card_number" value="{{ user.cardnumber }}">
 				<div class="tooltip">Everyone can change card number, isn't? Maybe it happened with you?</div>
 				<input type="submit" name="update" class="button" value="Update profile" id="submit">
 			</form>
