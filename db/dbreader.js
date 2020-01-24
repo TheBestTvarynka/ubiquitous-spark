@@ -11,6 +11,15 @@ const where = conditions => {
     let condition;
     if (typeof value === 'number') {
       condition = `${key} = $${i}`;
+    } else if (typeof value === 'object') {
+      const accident = value.accident;
+      if (accident === '@>') {
+        condition = `${key} @> $${i}`;
+        value = value.main;
+      } else if (accident === '>') {
+        // TODO
+      }
+      // TODO
     } else if (typeof value === 'string') {
       if (value.startsWith('>=')) {
         condition = `${key} >= $${i}`;
