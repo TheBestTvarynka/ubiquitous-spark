@@ -64,15 +64,17 @@ const updateUserData = (res, table, user) => {
   const login = user.login;
   delete user.login;
   const types = {};
-  for (const field in user) types[field] = 'value';
+  for (const field in user) {
+    types[field] = 'value';
+  }
   const pg = dbwriter.open(dbconfig);
   pg.update(table)
     .where({ login })
     .set(user, types)
     .then(() => {
+      pg.close();
       res.redirect('/account');
     });
-  pg.close();
 };
 
 router.post('/updateprofile', (req, res) => {
@@ -110,12 +112,8 @@ const comparePasswords = (res, hash, user) => {
   bcrypt.compare(user.oldpassword, hash, (err, result) => {
     if (result) {
       if (user.newpassword === user.newpasswordr) {
-        bcrypt.hash(user.newpassword, saltRounds, (err, hash) => {
-          user.hash = hash;
-          delete user.oldpassword;
-          delete user.newpassword;
-          delete user.newpassword_r;
-          updateUserData(res, 'users', user);
+        bcrypt.hash(user.newpassword, saltRounds, (err, newhash) => {
+          updateUserData(res, 'users', { login: user.login, hash: newhash });
         });
       } else {
         readData(userdata => {
@@ -140,29 +138,28 @@ const comparePasswords = (res, hash, user) => {
   });
 };
 
-router.post('/updatepassword', (req, res) => {
+router.post('/updatepassword', async (req, res) => {
   const login = req.session.name;
+  if (!login) {
+    res.cookie('redirect', '/account');
+    res.redirect('/login');
+    return;
+  }
   const user = {
     login,
     oldpassword: req.body.oldpassword,
     newpassword: req.body.newpassword,
     newpasswordr: req.body.newpassword_r,
   };
-  if (!login) {
-    res.cookie('redirect', '/account');
-    res.redirect('/login');
-    return;
-  }
   const pg = dbreader.open(dbconfig);
-  pg.select('users')
-    .where({ login })
-    .then(hashes => {
-      const hash = hashes[0].hash;
-      comparePasswords(res, hash, user);
-    });
+  const hashesQuery = pg.select('users');
+  const hashes = await hashesQuery.where({ login }).fields([ 'hash' ]);
+  pg.close();
+  const hash = hashes[0].hash;
+  comparePasswords(res, hash, user);
 });
 
-router.post('/likebook/:id', (req, res) => {
+router.post('/likebook/:id', async (req, res) => {
   console.log('likebook:');
   const login = req.session.name;
   const id = req.params.id;
@@ -171,36 +168,33 @@ router.post('/likebook/:id', (req, res) => {
     return;
   }
   const pg = dbreader.open(dbconfig);
-  pg.select('usersdata')
-    .where({ login })
-    .fields([ 'likedbooks' ])
-    .then(result => {
-      pg.close();
-      const up = dbwriter.open(dbconfig);
-      const cursor = up.update('usersdata');
-      cursor.where({ login });
-      const books = result[0].likedbooks;
-      if (books.includes(parseInt(id))) {
-        cursor.set({ likedbooks: `array_remove(likedbooks, '${id}')` }, {
-          likedbooks: 'function' })
-          .then(result => {
-            up.close();
-            console.log(result);
-            res.status('200').send('Removed from your Liked Books');
-          });
-      } else {
-        cursor.set({ likedbooks: `array_cat(likedbooks, ARRAY[${id}])` }, {
-          likedbooks: 'function' })
-          .then(result => {
-            up.close();
-            console.log(result);
-            res.status('200').send('Added to your Liked Books');
-          });
-      }
-    });
+  const booksQuery = pg.select('usersdata');
+  const likedBooks = await booksQuery.where({ login }).fields([ 'likedbooks' ]);
+  const books = likedBooks[0].likedbooks;
+  pg.close();
+  const up = dbwriter.open(dbconfig);
+  const updateQuery = up.update('usersdata');
+  updateQuery.where({ login });
+  if (books.includes(parseInt(id))) {
+    updateQuery.set({ likedbooks: `array_remove(likedbooks, '${id}')` }, {
+      likedbooks: 'function' })
+      .then(result => {
+        up.close();
+        console.log(result);
+        res.status('200').send('Removed from your Liked Books');
+      });
+  } else {
+    updateQuery.set({ likedbooks: `array_cat(likedbooks, ARRAY[${id}])` }, {
+      likedbooks: 'function' })
+      .then(result => {
+        up.close();
+        console.log(result);
+        res.status('200').send('Added to your Liked Books');
+      });
+  }
 });
 
-router.post('/buybook/:id', (req, res) => {
+router.post('/buybook/:id', async (req, res) => {
   console.log('buybook - processing...');
   const login = req.session.name;
   const id = req.params.id;
@@ -209,35 +203,30 @@ router.post('/buybook/:id', (req, res) => {
     return;
   }
   const pg = dbreader.open(dbconfig);
-  pg.select('usersdata')
-    .where({ login })
-    .fields([ 'cart' ])
-    .then(result => {
-      pg.close();
-      const up = dbwriter.open(dbconfig);
-      const cursor = up.update('usersdata');
-      cursor.where({ login });
-      const books = result[0].cart;
-      if (books.includes(parseInt(id))) {
-        cursor.set({ cart: `array_remove(cart, ARRAY[${id}])` },
-          { cart: 'function' })
-          .then(result => {
-            up.close();
-            console.log(result);
-            res.end('Removed from your Cart');
-          });
-      } else {
-        cursor.set({ cart: `array_cat(cart, ARRAY[${id}])` },
-          { cart: 'function' })
-          .then(result => {
-            up.close();
-            console.log(result);
-            res.end('Added to your Cart');
-          });
-      }
-    });
+  const cartQuery = pg.select('usersdata');
+  const result = await cartQuery.where({ login }).fields([ 'cart' ]);
+  const books = result[0].cart;
+  pg.close();
+  const up = dbwriter.open(dbconfig);
+  const updateQuery = up.update('usersdata');
+  updateQuery.where({ login });
+  if (books.includes(parseInt(id))) {
+    updateQuery.set({ cart: `array_remove(cart, ARRAY[${id}])` },
+      { cart: 'function' })
+      .then(result => {
+        up.close();
+        console.log(result);
+        res.end('Removed from your Cart');
+      });
+  } else {
+    updateQuery.set({ cart: `array_cat(cart, ARRAY[${id}])` },
+      { cart: 'function' })
+      .then(result => {
+        up.close();
+        console.log(result);
+        res.end('Added to your Cart');
+      });
+  }
 });
-
-
 
 module.exports = router;
